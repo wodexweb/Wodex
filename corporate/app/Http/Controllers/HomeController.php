@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Admin;
 
-class ProfileController extends Controller
+class HomeController extends Controller
 {
     /**
      * Get logged-in admin profile
