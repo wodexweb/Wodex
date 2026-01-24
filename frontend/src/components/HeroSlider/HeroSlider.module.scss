@@ -1,0 +1,140 @@
+.heroSection {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+
+  /* ================= IMAGE ================= */
+
+  .heroImage {
+    position: absolute;
+    inset: 0;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: #290300;
+      opacity: 0.2;
+      z-index: 1;
+    }
+  }
+
+  .heroImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: brightness(0.4);
+    display: block;
+  }
+
+  /* ================= TEXT ================= */
+
+  .heroContent {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    z-index: 2;
+  }
+
+  .heroText {
+    margin-left: 6%;
+    color: #ffffff;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+  }
+
+  .mainTitle {
+    font-size: clamp(2.8rem, 5vw, 4rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: 2px;
+  }
+
+  .subTitle {
+    font-size: clamp(3.5rem, 8vw, 5rem);
+    font-weight: 900;
+    letter-spacing: 3px;
+    color: #ffffff;
+  }
+
+  /* ================= UPDATE BAR ================= */
+
+  .updateBar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff4e6;
+    z-index: 3;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.4);
+  }
+
+  .latestTag {
+    background: #faa33d;
+    color: #290300;
+    padding: 0 20px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .homeIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ================= RESPONSIVE ================= */
+
+  @media (max-width: 992px) {
+    height: 80vh;
+
+    .heroText {
+      margin-left: 4%;
+    }
+
+    .updateBar {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    height: 70vh;
+
+    .mainTitle {
+      font-size: 2rem;
+    }
+
+    .subTitle {
+      font-size: 2.5rem;
+    }
+
+    .updateBar {
+      display: none;
+    }
+
+    .latestTag {
+      font-size: 12px;
+      padding: 0 12px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    height: 60vh;
+
+    .heroText {
+      margin-left: 3%;
+    }
+  }
+}

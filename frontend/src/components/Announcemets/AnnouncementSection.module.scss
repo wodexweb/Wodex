@@ -1,0 +1,75 @@
+/* ================= DEFAULT (Desktop) ================= */
+
+.section {
+  padding: 80px 6% 100px;
+  background: #ffffff;
+  text-align: center;
+}
+
+/* HEADING */
+.heading {
+  font-size: 50px;
+  font-weight: 900;
+  color: #290300;
+  letter-spacing: 3px;
+  margin-bottom: 60px;
+  white-space: nowrap;
+}
+
+/* VIEW MORE */
+.viewMoreWrap {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.viewMoreBtn {
+  border: none;
+  padding: 10px 26px;
+  border-radius: 30px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  background-color: #290300;
+  color: #ffffff;
+}
+
+/* ================= LAPTOP ================= */
+
+@media (max-width: 992px) {
+  .section {
+    padding: 60px 5% 80px;
+  }
+
+  .heading {
+    font-size: 34px;
+    margin-bottom: 50px;
+  }
+}
+
+/* ================= TABLET ================= */
+
+@media (max-width: 768px) {
+  .section {
+    padding: 50px 4% 70px;
+  }
+
+  .heading {
+    font-size: 30px;
+    letter-spacing: 2px;
+    margin-bottom: 40px;
+  }
+}
+
+/* ================= SMALL MOBILE ================= */
+
+@media (max-width: 480px) {
+  .section {
+    padding: 40px 4% 60px;
+  }
+
+  .heading {
+    font-size: 26px;
+    letter-spacing: 1px;
+    white-space: normal;
+  }
+}

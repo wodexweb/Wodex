@@ -1,0 +1,11 @@
+@use "./variables" as v;
+
+/* PX TO REM */
+@function rem($px) {
+  @return calc($px / 16) * 1rem;
+}
+
+/* COLOR OPACITY */
+@function rgba-color($color, $opacity) {
+  @return rgba($color, $opacity);
+}

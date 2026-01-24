@@ -1,0 +1,102 @@
+/* AnnouncementBar.module.scss */
+
+.announcementBar {
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+  white-space: nowrap;
+
+  background-color: #d61f1f;
+  color: #fff;
+  padding: 12px 20px;
+  box-shadow: 0 2px 10px rgba(220, 53, 69, 0.4);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.announcementText {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+
+  animation: slideLeft 18s linear infinite;
+}
+
+.link {
+  color: #fff;
+  text-decoration: none;
+
+  &:hover {
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+  }
+}
+
+.closeButton {
+  margin-left: 10px;
+  padding: 4px 8px;
+
+  display: flex;
+  align-items: center;
+
+  background: none;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+
+  transition: transform 0.2s ease, background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+  }
+}
+
+/* Animations */
+// @keyframes slideLeft {
+//   0% {
+//     transform: translateX(100%);
+//   }
+//   100% {
+//     transform: translateX(-100%);
+//   }
+// }
+
+/* Tablet */
+@media (max-width: 768px) {
+  .announcementBar {
+    padding: 10px 12px;
+  }
+
+  .container {
+    padding: 0 10px;
+  }
+
+  .announcementText {
+    font-size: 14px;
+    animation-duration: 25s;
+  }
+
+  .closeButton {
+    font-size: 16px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .announcementText {
+    font-size: 13px;
+    text-align: left;
+  }
+}

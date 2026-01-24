@@ -1,0 +1,40 @@
+@use "./variables" as v;
+
+/* FLEX CENTER */
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* RESPONSIVE MEDIA */
+@mixin respond($breakpoint) {
+  @if $breakpoint == sm {
+    @media (max-width: v.$bp-sm) { @content; }
+  }
+  @else if $breakpoint == md {
+    @media (max-width: v.$bp-md) { @content; }
+  }
+  @else if $breakpoint == lg {
+    @media (max-width: v.$bp-lg) { @content; }
+  }
+  @else if $breakpoint == xl {
+    @media (max-width: v.$bp-xl) { @content; }
+  }
+}
+
+/* TEXT ELLIPSIS */
+@mixin text-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* SECTION SPACING */
+@mixin section-spacing {
+  padding: 60px 0;
+
+  @include respond(md) {
+    padding: 40px 0;
+  }
+}

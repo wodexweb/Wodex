@@ -1,0 +1,125 @@
+.logos-page {
+  background: #fff;
+}
+
+/* ================= HERO ================= */
+.hero {
+  background: #fff4e6;
+  padding: 50px 20px;
+  text-align: center;
+
+  h1 {
+    font-size: 50px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: #290300;
+  }
+
+  .breadcrumb {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    font-size: 16px;
+
+    .home {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      text-decoration: none;
+      font-weight: 700;
+      color: #290300;
+    }
+  }
+}
+
+/* ================= CONTENT ================= */
+.content {
+  max-width: 1200px;
+  margin: auto;
+  padding: 120px 20px;
+}
+
+/* ================= GRID ================= */
+.logo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+/* ================= CARD ================= */
+.logo-card {
+  border: 1px solid #ffad4a;
+  border-radius: 18px;
+  padding: 30px;
+  text-align: center;
+  background: #fff;
+}
+
+/* ================= LOGO BOX (SQUARE) ================= */
+.logo-box {
+  width: 160px; // ✅ same width
+  height: 160px; // ✅ same height
+  margin: 0 auto 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    max-width: 130px;
+    max-height: 130px;
+    object-fit: contain;
+  }
+}
+
+/* ================= TITLE ================= */
+.logo-card h3 {
+  margin: 16px 0 18px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #000;
+}
+
+/* ================= BUTTONS ================= */
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+
+  button,
+  a {
+    background: #ffad4a;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: #000;
+    font-weight: 500;
+    transition: all 0.2s linear;
+    &:hover {
+      background: #290300;
+      color: #fff;
+    }
+  }
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+  .logo-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .logo-box {
+    width: 140px;
+    height: 140px;
+
+    img {
+      max-width: 115px;
+      max-height: 115px;
+    }
+  }
+}

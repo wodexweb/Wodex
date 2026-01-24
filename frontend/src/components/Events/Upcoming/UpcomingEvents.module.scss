@@ -1,0 +1,86 @@
+/* ================= DEFAULT (Desktop) ================= */
+
+.section {
+  position: relative;
+  padding: 220px 6%;
+  background-color: #fff4e6;
+
+  .heading {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+
+    font-size: 50px;
+    font-weight: 900;
+    color: #290300;
+    letter-spacing: 3px;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  /* ✅ EXACT 3-COLUMN GRID */
+  .cardGrid {
+    display: grid;
+
+    /* 🔥 FORCE 3 cards */
+    grid-template-columns: repeat(3, 435px);
+
+    column-gap: 40px;
+    row-gap: 40px;
+
+    justify-content: center;
+  }
+}
+
+/* ================= LAPTOP (2 CARDS) ================= */
+
+@media (max-width: 1200px) {
+  .section {
+    padding: 160px 5% 90px;
+
+    .cardGrid {
+      grid-template-columns: repeat(2, 435px);
+      gap: 32px;
+    }
+  }
+}
+
+/* ================= TABLET (2 SMALLER CARDS) ================= */
+
+@media (max-width: 768px) {
+  .section {
+    padding: 110px 4% 70px;
+
+    .heading {
+      font-size: 30px;
+      top: 28px;
+      letter-spacing: 2px;
+    }
+
+    .cardGrid {
+      grid-template-columns: repeat(2, 380px);
+      gap: 26px;
+    }
+  }
+}
+
+/* ================= MOBILE (1 CARD) ================= */
+
+@media (max-width: 480px) {
+  .section {
+    padding: 90px 4% 60px;
+
+    .heading {
+      font-size: 26px;
+      top: 22px;
+      letter-spacing: 1px;
+    }
+
+    .cardGrid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  }
+}

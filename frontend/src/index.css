@@ -1,0 +1,70 @@
+/* * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: auto !important;
+
+  overflow-x: hidden;
+  overflow-y: auto !important;
+} */
+
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Manrope";
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  width: 100%;
+  overflow-x: hidden;
+
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* edge slow illusion */
+body::before,
+body::after {
+  content: "";
+  display: block;
+  height: 12vh;
+}
+
+body::before {
+  margin-bottom: -12vh;
+}
+
+body::after {
+  margin-top: -12vh;
+}
+
+/* soft snap near edges */
+body {
+  scroll-snap-type: y proximity;
+}
+
+section:first-of-type {
+  scroll-snap-align: start;
+}
+
+section:last-of-type {
+  scroll-snap-align: end;
+}
+
+/* accessibility */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

@@ -1,0 +1,83 @@
+/* HEADER */
+.header {
+  background: #fff3e6;
+  padding: 80px 20px;
+  text-align: center;
+
+  h1 {
+    font-size: 36px;
+    font-weight: 800;
+    color: #3b0a02;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 14px;
+    color: #666;
+  }
+}
+
+/* SECTIONS */
+.section {
+  padding: 70px 6%;
+}
+
+/* TOP GRID (3 cards) */
+.topGrid {
+  max-width: 1100px;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: repeat(3, auto); /* 🔑 FIX */
+  gap: 24px; /* matches GPICC */
+  justify-content: center; /* 🔑 FIX */
+}
+
+/* BOTTOM GRID (2 centered cards) */
+.bottomGrid {
+  max-width: 700px;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: repeat(2, auto); /* 🔑 FIX */
+  gap: 24px;
+  justify-content: center; /* 🔑 FIX */
+}
+
+/* EXECUTIVE GRID – FIXED */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 215px); /* 🔑 FIX */
+  gap: 20px; /* natural spacing */
+  justify-content: center; /* center row */
+}
+
+/* SUB HEADING */
+.subHeading {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 800;
+  color: #3b0a02;
+  margin-bottom: 40px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+  .topGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bottomGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .topGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .header h1 {
+    font-size: 28px;
+  }
+}

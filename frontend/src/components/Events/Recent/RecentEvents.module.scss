@@ -1,0 +1,82 @@
+/* ================= DEFAULT (Desktop) ================= */
+
+.section {
+  position: relative;
+  padding: 220px 6%; // top space for absolute heading
+  background: #ffffff;
+
+  .heading {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: 50px;
+    font-weight: 900;
+    color: #290300;
+    letter-spacing: 3px;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .cardGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px;
+  }
+}
+
+/* ================= LAPTOP ================= */
+
+@media (max-width: 992px) {
+  .section {
+    padding: 130px 5% 80px;
+
+    .heading {
+      font-size: 34px;
+      top: 32px;
+    }
+
+    .cardGrid {
+      gap: 30px;
+    }
+  }
+}
+
+/* ================= TABLET ================= */
+
+@media (max-width: 768px) {
+  .section {
+    padding: 110px 4% 70px;
+
+    .heading {
+      font-size: 30px;
+      top: 28px;
+      letter-spacing: 2px;
+    }
+
+    .cardGrid {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+  }
+}
+
+/* ================= SMALL MOBILE ================= */
+
+@media (max-width: 480px) {
+  .section {
+    padding: 90px 4% 60px;
+
+    .heading {
+      font-size: 26px;
+      top: 22px;
+      letter-spacing: 1px;
+    }
+
+    .cardGrid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  }
+}

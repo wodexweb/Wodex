@@ -1,0 +1,234 @@
+/* ================= HEADER ================= */
+
+.header {
+  background: #fff4e6;
+  padding: 90px 20px 80px;
+  text-align: center;
+
+  h1 {
+    font-size: 44px;
+    font-weight: 900;
+    color: #290300;
+    margin-bottom: 6px;
+  }
+}
+
+/* ================= BREADCRUMB ================= */
+
+.breadcrumb {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  color: #290300;
+}
+
+.home {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 800;
+  color: #290300;
+  text-decoration: none;
+}
+
+.homeIcon {
+  font-size: 18px;
+}
+
+.separator {
+  font-weight: 600;
+}
+
+.current {
+  color: #666;
+}
+
+/* ================= PAGE ================= */
+
+.page {
+  padding: 90px 6% 120px;
+  background: #fff;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ================= GRID ================= */
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 40px;
+}
+
+/* ================= LEFT CARD ================= */
+
+/* ================= LEFT CARD ================= */
+
+.leftCard {
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 48px 44px;
+
+  /* ✅ GOLDEN BORDER */
+  border: 0.5px solid #faa33d;
+
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.08);
+  transition:
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+
+  &:hover {
+    box-shadow: 0 18px 36px rgba(250, 163, 61, 0.25);
+    transform: translateY(-3px);
+  }
+
+  h2 {
+    font-size: 32px;
+    font-weight: 900;
+    color: #290300;
+    margin-bottom: 4px;
+  }
+
+  h3 {
+    font-size: 22px;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 20px;
+  }
+
+  p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #444;
+
+    a {
+      color: #faa33d;
+      font-weight: 700;
+      text-decoration: none;
+    }
+  }
+}
+
+/* ================= RIGHT INFO CARDS ================= */
+
+.infoCard {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 26px 28px;
+  display: flex;
+  gap: 18px;
+  align-items: center;
+
+  /* ✅ GOLDEN BORDER */
+  border: 0.5px solid #faa33d;
+
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.08);
+  transition:
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+
+  &:hover {
+    box-shadow: 0 16px 32px rgba(250, 163, 61, 0.25);
+    transform: translateY(-2px);
+  }
+
+  h4 {
+    font-size: 18px;
+    font-weight: 800;
+    color: #290300;
+  }
+
+  span {
+    font-size: 14px;
+    color: #666;
+  }
+}
+
+/* ================= RIGHT ================= */
+
+.rightCol {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.infoCard {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 26px 28px;
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.08);
+
+  h4 {
+    font-size: 18px;
+    font-weight: 800;
+    color: #290300;
+  }
+
+  span {
+    font-size: 14px;
+    color: #666;
+  }
+}
+
+.avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.phone {
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #290300;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.iconBox {
+  font-size: 36px;
+  color: #faa33d;
+}
+
+.address {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #444;
+  margin-top: 4px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 992px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .leftCard {
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 32px;
+  }
+
+  .leftCard h2 {
+    font-size: 26px;
+  }
+
+  .leftCard h3 {
+    font-size: 18px;
+  }
+}
