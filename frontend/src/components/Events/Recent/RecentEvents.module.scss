@@ -1,82 +1,121 @@
-/* ================= DEFAULT (Desktop) ================= */
+/* ================= BASE ================= */
 
 .section {
   position: relative;
-  padding: 220px 6%; // top space for absolute heading
-  background: #ffffff;
+  padding: 200px 6% 120px;
+  background-color: #ffffff;
+  transition: padding 0.3s ease;
+}
 
-  .heading {
-    position: absolute;
-    top: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    font-size: 50px;
-    font-weight: 900;
-    color: #290300;
-    letter-spacing: 3px;
-    margin: 0;
-    white-space: nowrap;
+/* 🔥 REDUCED HEIGHT WHEN EMPTY */
+.sectionEmpty {
+  padding: 140px 6% 80px;
+}
+
+/* ================= HEADING ================= */
+
+.heading {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 100%;
+
+  font-size: 50px;
+  font-weight: 900;
+  color: #290300;
+  letter-spacing: 3px;
+  margin: 0;
+
+  text-align: center;
+  white-space: nowrap; /* 🔥 FORCE ONE LINE */
+}
+
+/* ================= STATUS ================= */
+
+.status {
+  min-height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+  font-weight: 600;
+  color: #666;
+  text-align: center;
+}
+
+/* BLINK */
+.blink {
+  animation: blink 1.4s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
   }
-
-  .cardGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 40px;
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
   }
 }
 
-/* ================= LAPTOP ================= */
+/* ================= CARD GRID ================= */
 
-@media (max-width: 992px) {
-  .section {
-    padding: 130px 5% 80px;
-
-    .heading {
-      font-size: 34px;
-      top: 32px;
-    }
-
-    .cardGrid {
-      gap: 30px;
-    }
-  }
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 350px);
+  justify-content: center;
+  gap: 26px;
 }
 
 /* ================= TABLET ================= */
 
 @media (max-width: 768px) {
   .section {
-    padding: 110px 4% 70px;
+    padding: 120px 4% 80px;
+  }
 
-    .heading {
-      font-size: 30px;
-      top: 28px;
-      letter-spacing: 2px;
-    }
+  .sectionEmpty {
+    padding: 90px 4% 60px;
+  }
 
-    .cardGrid {
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 24px;
-    }
+  .heading {
+    top: 28px;
+    font-size: 32px;
+    letter-spacing: 2px;
+    white-space: nowrap; /* 🔒 STILL ONE LINE */
+  }
+
+  .cardGrid {
+    grid-template-columns: repeat(2, 320px);
+    gap: 22px;
   }
 }
 
-/* ================= SMALL MOBILE ================= */
+/* ================= MOBILE ================= */
 
 @media (max-width: 480px) {
   .section {
     padding: 90px 4% 60px;
+  }
 
-    .heading {
-      font-size: 26px;
-      top: 22px;
-      letter-spacing: 1px;
-    }
+  .sectionEmpty {
+    padding: 70px 4% 45px;
+  }
 
-    .cardGrid {
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
+  .heading {
+    top: 22px;
+    font-size: 26px;
+    letter-spacing: 1px;
+    white-space: nowrap; /* 🔥 FIXED HERE */
+  }
+
+  .cardGrid {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 18px;
   }
 }

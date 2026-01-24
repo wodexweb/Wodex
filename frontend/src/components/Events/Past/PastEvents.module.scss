@@ -1,47 +1,85 @@
-/* ================= DEFAULT (Desktop) ================= */
+/* ================= BASE ================= */
 
 .section {
   position: relative;
-  padding: 220px 6%; // top space for absolute heading
+  padding: 200px 6% 120px;
   background-color: #fff4e6;
+  transition: padding 0.3s ease; /* smooth shrink */
+}
 
-  /* HEADING */
-  .heading {
-    position: absolute;
-    top: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    font-size: 50px;
-    font-weight: 900;
-    color: #290300;
-    letter-spacing: 3px;
-    margin: 0;
-    white-space: nowrap;
-  }
+/* 🔥 REDUCED HEIGHT WHEN EMPTY */
+.sectionEmpty {
+  padding: 140px 6% 80px;
+}
 
-  /* GRID */
-  .cardGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 40px;
+.heading {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: 50px;
+  font-weight: 900;
+  color: #290300;
+  letter-spacing: 3px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* ================= STATUS MESSAGE ================= */
+
+.status {
+  min-height: 140px; /* smaller than normal */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  font-size: 18px;
+  font-weight: 600;
+  color: #666;
+}
+
+/* 🔥 BLINK EFFECT (EMPTY) */
+.blink {
+  animation: blink 1.4s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
   }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* ================= CARD GRID ================= */
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 350px);
+  justify-content: center;
+  gap: 26px;
 }
 
 /* ================= LAPTOP ================= */
 
 @media (max-width: 992px) {
   .section {
-    padding: 130px 5% 80px;
+    padding: 150px 5% 100px;
+  }
 
-    .heading {
-      font-size: 34px;
-      top: 32px;
-    }
+  .sectionEmpty {
+    padding: 110px 5% 70px;
+  }
 
-    .cardGrid {
-      gap: 30px;
-    }
+  .heading {
+    font-size: 34px;
+    top: 32px;
   }
 }
 
@@ -49,36 +87,45 @@
 
 @media (max-width: 768px) {
   .section {
-    padding: 110px 4% 70px;
+    padding: 120px 4% 80px;
+  }
 
-    .heading {
-      font-size: 30px;
-      top: 28px;
-      letter-spacing: 2px;
-    }
+  .sectionEmpty {
+    padding: 90px 4% 60px;
+  }
 
-    .cardGrid {
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 24px;
-    }
+  .heading {
+    font-size: 30px;
+    top: 28px;
+    letter-spacing: 2px;
+  }
+
+  .cardGrid {
+    grid-template-columns: repeat(2, 320px);
+    gap: 22px;
   }
 }
 
-/* ================= SMALL MOBILE ================= */
+/* ================= MOBILE ================= */
 
 @media (max-width: 480px) {
   .section {
     padding: 90px 4% 60px;
+  }
 
-    .heading {
-      font-size: 26px;
-      top: 22px;
-      letter-spacing: 1px;
-    }
+  .sectionEmpty {
+    padding: 70px 4% 45px;
+  }
 
-    .cardGrid {
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
+  .heading {
+    font-size: 26px;
+    top: 22px;
+    letter-spacing: 1px;
+  }
+
+  .cardGrid {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 18px;
   }
 }

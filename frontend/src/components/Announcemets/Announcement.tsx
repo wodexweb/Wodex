@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./AnnouncementSection.module.scss";
 import Card from "../Card/Card";
 import Modal from "../Card/Modal";
@@ -15,8 +15,6 @@ const AnnouncementSection: React.FC = () => {
     const fetchAnnouncements = async () => {
       try {
         const data = await AnnouncementAPI.getAll();
-
-        // assuming API returns latest first
         setItems(data);
       } catch (err) {
         console.error("Failed to load announcements", err);
@@ -29,17 +27,22 @@ const AnnouncementSection: React.FC = () => {
     fetchAnnouncements();
   }, []);
 
+  const isEmpty = !loading && items.length === 0;
   const visibleItems = showAll ? items : items.slice(0, 3);
 
   return (
     <>
-      <section className={`${styles.section} section--dark`}>
+      <section
+        className={`${styles.section} section--dark ${
+          isEmpty ? styles.sectionEmpty : ""
+        }`}
+      >
         <h2 className={styles.heading}>ANNOUNCEMENT</h2>
 
         {loading ? (
-          <p>Loading announcements...</p>
-        ) : items.length === 0 ? (
-          <p>No announcements</p>
+          <p className={styles.status}>Loading announcements...</p>
+        ) : isEmpty ? (
+          <p className={`${styles.status} ${styles.blink}`}>No announcements</p>
         ) : (
           <>
             <div className="app-card-grid">

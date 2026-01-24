@@ -6,10 +6,10 @@
 .inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 12px 20px;
+  padding: 10px 16px;
 
   display: flex;
-  justify-content: center; /* 👈 real center */
+  justify-content: center;
   align-items: center;
 }
 
@@ -19,9 +19,9 @@
   object-fit: contain;
 }
 
-/* Mobile */
+/* MOBILE */
 @media (max-width: 768px) {
   .logo {
-    max-height: 70px;
+    max-height: 65px;
   }
 }

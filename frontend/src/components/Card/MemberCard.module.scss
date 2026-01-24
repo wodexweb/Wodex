@@ -1,35 +1,77 @@
+/* ================================================= */
+/* ================= GRID ========================== */
+/* ================================================= */
+
+.membersGrid {
+  display: grid;
+  justify-content: center;
+  gap: 22px;
+}
+
+/* ================= BIG SCREEN ================= */
+/* 🔥 3 CARDS */
+
+@media (min-width: 768px) {
+  .membersGrid {
+    grid-template-columns: repeat(3, 215px);
+  }
+}
+
+/* ================= SMALL SCREEN ================= */
+/* 🔥 2 CARDS */
+
+@media (max-width: 767px) {
+  .membersGrid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 420px;
+    margin: 0 auto;
+  }
+}
+
+/* VERY SMALL */
+@media (max-width: 360px) {
+  .membersGrid {
+    gap: 16px;
+  }
+}
+
+/* ================================================= */
+/* ================= CARD ========================== */
+/* ================================================= */
+
 .card {
   background: #ffffff;
   border-radius: 18px;
   padding: 26px 22px 28px;
   text-align: center;
+
   width: 215px;
   height: 280px;
-  border: 1px solid #e7d9cf;
 
+  border: 1px solid #e7d9cf;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
 
   transition:
     transform 0.25s ease,
     box-shadow 0.25s ease;
 
+  margin-left: auto;
+  margin-right: auto;
+
   &:hover {
     transform: translateY(-6px);
     border-color: #faa33d61;
-    border-style: solid;
-    border-width: 1px;
     box-shadow: #faa33d26 0px 20px 20px 0px;
   }
 }
 
-/* IMAGE */
+/* ================= IMAGE ================= */
+
 .imageWrapper {
   width: 140px;
   height: 140px;
   margin: 0 auto 18px;
   border-radius: 50%;
-
-  /* light beige circle background */
   background: #f6ede5;
 
   display: flex;
@@ -44,7 +86,8 @@
   }
 }
 
-/* NAME */
+/* ================= TEXT ================= */
+
 .name {
   font-size: 16px;
   font-weight: 700;
@@ -52,9 +95,66 @@
   margin-bottom: 6px;
 }
 
-/* ROLE */
 .role {
   font-size: 13px;
   color: #8a8a8a;
   font-weight: 500;
+}
+
+/* ================================================= */
+/* ================= RESPONSIVE CARD ================= */
+/* ================================================= */
+
+/* TABLET */
+@media (max-width: 992px) {
+  .card {
+    width: 205px;
+    height: 270px;
+  }
+
+  .imageWrapper {
+    width: 130px;
+    height: 130px;
+  }
+}
+
+/* MOBILE */
+@media (max-width: 576px) {
+  .card {
+    width: 180px;
+    height: 250px;
+    padding: 22px 18px 24px;
+  }
+
+  .imageWrapper {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 14px;
+  }
+
+  .name {
+    font-size: 15px;
+  }
+
+  .role {
+    font-size: 12px;
+  }
+}
+
+/* VERY SMALL MOBILE */
+@media (max-width: 360px) {
+  .card {
+    width: 165px;
+    height: 235px;
+    padding: 20px 16px 22px;
+  }
+
+  .imageWrapper {
+    width: 110px;
+    height: 110px;
+  }
+
+  .name {
+    font-size: 14px;
+  }
 }

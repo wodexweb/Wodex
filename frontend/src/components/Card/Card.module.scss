@@ -1,8 +1,8 @@
 /* ================= BASE CARD ================= */
 
 .cardWrapper {
-  width: 350px; /* FIXED */
-  height: 430px; /* FIXED */
+  width: 350px;
+  height: 430px;
   display: flex;
 }
 
@@ -24,26 +24,28 @@
   }
 }
 
-/* IMAGE */
+/* ================= IMAGE ================= */
 
 .imageWrap {
   height: 70%;
   width: 100%;
   overflow: hidden;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
 }
 
-/* CONTENT */
+.imageWrap img {
+  width: 100%;
+  height: 100%;
+  display: block;
+
+  object-fit: cover; /* 🔥 CROP */
+  object-position: center; /* 🔥 CENTER VIEW */
+}
+
+/* ================= CONTENT ================= */
 
 .content {
-  height: 28%; /* ⬅️ 30% → 24% */
-  padding: 12px 18px; /* thoda compact */
+  height: 30%;
+  padding: 12px 18px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -53,11 +55,12 @@
   font-size: 20px;
   font-weight: 700;
   line-height: 1.4;
+  color: #290300;
+
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  color: #290300;
 }
 
 .date {
@@ -65,48 +68,49 @@
   color: #666;
 }
 
-/* BUTTON */
+/* ================= GLOBAL SECTION COLORS ================= */
 
-.readMore {
-  align-self: flex-start;
-  border: none;
-  border-radius: 20px;
-  padding: 6px 14px;
-  font-size: 14px;
-  background-color: #faa33d;
-  font-weight: 600;
-  cursor: pointer;
-}
+/* ================= LIGHT SECTION ================= */
 
-/* GLOBAL SECTION COLORS */
-
-:global(.section--light) .card {
-  background-color: #ffffff;
-  border: 5px solid #290300;
-}
-
-:global(.section--dark) .card {
-  background-color: #fff4e6;
-  border: 5px solid #290300;
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media (max-width: 768px) {
-  .cardWrapper {
-    height: auto;
-  }
-
-  .imageWrap {
-    height: auto;
-  }
-
-  .imageWrap img {
-    object-fit: contain;
+:global(.section--light) {
+  .card {
+    border: 4px solid #290300;
   }
 
   .content {
-    height: auto;
-    gap: 10px;
+    background-color: #ffffff;
+    border-top: 1px solid black;
+  }
+}
+
+/* ================= DARK SECTION ================= */
+
+:global(.section--dark) {
+  .card {
+    border: 4px solid #290300;
+  }
+
+  .content {
+    background-color: #fff4e6;
+    border-top: 1px solid black;
+  }
+}
+
+/* ================= RESPONSIVE ================= */
+/* 🔥 KEEP SAME SIZE & CROP ON MOBILE */
+
+@media (max-width: 768px) {
+  .cardWrapper {
+    width: 350px;
+    height: 430px;
+  }
+
+  .imageWrap {
+    height: 70%;
+  }
+
+  .content {
+    height: 30%;
+    gap: 8px;
   }
 }

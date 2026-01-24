@@ -1,86 +1,76 @@
-/* ================= DEFAULT (Desktop) ================= */
-
 .section {
   position: relative;
-  padding: 220px 6%;
+  padding: 200px 6% 120px;
   background-color: #fff4e6;
-
-  .heading {
-    position: absolute;
-    top: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-
-    font-size: 50px;
-    font-weight: 900;
-    color: #290300;
-    letter-spacing: 3px;
-    margin: 0;
-    white-space: nowrap;
-  }
-
-  /* ✅ EXACT 3-COLUMN GRID */
-  .cardGrid {
-    display: grid;
-
-    /* 🔥 FORCE 3 cards */
-    grid-template-columns: repeat(3, 435px);
-
-    column-gap: 40px;
-    row-gap: 40px;
-
-    justify-content: center;
-  }
+  transition: padding 0.3s ease;
 }
 
-/* ================= LAPTOP (2 CARDS) ================= */
+.sectionEmpty {
+  padding: 140px 6% 80px;
+}
 
+.heading {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 50px;
+  font-weight: 900;
+  color: #290300;
+  letter-spacing: 3px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.status {
+  min-height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: #666;
+  text-align: center;
+}
+
+.blink {
+  animation: blink 1.4s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 350px);
+  justify-content: center;
+  gap: 24px;
+}
+
+/* LAPTOP */
 @media (max-width: 1200px) {
-  .section {
-    padding: 160px 5% 90px;
-
-    .cardGrid {
-      grid-template-columns: repeat(2, 435px);
-      gap: 32px;
-    }
-  }
+  .section { padding: 160px 5% 100px; }
+  .sectionEmpty { padding: 120px 5% 70px; }
+  .cardGrid { grid-template-columns: repeat(2, 350px); }
 }
 
-/* ================= TABLET (2 SMALLER CARDS) ================= */
-
+/* TABLET */
 @media (max-width: 768px) {
-  .section {
-    padding: 110px 4% 70px;
-
-    .heading {
-      font-size: 30px;
-      top: 28px;
-      letter-spacing: 2px;
-    }
-
-    .cardGrid {
-      grid-template-columns: repeat(2, 380px);
-      gap: 26px;
-    }
-  }
+  .section { padding: 120px 4% 80px; }
+  .sectionEmpty { padding: 90px 4% 60px; }
+  .heading { font-size: 32px; }
 }
 
-/* ================= MOBILE (1 CARD) ================= */
-
+/* MOBILE */
 @media (max-width: 480px) {
-  .section {
-    padding: 90px 4% 60px;
-
-    .heading {
-      font-size: 26px;
-      top: 22px;
-      letter-spacing: 1px;
-    }
-
-    .cardGrid {
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
+  .section { padding: 90px 4% 60px; }
+  .sectionEmpty { padding: 70px 4% 45px; }
+  .heading { font-size: 26px; }
+  .cardGrid {
+    grid-template-columns: 1fr;
+    justify-items: center;
   }
 }

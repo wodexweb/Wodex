@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./PastEvents.module.scss";
 import Card from "../../Card/Card";
 import Modal from "../../Card/Modal";
@@ -26,20 +26,21 @@ const PastEvents: React.FC = () => {
     fetchPastEvents();
   }, []);
 
-  const openModal = (event: EventItem) => {
-    setActive(event);
-    setOpen(true);
-  };
+  const isEmpty = !loading && events.length === 0;
 
   return (
     <>
-      <section className={`${styles.section} section--light`}>
+      <section
+        className={`${styles.section} section--light ${
+          isEmpty ? styles.sectionEmpty : ""
+        }`}
+      >
         <h2 className={styles.heading}>PAST EVENTS</h2>
 
         {loading ? (
-          <p>Loading events...</p>
-        ) : events.length === 0 ? (
-          <p>No past events</p>
+          <p className={styles.status}>Loading events...</p>
+        ) : isEmpty ? (
+          <p className={`${styles.status} ${styles.blink}`}>No past events</p>
         ) : (
           <div className={styles.cardGrid}>
             {events.map((event) => (
@@ -47,7 +48,7 @@ const PastEvents: React.FC = () => {
                 key={event.id}
                 title={event.title}
                 image={event.photo_url ?? ""}
-                link={event.link} // ✅ FIX
+                link={event.link}
                 date={event.end_date}
               />
             ))}

@@ -30,7 +30,7 @@ const AllEvents: React.FC = () => {
         </p>
       </section>
 
-      <section className={styles.page}>
+      <section className={`${styles.section} section--dark`}>
         <div className={styles.container}>
           {loading ? (
             <p className={styles.empty}>Loading events...</p>

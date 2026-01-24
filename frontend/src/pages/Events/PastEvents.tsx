@@ -40,7 +40,7 @@ const PastEvents: React.FC = () => {
       </section>
 
       {/* CONTENT */}
-      <section className={styles.page}>
+      <section className={`${styles.section} section--dark`}>
         <div className={styles.container}>
           {loading ? (
             <p className={styles.empty}>Loading events...</p>

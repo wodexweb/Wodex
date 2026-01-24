@@ -1,4 +1,5 @@
-/* HEADER */
+/* ================= HEADER ================= */
+
 .header {
   background: #fff3e6;
   padding: 80px 20px;
@@ -17,42 +18,50 @@
   }
 }
 
-/* SECTIONS */
+/* ================= SECTIONS ================= */
+
 .section {
   padding: 70px 6%;
 }
 
-/* TOP GRID (3 cards) */
+/* ================= TOP GRID (3 cards desktop) ================= */
+
 .topGrid {
   max-width: 1100px;
   margin: 0 auto;
 
   display: grid;
-  grid-template-columns: repeat(3, auto); /* 🔑 FIX */
-  gap: 24px; /* matches GPICC */
-  justify-content: center; /* 🔑 FIX */
+  grid-template-columns: repeat(3, 215px);
+  gap: 24px;
+  justify-content: center;
 }
 
-/* BOTTOM GRID (2 centered cards) */
+/* ================= BOTTOM GRID (2 centered) ================= */
+
 .bottomGrid {
-  max-width: 700px;
+  max-width: 500px;
   margin: 0 auto;
 
   display: grid;
-  grid-template-columns: repeat(2, auto); /* 🔑 FIX */
+  grid-template-columns: repeat(2, 215px);
   gap: 24px;
-  justify-content: center; /* 🔑 FIX */
+  justify-content: center;
 }
 
-/* EXECUTIVE GRID – FIXED */
+/* ================= EXECUTIVE GRID ================= */
+
 .grid {
+  max-width: 1200px;
+  margin: 0 auto;
+
   display: grid;
-  grid-template-columns: repeat(auto-fit, 215px); /* 🔑 FIX */
-  gap: 20px; /* natural spacing */
-  justify-content: center; /* center row */
+  grid-template-columns: repeat(auto-fit, 215px);
+  gap: 20px;
+  justify-content: center;
 }
 
-/* SUB HEADING */
+/* ================= SUB HEADING ================= */
+
 .subHeading {
   text-align: center;
   font-size: 28px;
@@ -61,23 +70,45 @@
   margin-bottom: 40px;
 }
 
-/* RESPONSIVE */
+/* ================================================= */
+/* ================= RESPONSIVE ==================== */
+/* ================================================= */
+
+/* TABLET */
 @media (max-width: 992px) {
   .topGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 215px);
   }
 
   .bottomGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 215px);
   }
 }
 
+/* MOBILE – 🔥 2 CARDS */
 @media (max-width: 576px) {
-  .topGrid {
-    grid-template-columns: 1fr;
+  .section {
+    padding: 50px 4%;
+  }
+
+  .topGrid,
+  .bottomGrid,
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 420px;
+    margin: 0 auto;
   }
 
   .header h1 {
     font-size: 28px;
+  }
+}
+
+/* VERY SMALL MOBILE */
+@media (max-width: 360px) {
+  .topGrid,
+  .bottomGrid,
+  .grid {
+    grid-template-columns: 1fr;
   }
 }

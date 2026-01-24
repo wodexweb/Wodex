@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./UpcomingEvents.module.scss";
 import Card from "../../Card/Card";
 import Modal from "../../Card/Modal";
@@ -14,7 +14,7 @@ const UpcomingEvents: React.FC = () => {
     const fetchEvents = async () => {
       try {
         const data = await EventsAPI.getUpcoming();
-        setEvents(data.slice(0, 3)); // ✅ HOME PREVIEW (3 only)
+        setEvents(data.slice(0, 3));
       } catch (error) {
         console.error("Failed to load events:", error);
         setEvents([]);
@@ -26,20 +26,23 @@ const UpcomingEvents: React.FC = () => {
     fetchEvents();
   }, []);
 
-  const openModal = (event: EventItem) => {
-    setActive(event);
-    setOpen(true);
-  };
+  const isEmpty = !loading && events.length === 0;
 
   return (
     <>
-      <section className={`${styles.section} section--light`}>
+      <section
+        className={`${styles.section} section--light ${
+          isEmpty ? styles.sectionEmpty : ""
+        }`}
+      >
         <h2 className={styles.heading}>UPCOMING EVENTS</h2>
 
         {loading ? (
-          <p>Loading events...</p>
-        ) : events.length === 0 ? (
-          <p>No upcoming events</p>
+          <p className={styles.status}>Loading events...</p>
+        ) : isEmpty ? (
+          <p className={`${styles.status} ${styles.blink}`}>
+            No upcoming events
+          </p>
         ) : (
           <div className={styles.cardGrid}>
             {events.map((event) => (
@@ -47,7 +50,7 @@ const UpcomingEvents: React.FC = () => {
                 key={event.id}
                 title={event.title}
                 image={event.photo_url ?? ""}
-                link={event.link} // ✅ FIX
+                link={event.link}
                 date={event.end_date}
               />
             ))}

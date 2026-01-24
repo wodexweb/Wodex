@@ -1,9 +1,15 @@
-/* ================= DEFAULT (Desktop) ================= */
+/* ================= BASE ================= */
 
 .section {
   padding: 80px 6% 100px;
   background: #ffffff;
   text-align: center;
+  transition: padding 0.3s ease;
+}
+
+/* 🔥 REDUCED HEIGHT WHEN EMPTY */
+.sectionEmpty {
+  padding: 60px 6% 70px;
 }
 
 /* HEADING */
@@ -14,6 +20,37 @@
   letter-spacing: 3px;
   margin-bottom: 60px;
   white-space: nowrap;
+}
+
+/* ================= STATUS MESSAGE ================= */
+
+.status {
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  font-size: 18px;
+  font-weight: 600;
+  color: #666;
+}
+
+/* 🔥 BLINK EFFECT (EMPTY) */
+.blink {
+  animation: blink 1.4s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 /* VIEW MORE */
@@ -40,6 +77,10 @@
     padding: 60px 5% 80px;
   }
 
+  .sectionEmpty {
+    padding: 50px 5% 60px;
+  }
+
   .heading {
     font-size: 34px;
     margin-bottom: 50px;
@@ -51,6 +92,10 @@
 @media (max-width: 768px) {
   .section {
     padding: 50px 4% 70px;
+  }
+
+  .sectionEmpty {
+    padding: 40px 4% 55px;
   }
 
   .heading {
@@ -65,6 +110,10 @@
 @media (max-width: 480px) {
   .section {
     padding: 40px 4% 60px;
+  }
+
+  .sectionEmpty {
+    padding: 35px 4% 45px;
   }
 
   .heading {

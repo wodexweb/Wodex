@@ -3,16 +3,13 @@ import styles from "./Card.module.scss";
 interface CardProps {
   title: string;
   image: string;
-  link: string; // 🔥 Google Drive
+  link: string;
   date?: string;
 }
 
 const Card: React.FC<CardProps> = ({ title, image, link, date }) => {
   const handleClick = () => {
-    if (!link) {
-      console.error("Google Drive link missing");
-      return;
-    }
+    if (!link) return;
     window.open(link, "_blank", "noopener,noreferrer");
   };
 

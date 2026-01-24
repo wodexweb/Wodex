@@ -1,19 +1,5 @@
-/* * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html,
-body {
-  width: 100%;
-  height: auto !important;
-
-  overflow-x: hidden;
-  overflow-y: auto !important;
-} */
-
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap");
+
 * {
   margin: 0;
   padding: 0;
@@ -22,47 +8,34 @@ body {
 }
 
 html {
+  width: 100%;
   scroll-behavior: smooth;
 }
 
 body {
   width: 100%;
-  overflow-x: hidden;
-
+  max-width: 100%;
+  overflow-x: hidden; /* 🔥 hard stop */
+  overflow-y: auto;
   overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: touch;
 }
 
-/* edge slow illusion */
-body::before,
-body::after {
-  content: "";
-  display: block;
-  height: 12vh;
-}
+/* ================= SCROLL SNAP (SAFE VERSION) ================= */
 
-body::before {
-  margin-bottom: -12vh;
-}
-
-body::after {
-  margin-top: -12vh;
-}
-
-/* soft snap near edges */
 body {
   scroll-snap-type: y proximity;
 }
 
-section:first-of-type {
+section {
   scroll-snap-align: start;
 }
 
-section:last-of-type {
-  scroll-snap-align: end;
-}
+/* ================= REMOVE EDGE ILLUSION (CAUSE OF BUG) ================= */
+/* ❌ body::before / body::after REMOVED */
 
-/* accessibility */
+/* ================= ACCESSIBILITY ================= */
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
