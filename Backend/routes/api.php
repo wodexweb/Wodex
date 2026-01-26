@@ -16,7 +16,7 @@ use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\Api\MenuItemController;
 use App\Http\Controllers\Api\NoticeController;
 use App\Http\Controllers\Api\PdfPageController;
-use App\Http\Controllers\Api\AchievementController;
+// use App\Http\Controllers\Api\AchievementController;
 use App\Http\Controllers\Api\MembershipPlanController;
 use App\Http\Controllers\Api\MediaFileController;
 
@@ -135,7 +135,7 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::prefix('admin')->group(function () {
     Route::apiResource('notices', NoticeController::class);
     Route::apiResource('pdf-pages', PdfPageController::class);
-    Route::apiResource('achievements', AchievementController::class);
+    // Route::apiResource('achievements', AchievementController::class);
     Route::apiResource('media', MediaFileController::class);
     Route::apiResource('membership-plans', MembershipPlanController::class);
 });
