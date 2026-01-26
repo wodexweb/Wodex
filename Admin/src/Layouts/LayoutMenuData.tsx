@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-const Navdata: React.FC = () => {
+const Navdata = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  /* ================= STATE ================= */
 
   const [isMasterSettings, setIsMasterSettings] = useState(false);
   const [isMenu, setIsMenu] = useState(false);
@@ -20,8 +18,7 @@ const Navdata: React.FC = () => {
   const [isPdfPages, setIsPdfPages] = useState(false);
   const [isAchievements, setIsAchievements] = useState(false);
 
-  /* ================= AUTO OPEN FROM URL ================= */
-
+  /* ===== AUTO OPEN FROM URL ===== */
   useEffect(() => {
     const path = location.pathname;
 
@@ -38,8 +35,6 @@ const Navdata: React.FC = () => {
     setIsPdfPages(path.startsWith("/pdf-pages"));
     setIsAchievements(path.startsWith("/achievements"));
   }, [location.pathname]);
-
-  /* ================= MENU ITEMS ================= */
 
   const menuItems = [
     { label: "Menu", isHeader: true },
@@ -58,9 +53,14 @@ const Navdata: React.FC = () => {
       icon: "ri-settings-3-line",
       link: "/#",
       stateVariables: isMasterSettings,
-      click: (e: React.MouseEvent) => {
+      click: (e: any) => {
         e.preventDefault();
         setIsMasterSettings(!isMasterSettings);
+        setIsMenu(false);
+        setIsPages(false);
+        setIsEvents(false);
+        setIsAnnouncements(false);
+        setIsMembers(false);
       },
       subItems: [
         {
@@ -84,15 +84,22 @@ const Navdata: React.FC = () => {
       ],
     },
 
+    /* ================= MENU BUILDER ================= */
+
     {
       id: "menu",
       label: "Menus",
       icon: "ri-menu-3-line",
       link: "/#",
       stateVariables: isMenu,
-      click: (e: React.MouseEvent) => {
+      click: (e: any) => {
         e.preventDefault();
         setIsMenu(!isMenu);
+        setIsMasterSettings(false);
+        setIsPages(false);
+        setIsEvents(false);
+        setIsAnnouncements(false);
+        setIsMembers(false);
       },
       subItems: [
         {
@@ -116,15 +123,22 @@ const Navdata: React.FC = () => {
       ],
     },
 
+    /* ================= PAGES ================= */
+
     {
       id: "pages",
       label: "Pages",
       icon: "ri-file-text-line",
       link: "/#",
       stateVariables: isPages,
-      click: (e: React.MouseEvent) => {
+      click: (e: any) => {
         e.preventDefault();
         setIsPages(!isPages);
+        setIsMasterSettings(false);
+        setIsMenu(false);
+        setIsEvents(false);
+        setIsAnnouncements(false);
+        setIsMembers(false);
       },
       subItems: [
         {
@@ -248,9 +262,11 @@ const Navdata: React.FC = () => {
       icon: "ri-calendar-event-line",
       link: "/#",
       stateVariables: isEvents,
-      click: (e: React.MouseEvent) => {
+      click: (e: any) => {
         e.preventDefault();
         setIsEvents(!isEvents);
+        setIsAnnouncements(false);
+        setIsMembers(false);
       },
       subItems: [
         {
@@ -274,9 +290,11 @@ const Navdata: React.FC = () => {
       icon: "ri-notification-3-line",
       link: "/#",
       stateVariables: isAnnouncements,
-      click: (e: React.MouseEvent) => {
+      click: (e: any) => {
         e.preventDefault();
         setIsAnnouncements(!isAnnouncements);
+        setIsEvents(false);
+        setIsMembers(false);
       },
       subItems: [
         {
@@ -300,9 +318,11 @@ const Navdata: React.FC = () => {
       icon: "ri-team-line",
       link: "/#",
       stateVariables: isMembers,
-      click: (e: React.MouseEvent) => {
+      click: (e: any) => {
         e.preventDefault();
         setIsMembers(!isMembers);
+        setIsEvents(false);
+        setIsAnnouncements(false);
       },
       subItems: [
         {
