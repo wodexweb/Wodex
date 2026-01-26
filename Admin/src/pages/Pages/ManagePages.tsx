@@ -18,26 +18,25 @@ const api = new APIClient();
 
 /* ================= TYPES ================= */
 
-interface EventItem {
+interface PageItem {
   id: number;
   title: string;
-  end_date: string;
-  status: "upcoming" | "recent" | "past";
-  photo_url?: string | null;
+  slug: string;
+  status: "published" | "draft";
+  created_at: string;
 }
 
-/* ================= STATUS UI CONFIG ================= */
+/* ================= STATUS UI ================= */
 
 const statusUI = {
-  upcoming: { label: "UPCOMING", className: "badge-soft-info" },
-  recent: { label: "ACTIVE", className: "badge-soft-success" },
-  past: { label: "PAST", className: "badge-soft-danger" },
+  published: { label: "PUBLISHED", className: "badge-soft-success" },
+  draft: { label: "DRAFT", className: "badge-soft-warning" },
 };
 
 /* ================= COMPONENT ================= */
 
-const EventList = () => {
-  const [events, setEvents] = useState<EventItem[]>([]);
+const ManagePages = () => {
+  const [pages, setPages] = useState<PageItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [search, setSearch] = useState("");
@@ -46,27 +45,17 @@ const EventList = () => {
   const [bulkDeleting, setBulkDeleting] = useState(false);
 
   useEffect(() => {
-    fetchEvents();
+    fetchPages();
   }, []);
 
   /* ================= FETCH ================= */
 
-  const fetchEvents = async () => {
+  const fetchPages = async () => {
     try {
-      const res: any = await api.get("/api/events");
-
-      const all = [
-        ...(res.upcoming || []),
-        ...(res.recent || []),
-        ...(res.past || []),
-      ].sort(
-        (a: EventItem, b: EventItem) =>
-          new Date(b.end_date).getTime() - new Date(a.end_date).getTime(),
-      );
-
-      setEvents(all);
+      const res: any = await api.get("/api/pages");
+      setPages(res || []);
     } catch {
-      alert("Failed to load events");
+      alert("Failed to load pages");
     } finally {
       setLoading(false);
     }
@@ -74,20 +63,20 @@ const EventList = () => {
 
   /* ================= SEARCH ================= */
 
-  const filteredEvents = useMemo(() => {
-    if (!search) return events;
-    return events.filter((e) =>
-      e.title.toLowerCase().includes(search.toLowerCase()),
+  const filteredPages = useMemo(() => {
+    if (!search) return pages;
+    return pages.filter((p) =>
+      p.title.toLowerCase().includes(search.toLowerCase()),
     );
-  }, [events, search]);
+  }, [pages, search]);
 
   /* ================= CHECKBOX ================= */
 
   const toggleSelectAll = () => {
-    if (selectedIds.length === filteredEvents.length) {
+    if (selectedIds.length === filteredPages.length) {
       setSelectedIds([]);
     } else {
-      setSelectedIds(filteredEvents.map((e) => e.id));
+      setSelectedIds(filteredPages.map((p) => p.id));
     }
   };
 
@@ -100,12 +89,12 @@ const EventList = () => {
   /* ================= SINGLE DELETE ================= */
 
   const handleDelete = async (id: number) => {
-    if (!window.confirm("Are you sure you want to delete this event?")) return;
+    if (!window.confirm("Are you sure you want to delete this page?")) return;
 
     try {
       setDeletingId(id);
-      await api.delete(`/api/events/${id}`);
-      setEvents((prev) => prev.filter((e) => e.id !== id));
+      await api.delete(`/api/pages/${id}`);
+      setPages((prev) => prev.filter((p) => p.id !== id));
       setSelectedIds((prev) => prev.filter((x) => x !== id));
     } catch (err) {
       alert(err || "Delete failed");
@@ -119,7 +108,7 @@ const EventList = () => {
   const handleBulkDelete = async () => {
     if (
       !window.confirm(
-        `Delete ${selectedIds.length} selected events permanently?`,
+        `Delete ${selectedIds.length} selected pages permanently?`,
       )
     )
       return;
@@ -127,12 +116,11 @@ const EventList = () => {
     try {
       setBulkDeleting(true);
 
-      // sequential delete (safe)
       for (const id of selectedIds) {
-        await api.delete(`/api/events/${id}`);
+        await api.delete(`/api/pages/${id}`);
       }
 
-      setEvents((prev) => prev.filter((e) => !selectedIds.includes(e.id)));
+      setPages((prev) => prev.filter((p) => !selectedIds.includes(p.id)));
       setSelectedIds([]);
     } catch {
       alert("Bulk delete failed");
@@ -148,7 +136,7 @@ const EventList = () => {
       <div className="page-content">
         <div className="d-flex justify-content-center align-items-center mt-5">
           <Spinner />
-          <span className="ms-2">Loading events...</span>
+          <span className="ms-2">Loading pages...</span>
         </div>
       </div>
     );
@@ -165,7 +153,7 @@ const EventList = () => {
               {/* ================= HEADER ================= */}
               <CardHeader className="d-flex justify-content-between align-items-center">
                 <div>
-                  <h5 className="mb-0">Events</h5>
+                  <h5 className="mb-0">Pages</h5>
 
                   {selectedIds.length > 0 && (
                     <small className="text-muted">
@@ -188,7 +176,7 @@ const EventList = () => {
                     </Button>
                   )}
 
-                  <Link to="/events/create">
+                  <Link to="/pages/add">
                     <Button color="success" size="md">
                       + Add
                     </Button>
@@ -214,58 +202,40 @@ const EventList = () => {
                           <Input
                             type="checkbox"
                             checked={
-                              filteredEvents.length > 0 &&
-                              selectedIds.length === filteredEvents.length
+                              filteredPages.length > 0 &&
+                              selectedIds.length === filteredPages.length
                             }
                             onChange={toggleSelectAll}
                           />
                         </th>
                         <th>ID</th>
-                        <th className="text-center">Image</th>
                         <th>Title</th>
-                        <th>End Date</th>
+                        <th>Slug</th>
                         <th>Status</th>
+                        <th>Created</th>
                         <th className="text-end">Action</th>
                       </tr>
                     </thead>
 
                     <tbody>
-                      {filteredEvents.map((e) => (
-                        <tr key={e.id}>
+                      {filteredPages.map((p) => (
+                        <tr key={p.id}>
                           <td>
                             <Input
                               type="checkbox"
-                              checked={selectedIds.includes(e.id)}
-                              onChange={() => toggleSelectOne(e.id)}
+                              checked={selectedIds.includes(p.id)}
+                              onChange={() => toggleSelectOne(p.id)}
                             />
                           </td>
 
-                          <td>#{e.id}</td>
-
-                          <td className="text-center">
-                            {e.photo_url ? (
-                              <img
-                                src={e.photo_url}
-                                alt=""
-                                className="rounded"
-                                style={{
-                                  width: 40,
-                                  height: 40,
-                                  objectFit: "cover",
-                                }}
-                              />
-                            ) : (
-                              "—"
-                            )}
-                          </td>
-
-                          <td>{e.title}</td>
-                          <td>{new Date(e.end_date).toLocaleDateString()}</td>
+                          <td>#{p.id}</td>
+                          <td>{p.title}</td>
+                          <td>/{p.slug}</td>
 
                           <td>
                             <span
                               className={`badge ${
-                                statusUI[e.status].className
+                                statusUI[p.status].className
                               } text-uppercase`}
                               style={{
                                 fontSize: "11px",
@@ -274,21 +244,23 @@ const EventList = () => {
                                 borderRadius: "6px",
                               }}
                             >
-                              {statusUI[e.status].label}
+                              {statusUI[p.status].label}
                             </span>
                           </td>
+
+                          <td>{new Date(p.created_at).toLocaleDateString()}</td>
 
                           {/* ACTIONS */}
                           <td className="text-end">
                             <Link
-                              to={`/events/view/${e.id}`}
+                              to={`/pages/view/${p.id}`}
                               className="btn btn-light btn-sm me-2"
                             >
                               View
                             </Link>
 
                             <Link
-                              to={`/events/edit/${e.id}`}
+                              to={`/pages/edit/${p.id}`}
                               className="btn btn-success btn-sm me-2"
                             >
                               Edit
@@ -297,19 +269,19 @@ const EventList = () => {
                             <Button
                               color="danger"
                               size="sm"
-                              disabled={deletingId === e.id}
-                              onClick={() => handleDelete(e.id)}
+                              disabled={deletingId === p.id}
+                              onClick={() => handleDelete(p.id)}
                             >
-                              {deletingId === e.id ? "Deleting..." : "Remove"}
+                              {deletingId === p.id ? "Deleting..." : "Remove"}
                             </Button>
                           </td>
                         </tr>
                       ))}
 
-                      {filteredEvents.length === 0 && (
+                      {filteredPages.length === 0 && (
                         <tr>
                           <td colSpan={7} className="text-center py-4">
-                            No events found
+                            No pages found
                           </td>
                         </tr>
                       )}
@@ -325,4 +297,4 @@ const EventList = () => {
   );
 };
 
-export default EventList;
+export default ManagePages;
