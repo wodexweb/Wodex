@@ -26,6 +26,7 @@ import MembersDirectory from "./pages/MembersDirectory/MembersDirectory";
 import ScrollToTop from "./components/ScrollToTop";
 import Gallery from "./pages/Gallery/Gallery";
 import ContactUs from "./pages/ContactUs/ContactUs";
+import PdfPages from "./pages/PDF-Pages/PdfPages";
 
 const App: React.FC = () => {
   return (
@@ -51,6 +52,7 @@ const App: React.FC = () => {
         <Route path="/members-directory" element={<MembersDirectory />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/pdf-pages" element={<PdfPages />} />
       </Routes>
     </MainLayout>
   );

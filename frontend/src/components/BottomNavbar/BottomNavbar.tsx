@@ -85,6 +85,12 @@ const BottomNavbar: React.FC = () => {
               </NavDropdown.Item>
             </NavDropdown>
 
+            <NavDropdown title="Education">
+              <NavDropdown.Item as={Link} to="/pdf-pages" onClick={closeMenu}>
+                PDF-Pages
+              </NavDropdown.Item>
+            </NavDropdown>
+
             <Nav.Link
               as={Link}
               to="/members-directory"
