@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { AiFillHome } from "react-icons/ai";
 import styles from "./EventsPage.module.scss";
 import Card from "../../components/Card/Card";
 import { EventsAPI, type EventItem } from "./api/events";
+import PageHeaderArea from "../../components/PageHeaderArea/PageHeaderArea";
 
 const AllEvents: React.FC = () => {
   const [events, setEvents] = useState<EventItem[]>([]);
@@ -17,18 +16,8 @@ const AllEvents: React.FC = () => {
 
   return (
     <>
-      <section className={styles.header}>
-        <h1>All Events</h1>
-
-        <p className={styles.breadcrumb}>
-          <Link to="/" className={styles.home}>
-            <AiFillHome className={styles.homeIcon} />
-            <span>Home</span>
-          </Link>
-          <span className={styles.separator}>&gt;</span>
-          <span className={styles.current}>Events</span>
-        </p>
-      </section>
+      {/* 🔴 Dynamic Header Area */}
+      <PageHeaderArea title="All Events" current="Events" />
 
       <section className={`${styles.section} section--dark`}>
         <div className={styles.container}>
@@ -41,7 +30,7 @@ const AllEvents: React.FC = () => {
                   key={event.id}
                   title={event.title}
                   image={event.photo_url ?? ""}
-                  link={event.link} // ✅ FIX
+                  link={event.link}
                   date={event.end_date}
                 />
               ))}

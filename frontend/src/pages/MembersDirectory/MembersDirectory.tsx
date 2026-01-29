@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { AiFillHome } from "react-icons/ai";
 import styles from "./MembersDirectory.module.scss";
 import { MembersAPI, type Member } from "./api/member_directory";
+import PageHeaderArea from "../../components/PageHeaderArea/PageHeaderArea";
 
 const PAGE_SIZE = 10;
 
@@ -42,18 +43,7 @@ const MembersDirectory: React.FC = () => {
   return (
     <>
       {/* HEADER */}
-      <section className={styles.header}>
-        <h1>Member’s Directory</h1>
-
-        <p className={styles.breadcrumb}>
-          <Link to="/" className={styles.home}>
-            <AiFillHome />
-            <span>Home</span>
-          </Link>
-          <span className={styles.separator}>&gt;</span>
-          <span className={styles.current}>Member’s Directory</span>
-        </p>
-      </section>
+      <PageHeaderArea title="MembersDirectory" current="MembersDirectory" />
 
       {/* CONTENT */}
       <section className={styles.page}>

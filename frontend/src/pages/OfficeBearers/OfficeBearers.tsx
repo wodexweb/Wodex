@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./OfficeBearers.module.scss";
 import MemberCard from "../../components/Card/MemberCard";
+import PageHeaderArea from "../../components/PageHeaderArea/PageHeaderArea";
 import { MembersAPI, type Member } from "./api/members";
 
 const OfficeBearers: React.FC = () => {
@@ -36,10 +37,7 @@ const OfficeBearers: React.FC = () => {
   return (
     <>
       {/* HEADER */}
-      <section className={styles.header}>
-        <h1>Office Bearers 2026</h1>
-        <p>Home &nbsp;›&nbsp; Office Bearers</p>
-      </section>
+      <PageHeaderArea title="OfficeBearers" current="OfficeBearers" />
 
       {loading ? (
         <p className={styles.loading}>Loading members...</p>

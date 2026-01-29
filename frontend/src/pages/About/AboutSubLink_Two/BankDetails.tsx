@@ -1,6 +1,8 @@
 import React from "react";
 import "./BankDetails.scss";
 import { AiFillHome } from "react-icons/ai";
+import PageHeaderArea from "../../../components/PageHeaderArea/PageHeaderArea";
+
 import {
   FaUniversity,
   FaHashtag,
@@ -13,18 +15,8 @@ const BankDetails: React.FC = () => {
   return (
     <div className="bank-details">
       {/* HERO */}
-      <section className="hero">
-        <h1>Bank Details</h1>
-
-        <p className="breadcrumb">
-          <Link to="/" className="home">
-            <AiFillHome className="home-icon" />
-            <span>Home</span>
-          </Link>
-          <span className="separator">{">"}</span>
-          <span className="current">Bank Details</span>
-        </p>
-      </section>
+      <PageHeaderArea title="BankDetails" current="BankDetails" />
+      
 
       {/* CONTENT */}
       <section className="content">

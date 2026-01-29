@@ -3,6 +3,8 @@ import "./Logos.scss";
 import { Link } from "react-router-dom";
 import { AiFillHome, AiOutlineDownload } from "react-icons/ai";
 import * as htmlToImage from "html-to-image";
+import PageHeaderArea from "../../../components/PageHeaderArea/PageHeaderArea";
+
 import jsPDF from "jspdf";
 
 // images
@@ -41,17 +43,7 @@ const Logos: React.FC = () => {
   return (
     <div className="logos-page">
       {/* HERO */}
-      <section className="hero">
-        <h1>GPICC Logo</h1>
-
-        <p className="breadcrumb">
-          <Link to="/" className="home">
-            <AiFillHome /> Home
-          </Link>
-          <span>{">"}</span>
-          <span>GPICC Logo</span>
-        </p>
-      </section>
+      <PageHeaderArea title="About Logo" current="About-Logo" />
 
       {/* CONTENT */}
       <section className="content">

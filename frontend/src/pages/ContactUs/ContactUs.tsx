@@ -4,6 +4,7 @@ import { AiFillHome } from "react-icons/ai";
 import { FiPhoneCall } from "react-icons/fi";
 import { HiLocationMarker } from "react-icons/hi";
 import styles from "./ContactUs.module.scss";
+import PageHeaderArea from "../../components/PageHeaderArea/PageHeaderArea";
 
 /* Random images (change or add more) */
 const images = [
@@ -18,18 +19,7 @@ const ContactUs: React.FC = () => {
   return (
     <>
       {/* HEADER */}
-      <section className={styles.header}>
-        <h1>Contact Us</h1>
-
-        <p className={styles.breadcrumb}>
-          <Link to="/" className={styles.home}>
-            <AiFillHome className={styles.homeIcon} />
-            <span>Home</span>
-          </Link>
-          <span className={styles.separator}>&gt;</span>
-          <span className={styles.current}>Contact Us</span>
-        </p>
-      </section>
+      <PageHeaderArea title="ContactUs" current="ContactUs" />
 
       {/* PAGE */}
       <section className={styles.page}>

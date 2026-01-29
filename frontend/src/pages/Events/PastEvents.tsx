@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { AiFillHome } from "react-icons/ai";
 import styles from "./EventsPage.module.scss";
 import Card from "../../components/Card/Card";
 import Modal from "../../components/Card/Modal";
+import PageHeaderArea from "../../components/PageHeaderArea/PageHeaderArea";
 import { EventsAPI, type EventItem } from "./api/events";
 
 const PastEvents: React.FC = () => {
@@ -21,25 +20,8 @@ const PastEvents: React.FC = () => {
 
   return (
     <>
-      {/* HEADER */}
-      <section className={styles.header}>
-        <h1>Past Events</h1>
+      <PageHeaderArea title="Past Events" current="Past" />
 
-        <p className={styles.breadcrumb}>
-          <Link to="/" className={styles.home}>
-            <AiFillHome className={styles.homeIcon} />
-            <span className={styles.homeText}>Home</span>
-          </Link>
-
-          <span className={styles.separator}>&gt;</span>
-          <span className={styles.current}>Events</span>
-
-          <span className={styles.separator}>&gt;</span>
-          <span className={styles.current}>Past</span>
-        </p>
-      </section>
-
-      {/* CONTENT */}
       <section className={`${styles.section} section--dark`}>
         <div className={styles.container}>
           {loading ? (

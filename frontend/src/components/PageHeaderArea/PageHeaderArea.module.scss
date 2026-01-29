@@ -1,0 +1,109 @@
+/* ================= HEADER ================= */
+
+.header {
+  background: #fff3e6;
+  padding: 90px 20px 70px;
+  text-align: center;
+
+  h1 {
+    font-size: 42px;
+    font-weight: 900;
+    color: #290300;
+    margin-bottom: 10px;
+  }
+}
+
+/* ================= BREADCRUMB ================= */
+
+.breadcrumb {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  color: #290300;
+}
+
+.home {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 800;
+  text-decoration: none;
+  color: #290300;
+}
+
+.homeIcon {
+  font-size: 22px;
+}
+
+.separator {
+  font-weight: 600;
+}
+
+.current {
+  color: #666;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 992px) {
+  .header {
+    padding: 70px 20px 55px;
+
+    h1 {
+      font-size: 34px;
+    }
+  }
+
+  .breadcrumb {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 60px 18px 50px;
+
+    h1 {
+      font-size: 30px;
+    }
+  }
+
+  .breadcrumb {
+    font-size: 15px;
+    gap: 6px;
+  }
+
+  .homeIcon {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 576px) {
+  .header {
+    padding: 55px 16px 45px;
+
+    h1 {
+      font-size: 26px;
+    }
+  }
+
+  .breadcrumb {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 360px) {
+  .header {
+    padding: 48px 14px 40px;
+
+    h1 {
+      font-size: 24px;
+    }
+  }
+
+  .breadcrumb {
+    font-size: 13px;
+  }
+}

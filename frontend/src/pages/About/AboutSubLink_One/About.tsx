@@ -2,6 +2,7 @@ import React from "react";
 import "./About.scss";
 import { AiFillHome } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import PageHeaderArea from "../../../components/PageHeaderArea/PageHeaderArea";
 
 type FocusItem = {
   title: string;
@@ -40,21 +41,7 @@ const AboutGPICC: React.FC = () => {
   return (
     <div className="about-gpicc">
       {/* HERO */}
-      <section className="hero">
-        <h1>About GPICC</h1>
-
-        {/* ✅ FIXED BREADCRUMB */}
-        <p className="breadcrumb">
-          <Link to="/" className="home">
-            <AiFillHome className="home-icon" />
-            <span className="home-text">Home</span>
-          </Link>
-
-          <span className="separator">{">"}</span>
-
-          <span className="current">About IAP</span>
-        </p>
-      </section>
+      <PageHeaderArea title="About" current="About" />
 
       {/* CONTENT */}
       <section className="content">

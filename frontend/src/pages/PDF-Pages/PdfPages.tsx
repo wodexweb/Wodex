@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./PdfPages.module.scss";
 import { PdfPagesAPI, type PdfPageItem } from "./api/pdfPages.api";
+import PageHeaderArea from "../../components/PageHeaderArea/PageHeaderArea";
 
 const PdfPages: React.FC = () => {
   const [data, setData] = useState<PdfPageItem[]>([]);
@@ -29,12 +30,7 @@ const PdfPages: React.FC = () => {
   return (
     <div className={styles.wrapper}>
       {/* HEADER */}
-      <div className={styles.header}>
-        <h1>PDF Pages</h1>
-        <p>
-          <span>Home</span> &gt; PDF Pages
-        </p>
-      </div>
+      <PageHeaderArea title="PDF-Pages" current="PDF-Pages" />
 
       {/* SEARCH */}
       <div className={styles.searchBox}>

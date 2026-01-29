@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { AiFillHome } from "react-icons/ai";
 import styles from "./EventsPage.module.scss";
 import Card from "../../components/Card/Card";
 import Modal from "../../components/Card/Modal";
+import PageHeaderArea from "../../components/PageHeaderArea/PageHeaderArea";
 import { EventsAPI, type EventItem } from "./api/events";
 
 const RecentEvents: React.FC = () => {
@@ -21,23 +20,7 @@ const RecentEvents: React.FC = () => {
 
   return (
     <>
-      {/* HEADER */}
-      <section className={styles.header}>
-        <h1>Recent Events</h1>
-
-        <p className={styles.breadcrumb}>
-          <Link to="/" className={styles.home}>
-            <AiFillHome className={styles.homeIcon} />
-            <span className={styles.homeText}>Home</span>
-          </Link>
-
-          <span className={styles.separator}>&gt;</span>
-          <span className={styles.current}>Events</span>
-
-          <span className={styles.separator}>&gt;</span>
-          <span className={styles.current}>Recent</span>
-        </p>
-      </section>
+      <PageHeaderArea title="Recent Events" current="Recent" />
 
       {/* CONTENT */}
       <section className={`${styles.section} section--dark`}>
