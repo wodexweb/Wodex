@@ -1,4 +1,4 @@
-import type { EventItem } from "../pages/Events/api/events";
+import type { EventItem } from "../pages/api/Details";
 
 export const normalizeEvent = (e: any): EventItem => {
   if (!e?.id) {
@@ -10,12 +10,13 @@ export const normalizeEvent = (e: any): EventItem => {
   }
 
   return {
-    id: e.id,
-    title: e.title,
+    id: Number(e.id),
+    title: String(e.title ?? ""),
     photo_url: e.photo_url ?? null,
-    link: e.link,              // 🔥 REQUIRED
-    description: e.description,
-    end_date: e.end_date,
-    status: e.status,
+    link: String(e.link),          // ✅ REQUIRED
+    description: String(e.description ?? ""),
+    end_date: String(e.end_date ?? ""),
+    status: e.status as "upcoming" | "recent" | "past",
+    date: e.date ?? undefined,     // ✅ SAFE OPTIONAL
   };
 };

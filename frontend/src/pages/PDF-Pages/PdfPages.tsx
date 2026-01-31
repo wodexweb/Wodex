@@ -1,7 +1,7 @@
 // src/pages/PdfPages/PdfPages.tsx
 import React, { useEffect, useState } from "react";
 import styles from "./PdfPages.module.scss";
-import { PdfPagesAPI, type PdfPageItem } from "./api/pdfPages.api";
+import { PdfPagesAPI, type PdfPageItem } from "../api/Details";
 import PageHeaderArea from "../../components/PageHeaderArea/PageHeaderArea";
 
 const PdfPages: React.FC = () => {

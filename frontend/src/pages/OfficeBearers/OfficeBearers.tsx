@@ -2,16 +2,16 @@ import React, { useEffect, useState } from "react";
 import styles from "./OfficeBearers.module.scss";
 import MemberCard from "../../components/Card/MemberCard";
 import PageHeaderArea from "../../components/PageHeaderArea/PageHeaderArea";
-import { MembersAPI, type Member } from "./api/members";
+import { MembersPublicAPI, type MemberPublic } from "../api/Details";
 
 const OfficeBearers: React.FC = () => {
-  const [members, setMembers] = useState<Member[]>([]);
+  const [members, setMembers] = useState<MemberPublic[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const data = await MembersAPI.getAll();
+        const data = await MembersPublicAPI.getAll();
         setMembers(data);
       } catch (err) {
         console.error("Failed to load members", err);

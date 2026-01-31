@@ -1,20 +1,18 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import { AiFillHome } from "react-icons/ai";
 import styles from "./MembersDirectory.module.scss";
-import { MembersAPI, type Member } from "./api/member_directory";
+import { MembersDetailAPI, type MemberDetail } from "../api/Details";
 import PageHeaderArea from "../../components/PageHeaderArea/PageHeaderArea";
 
 const PAGE_SIZE = 10;
 
 const MembersDirectory: React.FC = () => {
-  const [members, setMembers] = useState<Member[]>([]);
+  const [members, setMembers] = useState<MemberDetail[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    MembersAPI.getAll()
+    MembersDetailAPI.getAll()
       .then(setMembers)
       .catch(() => setMembers([]))
       .finally(() => setLoading(false));

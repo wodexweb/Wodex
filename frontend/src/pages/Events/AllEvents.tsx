@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./EventsPage.module.scss";
 import Card from "../../components/Card/Card";
-import { EventsAPI, type EventItem } from "./api/events";
+import { EventsAPI, type EventItem } from "../api/Details";
 import PageHeaderArea from "../../components/PageHeaderArea/PageHeaderArea";
 
 const AllEvents: React.FC = () => {

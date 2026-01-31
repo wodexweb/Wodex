@@ -1,16 +1,18 @@
+import { useNavigate } from "react-router-dom";
 import styles from "./Card.module.scss";
 
 interface CardProps {
+  id: number;
   title: string;
   image: string;
-  link: string;
   date?: string;
 }
 
-const Card: React.FC<CardProps> = ({ title, image, link, date }) => {
+const Card: React.FC<CardProps> = ({ id, title, image, date }) => {
+  const navigate = useNavigate();
+
   const handleClick = () => {
-    if (!link) return;
-    window.open(link, "_blank", "noopener,noreferrer");
+    navigate(`/events/${id}`);
   };
 
   return (

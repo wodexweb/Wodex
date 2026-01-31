@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styles from "./EventsPage.module.scss";
 import Card from "../../components/Card/Card";
-import Modal from "../../components/Card/Modal";
 import PageHeaderArea from "../../components/PageHeaderArea/PageHeaderArea";
-import { EventsAPI, type EventItem } from "./api/events";
+import { EventsAPI, type EventItem } from "../api/Details";
 
 const PastEvents: React.FC = () => {
   const [events, setEvents] = useState<EventItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [open, setOpen] = useState(false);
-  const [active, setActive] = useState<EventItem | null>(null);
 
   useEffect(() => {
     EventsAPI.getPast()
@@ -33,27 +30,16 @@ const PastEvents: React.FC = () => {
               {events.map((event) => (
                 <Card
                   key={event.id}
+                  id={event.id}
                   title={event.title}
                   image={event.photo_url ?? ""}
                   date={event.date}
-                  onClick={() => {
-                    setActive(event);
-                    setOpen(true);
-                  }}
                 />
               ))}
             </div>
           )}
         </div>
       </section>
-
-      <Modal
-        open={open}
-        onClose={() => setOpen(false)}
-        title={active?.title || ""}
-        image={active?.photo_url || ""}
-        description={active?.description || ""}
-      />
     </>
   );
 };
