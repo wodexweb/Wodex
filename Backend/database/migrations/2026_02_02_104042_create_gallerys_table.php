@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('galleries', function (Blueprint $table) {
+        Schema::create('gallerys', function (Blueprint $table) {
             $table->id();
 
             // Event OPTIONAL
@@ -26,6 +26,6 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('galleries');
+        Schema::dropIfExists('gallerys');
     }
 };
