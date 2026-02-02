@@ -18,7 +18,6 @@ use App\Http\Controllers\Api\NoticeController;
 use App\Http\Controllers\Api\PdfPageController;
 // use App\Http\Controllers\Api\AchievementController;
 use App\Http\Controllers\Api\MembershipPlanController;
-use App\Http\Controllers\Api\MediaFileController;
 
 /* ================= ADMIN CONTROLLERS ================= */
 // use App\Http\Controllers\Admin\HomeController;
@@ -27,6 +26,7 @@ use App\Http\Controllers\Api\MediaFileController;
 /* ================= APP CONTROLLERS ================= */
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\Api\Admin\GalleryController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RegisterController;
@@ -136,6 +136,10 @@ Route::prefix('admin')->group(function () {
     Route::apiResource('notices', NoticeController::class);
     Route::apiResource('pdf-pages', PdfPageController::class);
     // Route::apiResource('achievements', AchievementController::class);
-    Route::apiResource('media', MediaFileController::class);
+
+    Route::post('/gallery', [GalleryController::class, 'store']);
+    Route::get('/gallery/{eventId}', [GalleryController::class, 'show']);
+    Route::delete('/gallery/{id}', [GalleryController::class, 'destroy']);
+
     Route::apiResource('membership-plans', MembershipPlanController::class);
 });

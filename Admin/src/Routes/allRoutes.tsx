@@ -17,14 +17,11 @@ import Achievements from "../pages/Achievements/Achievements";
 import MembershipPlans from "../pages/Membership/MembershipPlans";
 
 // Media Files
-import MediaLibrary from "../pages/Media/MediaLibrary"; // Added Import
+import MediaLibrary from "../pages/Media/MediaLibrary";
 
-// Errors
-// import Basic404 from "../pages/AuthenticationInner/Errors/Basic404";
-// import Cover404 from "../pages/AuthenticationInner/Errors/Cover404";
-// import Alt404 from "../pages/AuthenticationInner/Errors/Alt404";
-// import Error500 from "../pages/AuthenticationInner/Errors/Error500";
-// import Offlinepage from "../pages/AuthenticationInner/Errors/Offlinepage";
+// Gallery ✅
+import AddGallery from "../pages/Gallery/AddGallery";
+// import ManageGallery from "../pages/Gallery/ManageGallery";
 
 // Auth pages
 import Login from "../pages/Authentication/Login";
@@ -58,16 +55,13 @@ import MemberView from "../pages/Members/MemberView";
 import GenralSettings from "../pages/MasterSettings/GenaralSettings";
 import ContactSettings from "../pages/MasterSettings/ContactSettings";
 import HeaderSettings from "../pages/MasterSettings/HeaderSettings";
-// import MenuSettings from "../pages/MasterSettings/MenuSettings";
 
-// menu
-import MenuBuilder from "../pages/Menu/MenuBuilder";
+// Menu
 import HeaderMenu from "../pages/Menu/HeaderMenu";
 import FooterMenu from "../pages/Menu/FooterMenu";
 import AddMenu from "../pages/Menu/AddMenu";
 
-// pages
-
+// Pages
 import AddPage from "../pages/Pages/AddPage";
 import ManagePages from "../pages/Pages/ManagePages";
 
@@ -98,26 +92,27 @@ const authProtectedRoutes = [
   // ACHIEVEMENTS
   { path: "/achievements", component: <Achievements /> },
 
-  // MEMBERSHIP PLANS
+  // MEMBERSHIP
   { path: "/membership/plans", component: <MembershipPlans /> },
 
-  // MEDIA FILES
-  { path: "/media-library", component: <MediaLibrary /> }, // Added Route
+  // MEDIA
+  { path: "/media-library", component: <MediaLibrary /> },
 
-  // Master Settings
+  // GALLERY ✅
+  { path: "/gallery/add", component: <AddGallery /> },
+  // { path: "/gallery/manage", component: <ManageGallery /> }, 
+
+  // MASTER SETTINGS
   { path: "/master-settings/general", component: <GenralSettings /> },
   { path: "/master-settings/contact", component: <ContactSettings /> },
   { path: "/master-settings/header", component: <HeaderSettings /> },
-  // { path: "/master-settings/menu", component: <MenuSettings /> },
 
-  // Master Settings
-  // { path: "/add-menu/menubuilder", component: <MenuBuilder /> },
+  // MENU
   { path: "/menu/header", component: <HeaderMenu /> },
   { path: "/menu/footer", component: <FooterMenu /> },
   { path: "/menu/addmenu", component: <AddMenu /> },
 
-  // pages
-  // <Route path="/pages/add" element={<AddPage />} />,
+  // PAGES
   { path: "/pages/add", component: <AddPage /> },
   { path: "/pages/manage", component: <ManagePages /> },
 
@@ -139,6 +134,7 @@ const authProtectedRoutes = [
   { path: "/members/edit/:id", component: <EditMember /> },
   { path: "/members/view/:id", component: <MemberView /> },
 
+  // FALLBACK
   { path: "*", component: <Navigate to="/dashboard" replace /> },
 ];
 

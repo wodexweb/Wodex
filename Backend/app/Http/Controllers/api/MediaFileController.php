@@ -1,64 +1,72 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\MediaFile;
+use App\Models\Gallery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
-class MediaFileController extends Controller
+class GalleryController extends Controller
 {
     /**
-     * Get all media, optionally filtered by type/topic.
+     * Store gallery images (event OPTIONAL)
      */
-    public function index(Request $request)
+    public function store(Request $request)
     {
-        $query = MediaFile::query();
-
-        // Topic filter: api/admin/media?type=Banner image
-        if ($request->has('type')) {
-            $query->where('media_type', $request->type);
-        }
-
-        return response()->json($query->orderBy('created_at', 'desc')->get());
-    }
-
-    /**
-     * Upload new media and categorize it.
-     */
-   public function store(Request $request)
-{
-    $request->validate([
-        'media_name' => 'required|string|max:255',
-        'media_type' => 'required|string', 
-        'file'       => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
-    ]);
-
-    if ($request->hasFile('file')) {
-        $path = $request->file('file')->store('media_library', 'public');
-
-        $media = MediaFile::create([
-            'media_name' => $request->media_name,
-            'media_type' => $request->media_type,
-            'file_path'  => $path, // Changed from media_path to file_path
+        $request->validate([
+            'event_id' => 'nullable|exists:events,id',
+            'title'    => 'required|string|max:255',
+            'files'    => 'required|array',
+            'files.*'  => 'image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
-        return response()->json($media, 201);
+        foreach ($request->file('files') as $file) {
+            $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('gallery', $filename, 'public');
+
+            Gallery::create([
+                'event_id' => $request->event_id ?? null,
+                'title'    => $request->title,
+                'image'    => $path,
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Gallery images uploaded successfully'
+        ], 201);
     }
 
-    return response()->json(['error' => 'File upload failed'], 400);
-}
+    /**
+     * Get gallery images by event
+     */
+    public function show($eventId)
+    {
+        $images = Gallery::where('event_id', $eventId)
+            ->orderByDesc('id')
+            ->pluck('image');
 
-public function destroy($id)
-{
-    $media = MediaFile::findOrFail($id);
-
-    if ($media->file_path) { // Changed to file_path
-        Storage::disk('public')->delete($media->file_path);
+        return response()->json([
+            'images' => $images
+        ]);
     }
 
-    $media->delete();
-    return response()->json(['message' => 'Media deleted successfully']);
-}
+    /**
+     * Delete a single gallery image
+     */
+    public function destroy($id)
+    {
+        $gallery = Gallery::findOrFail($id);
+
+        if ($gallery->image && Storage::disk('public')->exists($gallery->image)) {
+            Storage::disk('public')->delete($gallery->image);
+        }
+
+        $gallery->delete();
+
+        return response()->json([
+            'message' => 'Gallery image deleted successfully'
+        ]);
+    }
 }

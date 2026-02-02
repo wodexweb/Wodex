@@ -17,6 +17,7 @@ const Navdata = () => {
   const [isNotices, setIsNotices] = useState(false);
   const [isPdfPages, setIsPdfPages] = useState(false);
   const [isAchievements, setIsAchievements] = useState(false);
+  const [isGallery, setIsGallery] = useState(false);
 
   /* ===== AUTO OPEN FROM URL ===== */
   useEffect(() => {
@@ -34,6 +35,7 @@ const Navdata = () => {
     setIsNotices(path.startsWith("/notices"));
     setIsPdfPages(path.startsWith("/pdf-pages"));
     setIsAchievements(path.startsWith("/achievements"));
+    setIsGallery(path.startsWith("/gallery"));
   }, [location.pathname]);
 
   const menuItems = [
@@ -253,6 +255,37 @@ const Navdata = () => {
           link: "/achievements",
           click: () => navigate("/achievements"),
         },
+      ],
+    },
+
+    {
+      id: "gallery",
+      label: "Gallery",
+      icon: "ri-gallery-line",
+      link: "/#",
+      stateVariables: isGallery,
+      click: (e: any) => {
+        e.preventDefault();
+        setIsGallery(!isGallery);
+
+        // close others if needed
+        setIsEvents(false);
+        setIsAnnouncements(false);
+        setIsMembers(false);
+      },
+      subItems: [
+        {
+          id: "gallery-add",
+          label: "Add Gallery",
+          link: "/gallery/add",
+          click: () => navigate("/gallery/add"),
+        },
+        // {
+        //   id: "gallery-manage",
+        //   label: "Manage Gallery",
+        //   link: "/gallery/manage",
+        //   click: () => navigate("/gallery/manage"),
+        // },
       ],
     },
 
