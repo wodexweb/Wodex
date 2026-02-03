@@ -1,0 +1,31 @@
+/* ================= COMMON CARD GRID ================= */
+
+.app-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 40px;
+  justify-items: center;
+}
+
+/* LAPTOP */
+@media (max-width: 992px) {
+  .app-card-grid {
+    gap: 30px;
+  }
+}
+
+/* TABLET */
+@media (max-width: 768px) {
+  .app-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+  }
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+  .app-card-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}

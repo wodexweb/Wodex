@@ -1,0 +1,124 @@
+/* ================= BASE ================= */
+
+.section {
+  padding: 80px 6% 100px;
+  background: #ffffff;
+  text-align: center;
+  transition: padding 0.3s ease;
+}
+
+/* 🔥 REDUCED HEIGHT WHEN EMPTY */
+.sectionEmpty {
+  padding: 60px 6% 70px;
+}
+
+/* HEADING */
+.heading {
+  font-size: 50px;
+  font-weight: 900;
+  color: #290300;
+  letter-spacing: 3px;
+  margin-bottom: 60px;
+  white-space: nowrap;
+}
+
+/* ================= STATUS MESSAGE ================= */
+
+.status {
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  font-size: 18px;
+  font-weight: 600;
+  color: #666;
+}
+
+/* 🔥 BLINK EFFECT (EMPTY) */
+.blink {
+  animation: blink 1.4s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* VIEW MORE */
+.viewMoreWrap {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.viewMoreBtn {
+  border: none;
+  padding: 10px 26px;
+  border-radius: 30px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  background-color: #290300;
+  color: #ffffff;
+}
+
+/* ================= LAPTOP ================= */
+
+@media (max-width: 992px) {
+  .section {
+    padding: 60px 5% 80px;
+  }
+
+  .sectionEmpty {
+    padding: 50px 5% 60px;
+  }
+
+  .heading {
+    font-size: 34px;
+    margin-bottom: 50px;
+  }
+}
+
+/* ================= TABLET ================= */
+
+@media (max-width: 768px) {
+  .section {
+    padding: 50px 4% 70px;
+  }
+
+  .sectionEmpty {
+    padding: 40px 4% 55px;
+  }
+
+  .heading {
+    font-size: 30px;
+    letter-spacing: 2px;
+    margin-bottom: 40px;
+  }
+}
+
+/* ================= SMALL MOBILE ================= */
+
+@media (max-width: 480px) {
+  .section {
+    padding: 40px 4% 60px;
+  }
+
+  .sectionEmpty {
+    padding: 35px 4% 45px;
+  }
+
+  .heading {
+    font-size: 26px;
+    letter-spacing: 1px;
+    white-space: normal;
+  }
+}

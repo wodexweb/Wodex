@@ -1,0 +1,31 @@
+.copyrightContainer {
+  width: 100%; // Full width
+  z-index: 1; // Footer (z-index 2) ke piche
+  margin-top: -30px; // Footer ke piche pull karne ke liye
+}
+
+.copyrightBox {
+  background: #1a0200; // Slightly darker than main footer
+  padding: 40px 5% 20px; // Sideways padding as per container width
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0; // Round style remove kar diya as per request
+
+  b {
+    color: #faa33d;
+    font-weight: 700;
+  }
+}
+
+@media (max-width: 768px) {
+  .copyrightBox {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+    padding: 20px;
+  }
+}

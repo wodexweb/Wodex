@@ -1,0 +1,126 @@
+/* HEADER */
+.header {
+  background: #fff4e6;
+  padding: 90px 20px 70px;
+  text-align: center;
+
+  h1 {
+    font-size: 42px;
+    font-weight: 900;
+    color: #290300;
+    margin-bottom: 10px;
+  }
+}
+
+/* BREADCRUMB */
+.breadcrumb {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  font-size: 16px;
+  color: #290300;
+}
+
+.home {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 800;
+  color: #290300;
+  text-decoration: none;
+}
+
+.separator {
+  font-weight: 600;
+}
+
+.current {
+  color: #666;
+}
+
+/* PAGE */
+.page {
+  padding: 60px 6% 80px;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* SEARCH */
+.search {
+  display: block;
+  margin: 0 auto 20px;
+  padding: 10px 14px;
+  width: 360px;
+  max-width: 100%;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* TABLE */
+.tableWrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th,
+td {
+  padding: 10px;
+  border: 1px solid #e5e5e5;
+  white-space: nowrap;
+}
+
+th {
+  background: #f3f3f3;
+  font-weight: 700;
+}
+
+/* EMPTY */
+.empty {
+  text-align: center;
+  color: #777;
+}
+
+/* PAGINATION */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+
+  button {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+  }
+
+  .active {
+    background: #faa33d;
+    border-color: #faa33d;
+    color: white;
+  }
+
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 28px;
+  }
+
+  .breadcrumb {
+    font-size: 14px;
+  }
+}

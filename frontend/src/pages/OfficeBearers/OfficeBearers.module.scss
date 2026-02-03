@@ -1,0 +1,114 @@
+/* ================= HEADER ================= */
+
+.header {
+  background: #fff3e6;
+  padding: 80px 20px;
+  text-align: center;
+  // height: 50%;
+
+  h1 {
+    font-size: 36px;
+    font-weight: 800;
+    color: #3b0a02;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 14px;
+    color: #666;
+  }
+}
+
+/* ================= SECTIONS ================= */
+
+.section {
+  padding: 70px 6%;
+}
+
+/* ================= TOP GRID (3 cards desktop) ================= */
+
+.topGrid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 215px);
+  gap: 30px;
+  justify-content: center;
+}
+
+/* ================= BOTTOM GRID (2 centered) ================= */
+
+.bottomGrid {
+  max-width: 500px;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: repeat(2, 215px);
+  gap: 30px;
+  justify-content: center;
+}
+
+/* ================= EXECUTIVE GRID ================= */
+
+.grid {
+  max-width: 1200px;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 215px);
+  gap: 35px;
+  justify-content: center;
+}
+
+/* ================= SUB HEADING ================= */
+
+.subHeading {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 800;
+  color: #3b0a02;
+  margin-bottom: 40px;
+}
+
+/* ================================================= */
+/* ================= RESPONSIVE ==================== */
+/* ================================================= */
+
+/* TABLET */
+@media (max-width: 992px) {
+  .topGrid {
+    grid-template-columns: repeat(2, 215px);
+  }
+
+  .bottomGrid {
+    grid-template-columns: repeat(2, 215px);
+  }
+}
+
+/* MOBILE – 🔥 2 CARDS */
+@media (max-width: 576px) {
+  .section {
+    padding: 50px 4%;
+  }
+
+  .topGrid,
+  .bottomGrid,
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  .header h1 {
+    font-size: 28px;
+  }
+}
+
+/* VERY SMALL MOBILE */
+@media (max-width: 360px) {
+  .topGrid,
+  .bottomGrid,
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

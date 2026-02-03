@@ -1,0 +1,96 @@
+.announcementBar {
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+  background-color: #d61f1f;
+  color: #fff;
+  padding: 12px 14px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Wrapper (no animation here) */
+.announcementText {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* ONLY text blinks */
+.text {
+  white-space: nowrap;
+  animation: softBlink 2s infinite;
+}
+
+/* Button (NO blink) */
+.viewButton {
+  background: #fff;
+  color: #d61f1f;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid #fff;
+
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: transparent;
+    color: #fff;
+  }
+}
+
+/* Close button */
+.closeButton {
+  margin-left: 6px;
+  padding: 4px;
+
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+}
+
+/* Subtle blink animation */
+@keyframes softBlink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .announcementText {
+    font-size: 13px;
+    gap: 10px;
+  }
+
+  .viewButton {
+    padding: 5px 12px;
+    font-size: 12px;
+  }
+}

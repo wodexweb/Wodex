@@ -1,0 +1,41 @@
+.topBar {
+  background-color: #faa33d;
+}
+
+.inner {
+  display: flex;
+  justify-content: flex-end;
+  padding: 4px 0;
+}
+
+.nav {
+  display: flex;
+  gap: 16px;
+}
+
+.link {
+  font-weight: 600;
+  color: #212529 !important;
+  padding: 4px 8px;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #000;
+    text-decoration: underline;
+  }
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+  .inner {
+    justify-content: center;
+  }
+
+  .nav {
+    gap: 12px;
+  }
+
+  .link {
+    font-size: 14px;
+  }
+}

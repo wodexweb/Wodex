@@ -1,0 +1,52 @@
+/* ================================
+   Admin Sidebar Logo (Single Logo)
+================================ */
+
+.navbar-brand-box {
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Logo wrapper */
+.custom-sidebar-logo {
+  height: 70px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Image logo */
+.sidebar-logo-img {
+  max-height: 42px;
+  max-width: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.25s ease-in;
+}
+
+/* Fade-in when image loads */
+.sidebar-logo-img[src] {
+  opacity: 1;
+}
+
+/* Text fallback */
+.sidebar-logo-text {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar-logo-img {
+    max-height: 34px;
+  }
+
+  .sidebar-logo-text {
+    font-size: 14px;
+  }
+}

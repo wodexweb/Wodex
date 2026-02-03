@@ -1,0 +1,151 @@
+/* ================= NAVBAR ================= */
+
+.navbar {
+  background-color: #290300 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 1000;
+}
+
+/* ================= NAV LINKS ================= */
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  width: 100%;
+}
+
+/* ================= NAV TEXT ================= */
+
+.navLink {
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff !important;
+  padding: 8px 18px;
+}
+
+/* ================= DROPDOWN TOGGLE ================= */
+
+:global(.dropdown-toggle) {
+  color: #fff !important;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 8px 18px;
+  background: transparent !important;
+}
+
+/* ================= DROPDOWN MENU (DESKTOP) ================= */
+
+.navbar :global(.dropdown-menu) {
+  background: #ffad4a;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 0;
+  min-width: 260px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+
+  left: 50% !important;
+  transform: translateX(-50%);
+  animation: dropdownFade 0.25s ease forwards;
+}
+
+/* ================= DROPDOWN ITEMS ================= */
+
+.navbar :global(.dropdown-item) {
+  font-size: 15px;
+  padding: 10px 22px;
+  color: #000;
+  font-weight: 500;
+  background: transparent !important;
+}
+
+.navbar :global(.dropdown-item:hover) {
+  background-color: rgba(255, 255, 255, 0.35) !important;
+}
+
+/* ================= DESKTOP HOVER ================= */
+
+@media (min-width: 992px) {
+  :global(.dropdown:hover > .dropdown-menu) {
+    display: block;
+  }
+}
+
+/* ================= ANIMATION ================= */
+
+@keyframes dropdownFade {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* ================================================= */
+/* ================= MOBILE ONLY =================== */
+/* ================================================= */
+
+@media (max-width: 990px) {
+  /* 🔥 Hamburger right side */
+  :global(.navbar-toggler) {
+    margin-left: auto;
+    border: none;
+  }
+
+  :global(.navbar-toggler-icon) {
+    filter: brightness(0) invert(1); /* white icon */
+  }
+
+  /* 🔥 Overlay menu – does NOT push content */
+  :global(.navbar-collapse) {
+    position: absolute;
+    top: 56px; /* navbar height */
+    left: 0;
+    width: 100%;
+    background: #290300;
+    z-index: 999;
+    padding: 16px 0;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  }
+
+  /* Vertical menu */
+  .navLinks {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 0 20px;
+  }
+
+  .navLink {
+    color: #fff !important;
+    width: 100%;
+  }
+
+  /* 🔥 Dropdown inline + white text */
+  .navbar :global(.dropdown-menu) {
+    position: static !important;
+    transform: none !important;
+    box-shadow: none;
+    background: transparent;
+    padding-left: 16px;
+  }
+
+  .navbar :global(.dropdown-item) {
+    color: #fff !important;
+    padding: 8px 0;
+  }
+
+  .navbar :global(.dropdown-item:hover) {
+    background: rgba(255, 255, 255, 0.12) !important;
+  }
+
+  :global(.dropdown-toggle) {
+    color: #fff !important;
+    width: 100%;
+  }
+}

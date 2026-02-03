@@ -1,0 +1,37 @@
+@use "sass:color";
+@use "../abstracts/variables" as v;
+@use "../abstracts/mixins" as m;
+
+/* SECTION */
+.section {
+  @include m.section-spacing;
+}
+
+/* SECTION TITLE */
+.section-title {
+  text-align: center;
+  margin-bottom: v.$sp-6;
+
+  h2 {
+    color: v.$dark;
+  }
+
+  p {
+    max-width: 600px;
+    margin: v.$sp-2 auto 0;
+  }
+}
+
+/* BUTTONS */
+.btn-primary-custom {
+  background: v.$primary;
+  color: v.$white;
+  padding: v.$sp-3 v.$sp-5;
+  border-radius: v.$radius-md;
+  font-weight: 500;
+  transition: 0.3s;
+
+&:hover {
+  background: color.adjust(v.$primary, $lightness: -8%);
+}
+}
