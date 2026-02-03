@@ -7,10 +7,6 @@ import {
   UncontrolledDropdown,
 } from "reactstrap";
 
-// images
-import logoSm from "../assets/images/logo-sm.png";
-import logoDark from "../assets/images/logo-dark.png";
-import logoLight from "../assets/images/logo-light.png";
 import avatar1 from "../assets/images/users/avatar-1.jpg";
 
 // layouts
@@ -18,7 +14,12 @@ import VerticalLayout from "./VerticalLayouts";
 import TwoColumnLayout from "./TwoColumnLayout";
 import HorizontalLayout from "./HorizontalLayout";
 
+// settings hook
+import { useSettings } from "../Components/Hooks/useSettings";
+
 const Sidebar = ({ layoutType }: any) => {
+  const { settings, loading } = useSettings();
+
   useEffect(() => {
     const verticalOverlay = document.getElementsByClassName("vertical-overlay");
     if (verticalOverlay.length > 0) {
@@ -41,34 +42,30 @@ const Sidebar = ({ layoutType }: any) => {
     }
   };
 
+  const logoUrl = settings?.admin_logo
+    ? `http://localhost:8000/storage/${settings.admin_logo}`
+    : null;
+
+  const logoText =
+    settings?.system_name || settings?.website_title || "Admin Panel";
+
   return (
     <>
       <div className="app-menu navbar-menu">
-        {/* ================= LOGO ================= */}
-        <div
-          className="navbar-brand-box"
-          style={{
-            userSelect: "none",
-            pointerEvents: "none", // 🔥 disables click completely
-          }}
-        >
-          <div className="logo logo-dark">
-            <span className="logo-sm">
-              <img src={logoSm} alt="logo" height="22" draggable={false} />
-            </span>
-            <span className="logo-lg">
-              <img src={logoDark} alt="logo" height="17" draggable={false} />
-            </span>
-          </div>
-
-          <div className="logo logo-light">
-            <span className="logo-sm">
-              <img src={logoSm} alt="logo" height="22" draggable={false} />
-            </span>
-            <span className="logo-lg">
-              <img src={logoLight} alt="logo" height="17" draggable={false} />
-            </span>
-          </div>
+        {/* ================= SINGLE LOGO ================= */}
+        <div className="navbar-brand-box custom-sidebar-logo">
+          {loading ? (
+            <span className="sidebar-logo-text">{logoText}</span>
+          ) : logoUrl ? (
+            <img
+              src={logoUrl}
+              alt="Admin Logo"
+              className="sidebar-logo-img"
+              loading="eager"
+            />
+          ) : (
+            <span className="sidebar-logo-text">{logoText}</span>
+          )}
         </div>
 
         {/* Sidebar Hover Button */}
@@ -87,7 +84,6 @@ const Sidebar = ({ layoutType }: any) => {
             tag="button"
             type="button"
             className="btn material-shadow-none"
-            id="page-header-user-dropdown"
           >
             <span className="d-flex align-items-center gap-2">
               <img
@@ -97,43 +93,15 @@ const Sidebar = ({ layoutType }: any) => {
                 draggable={false}
               />
               <span className="text-start">
-                <span className="d-block fw-medium sidebar-user-name-text">
-                  Anna Adame
-                </span>
-                <span className="d-block fs-14 sidebar-user-name-sub-text">
-                  <i className="ri ri-circle-fill fs-10 text-success align-baseline"></i>
-                  <span className="align-middle ms-1">Online</span>
-                </span>
+                <span className="d-block fw-medium">ayush</span>
+                <span className="d-block fs-14 text-muted">Admin</span>
               </span>
             </span>
           </DropdownToggle>
 
           <DropdownMenu className="dropdown-menu-end">
-            <h6 className="dropdown-header">Welcome Anna!</h6>
             <a className="dropdown-item" href="/profile">
               Profile
-            </a>
-            <a className="dropdown-item" href="/apps-chat">
-              Messages
-            </a>
-            <a className="dropdown-item" href="/apps-tasks-kanban">
-              Taskboard
-            </a>
-            <a className="dropdown-item" href="/pages-faqs">
-              Help
-            </a>
-            <div className="dropdown-divider"></div>
-            <a className="dropdown-item" href="/pages-profile">
-              Balance : <b>$5971.67</b>
-            </a>
-            <a className="dropdown-item" href="/pages-profile-settings">
-              <span className="badge bg-success-subtle text-success float-end">
-                New
-              </span>
-              Settings
-            </a>
-            <a className="dropdown-item" href="/auth-lockscreen-basic">
-              Lock screen
             </a>
             <a className="dropdown-item" href="/auth-logout-basic">
               Logout

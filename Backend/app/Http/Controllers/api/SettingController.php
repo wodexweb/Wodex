@@ -15,6 +15,20 @@ class SettingController extends Controller
     public function index()
     {
         $setting = Setting::first();
+
+        if (!$setting) {
+            return response()->json(null, 200);
+        }
+
+        // ✅ Attach public URLs
+        $setting->website_logo_url = $setting->website_logo
+            ? asset('storage/' . $setting->website_logo)
+            : null;
+
+        $setting->admin_logo_url = $setting->admin_logo
+            ? asset('storage/' . $setting->admin_logo)
+            : null;
+
         return response()->json($setting, 200);
     }
 
@@ -24,8 +38,7 @@ class SettingController extends Controller
     public function update(Request $request)
     {
         $validated = array_filter(
-            // ✅ Validation (matches UI exactly)
-            $validated = $request->validate([
+            $request->validate([
                 'system_name' => 'nullable|string|max:255',
                 'application_title' => 'nullable|string|max:255',
                 'website_title' => 'nullable|string|max:255',
@@ -39,33 +52,50 @@ class SettingController extends Controller
             ]),
             fn($value) => !is_null($value)
         );
-        // ✅ Always single row
+
+        // ✅ Single row always
         $setting = Setting::firstOrCreate([]);
 
-        // ✅ Handle Website Logo
+        // ✅ Ensure directory exists
+        Storage::disk('public')->makeDirectory('settings');
+
+        // ✅ Website Logo
         if ($request->hasFile('website_logo')) {
-            if ($setting->website_logo) {
+            if ($setting->website_logo && Storage::disk('public')->exists($setting->website_logo)) {
                 Storage::disk('public')->delete($setting->website_logo);
             }
-            $validated['website_logo'] = $request->file('website_logo')
+
+            $validated['website_logo'] = $request
+                ->file('website_logo')
                 ->store('settings', 'public');
         }
 
-        // ✅ Handle Admin Logo
+        // ✅ Admin Logo
         if ($request->hasFile('admin_logo')) {
-            if ($setting->admin_logo) {
+            if ($setting->admin_logo && Storage::disk('public')->exists($setting->admin_logo)) {
                 Storage::disk('public')->delete($setting->admin_logo);
             }
-            $validated['admin_logo'] = $request->file('admin_logo')
+
+            $validated['admin_logo'] = $request
+                ->file('admin_logo')
                 ->store('settings', 'public');
         }
 
-        // ✅ Update safely
+        // ✅ Update DB
         $setting->update($validated);
+
+        // ✅ Attach URLs for response
+        $setting->website_logo_url = $setting->website_logo
+            ? asset('storage/' . $setting->website_logo)
+            : null;
+
+        $setting->admin_logo_url = $setting->admin_logo
+            ? asset('storage/' . $setting->admin_logo)
+            : null;
 
         return response()->json([
             'message' => 'Settings updated successfully',
-            'data' => $setting
+            'data' => $setting,
         ], 200);
     }
 }

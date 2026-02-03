@@ -10,7 +10,7 @@ const { api } = config;
 /* ================= AXIOS INSTANCE ================= */
 
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: api.API_URL, // ✅ http://localhost:8000/api
+  baseURL: api.API_URL,
   withCredentials: true,
 });
 

@@ -1,15 +1,22 @@
-import React from "react";
-import logo from "../../assets/logo/GPAC logo 2.png";
+import { useSettings } from "../../hooks/useSettings";
 import styles from "./Logo.module.scss";
 
 const Logo: React.FC = () => {
+  const { settings, loading } = useSettings();
+
+  if (loading || !settings) return null;
+
   return (
     <section className={styles.logoBar}>
       <div className={styles.inner}>
         <img
-          src={logo}
-          alt="Academy of Paediatrics, Gujarat"
           className={styles.logo}
+          src={
+            settings.website_logo
+              ? `http://localhost:8000/storage/${settings.website_logo}`
+              : "/default-logo.png"
+          }
+          alt={settings.website_title || "Website Logo"}
         />
       </div>
     </section>

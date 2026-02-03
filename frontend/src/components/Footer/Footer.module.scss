@@ -1,277 +1,162 @@
-/* ================= FOOTER WRAPPER ================= */
+.footerWrapper {
+  background: #290300;
+  width: 100%;
+  /* Bottom 10px radius as requested */
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  overflow: hidden;
+  box-shadow: 5px 5px 20px rgba(218, 165, 32, 0.3); // Gold shadow soft kiya
+  position: relative; // Z-index ke liye zaroori
+  z-index: 2;
+}
 
 .footer {
-  background: #290300;
-  color: #fff;
-  position: relative;
-
+  padding: 80px 0 0px; // Bottom padding 0 taaki copyright bottom edge se touch ho
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
-/* ================= TOP STRIP ================= */
+.container {
+  width: 90%;
+  max-width: 1400px;
+  margin-bottom: 50px; // Bank box aur copyright ke beech gap
+}
 
-.topStrip {
-  background: #4b0702;
-  max-width: 700px;
-  margin: 0 auto 60px;
-  padding: 20px 30px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-
+.topHeader {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 20px;
-  text-align: center;
-
+  margin-bottom: 30px;
+  .logoBox {
+    width: 65px;
+    height: 65px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 6px;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
   h2 {
+    font-size: 24px;
+    font-weight: 700;
     color: #fff;
-    font-size: 22px;
-    font-weight: 600;
+    margin: 0;
   }
 }
 
-/* ================= LOGO ================= */
-
-.logoBox {
-  width: 80px;
-  height: 80px;
-  background: #fff;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border-radius: 8px;
-  }
+.divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin-bottom: 50px;
 }
-
-/* ================= MAIN GRID ================= */
 
 .footerGrid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 40px;
-  padding: 40px 6% 60px;
+  gap: 30px;
+  margin-bottom: 60px;
 }
 
-/* ================= HEADINGS ================= */
-
-h4 {
-  color: #faa33d;
-  font-size: 16px;
-  margin-bottom: 20px;
-  letter-spacing: 1px;
-}
-
-/* ================= LIST ================= */
-
-ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-li,
-p {
-  font-size: 14px;
-  line-height: 2;
-  cursor: pointer;
-}
-
-/* ================= LINK HOVER ================= */
-
-.linkText {
-  position: relative;
-  display: inline-block;
-  transition: color 0.3s ease;
-
-  &::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -2px;
-    width: 100%;
-    height: 2px;
-    background: #faa33d;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s ease;
-  }
-}
-
-li:hover .linkText,
-p:hover .linkText {
-  color: #faa33d;
-}
-
-li:hover .linkText::after,
-p:hover .linkText::after {
-  transform: scaleX(1);
-}
-
-/* ================= SOCIAL ================= */
-
-.socials {
-  display: flex;
-  gap: 14px;
-  margin-top: 16px;
-
-  svg {
+.col {
+  h4 {
+    color: #faa33d;
     font-size: 16px;
-    cursor: pointer;
-    transition: color 0.3s ease, transform 0.3s ease;
-
-    &:hover {
-      color: #faa33d;
-      transform: scale(1.2);
+    margin-bottom: 25px;
+  }
+  ul {
+    padding: 0;
+    list-style: none;
+    li {
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      &::before {
+        content: ">";
+        color: #faa33d;
+        font-size: 11px;
+        margin-right: 12px;
+        font-weight: 900;
+      }
     }
   }
 }
 
-/* ================= REACH US ================= */
-
-.reach {
-  p {
-    cursor: default;
-  }
-
-  .linkText::after {
-    display: none;
-  }
-
-  p:hover .linkText {
-    color: #fff;
+.contactItem {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+  .icon {
+    color: #faa33d;
+    font-size: 15px;
+    margin-top: 5px;
   }
 }
 
-/* ================= RESPONSIVE ================= */
+.linkText {
+  font-size: 14px;
+  color: #d1d1d1;
+  cursor: pointer;
+  &:hover {
+    color: #faa33d;
+  }
+}
+
+.socials {
+  display: flex;
+  gap: 18px;
+  margin-top: 25px;
+  a {
+    color: #fff;
+    font-size: 18px;
+    transition: 0.3s;
+    &:hover {
+      color: #faa33d;
+    }
+  }
+}
+
+.bankBox {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+  padding: 30px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.bankItem {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  .bankIcon {
+    color: #faa33d;
+    font-size: 22px;
+  }
+  label {
+    display: block;
+    color: #faa33d;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  p {
+    color: #fff;
+    font-size: 14px;
+    margin: 0;
+  }
+}
 
 @media (max-width: 992px) {
   .footerGrid {
     grid-template-columns: repeat(2, 1fr);
   }
-}
-
-@media (max-width: 576px) {
-  .footerGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .topStrip {
+  .bankBox {
     flex-direction: column;
-    text-align: center;
+    gap: 20px;
   }
 }
-// .footer {
-//   background: #290300;
-//   color: #fff;
-// }
-
-/* TOP STRIP */
-// .topStrip {
-//   background: #4b0702;
-//   max-width: 700px;
-//   margin: 0 auto 60px;
-//   padding: 20px 30px;
-//   border-radius: 0 0 6px 6px;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   gap: 20px;
-//   text-align: center;
-// }
-
-// .logoBox {
-//   width: 80px;
-//   height: 80px;
-//   background: #fff;
-//   border-radius: 10px;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-
-//   img {
-//     width: 100%;
-//     height: 100%;
-//     object-fit: contain;
-//   }
-// }
-
-// /* GRID */
-// .footerGrid {
-//   display: grid;
-//   grid-template-columns: repeat(5, 1fr);
-//   gap: 40px;
-//   padding: 40px 6%;
-// }
-
-// h4 {
-//   color: #faa33d;
-//   margin-bottom: 16px;
-// }
-
-// ul {
-//   list-style: none;
-//   padding: 0;
-// }
-
-// li,
-// p {
-//   font-size: 14px;
-//   line-height: 2;
-// }
-
-// .socials {
-//   display: flex;
-//   gap: 14px;
-//   margin-top: 10px;
-
-//   svg {
-//     cursor: pointer;
-//     transition: 0.3s;
-//     &:hover {
-//       color: #faa33d;
-//       transform: scale(1.15);
-//     }
-//   }
-// }
-
-// /* COPYRIGHT – NEVER DISAPPEARS */
-// .copyright {
-//   background: #4b0702;
-//   padding: 14px 6%;
-//   display: flex;
-//   justify-content: space-between;
-//   align-items: center;
-//   font-size: 13px;
-//   border-top: 1px solid rgba(255, 255, 255, 0.15);
-
-//   b {
-//     color: #faa33d;
-//   }
-// }
-
-// /* RESPONSIVE */
-// @media (max-width: 992px) {
-//   .footerGrid {
-//     grid-template-columns: repeat(2, 1fr);
-//   }
-// }
-
-// @media (max-width: 576px) {
-//   .footerGrid {
-//     grid-template-columns: 1fr;
-//   }
-
-//   .copyright {
-//     flex-direction: column;
-//     gap: 6px;
-//     text-align: center;
-//   }
-// }

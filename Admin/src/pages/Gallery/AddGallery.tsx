@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Container,
   Row,
@@ -22,38 +22,57 @@ type EventOption = {
 const ManageGallery = () => {
   const [events, setEvents] = useState<EventOption[]>([]);
   const [selectedEvent, setSelectedEvent] = useState("");
-
   const [title, setTitle] = useState("");
-  const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
-  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [files, setFiles] = useState<FileList | null>(null);
+  const [images, setImages] = useState<string[]>([]);
+  const [driveLink, setDriveLink] = useState("");
 
   const fileRef = useRef<HTMLInputElement | null>(null);
 
   /* ================= FETCH EVENTS ================= */
   useEffect(() => {
-    api.get("api/events").then((res: any) => {
-      const apiEvents =
-        res.data?.map((e: any) => ({
-          id: String(e.id),
-          title: e.title,
-        })) || [];
+    api
+      .get("/api/events")
+      .then((res: any) => {
+        // backend gives { upcoming, recent, past }
+        const allEvents = [
+          ...(res.upcoming || []),
+          ...(res.recent || []),
+          ...(res.past || []),
+        ];
 
-      setEvents(apiEvents);
-    });
+        setEvents(
+          allEvents.map((e: any) => ({
+            id: String(e.id),
+            title: e.title,
+          })),
+        );
+      })
+      .catch((err) => {
+        console.error("Events fetch error:", err);
+      });
   }, []);
 
-  /* ================= FETCH GALLERY (ONLY IF EVENT SELECTED) ================= */
+  /* ================= FETCH GALLERY ================= */
   const fetchGallery = async (eventId: string) => {
-    if (!eventId) {
-      setGalleryImages([]);
-      return;
-    }
+    if (!eventId) return; // ⛔ safety
 
     try {
-      const res: any = await api.get(`api/admin/gallery/${eventId}`);
-      setGalleryImages(res.images || []);
-    } catch {
-      setGalleryImages([]);
+      const res: any = await api.get(`/api/admin/gallery/event/${eventId}`);
+
+      // backend safe response handling
+      if (!res || typeof res !== "object") {
+        setImages([]);
+        return;
+      }
+
+      setImages(Array.isArray(res.images) ? res.images : []);
+      setDriveLink(res.drive_link || "");
+      setTitle(res.event_title || "");
+    } catch (err: any) {
+      console.error("Gallery fetch failed:", err);
+      setImages([]); // ⛔ prevent UI crash
+      setDriveLink("");
     }
   };
 
@@ -61,44 +80,27 @@ const ManageGallery = () => {
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!title.trim()) {
-      alert("Please enter title");
-      return;
-    }
-
-    if (!selectedFiles || selectedFiles.length === 0) {
-      alert("Please select at least one photo");
-      return;
-    }
+    if (!selectedEvent) return alert("Select event");
+    if (!files || files.length === 0) return alert("Select images");
 
     const formData = new FormData();
+    formData.append("event_id", selectedEvent);
     formData.append("title", title);
 
-    // event OPTIONAL
-    if (selectedEvent) {
-      formData.append("event_id", selectedEvent);
-    }
-
-    Array.from(selectedFiles).forEach((file) => {
-      formData.append("files[]", file);
+    Array.from(files).forEach((f) => {
+      formData.append("files[]", f);
     });
 
     try {
-      await api.create("api/admin/gallery", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      await api.create("/api/admin/gallery", formData);
+      alert("Images uploaded");
+      fetchGallery(selectedEvent);
 
-      alert("Images uploaded successfully");
-
-      setTitle("");
-      setSelectedFiles(null);
       if (fileRef.current) fileRef.current.value = "";
-
-      if (selectedEvent) {
-        fetchGallery(selectedEvent);
-      }
-    } catch {
-      alert("Upload failed. Please try again.");
+      setFiles(null);
+    } catch (err) {
+      console.error("Upload error:", err);
+      alert("Upload failed");
     }
   };
 
@@ -106,96 +108,89 @@ const ManageGallery = () => {
     <div className="page-content">
       <Container fluid>
         <Row>
-          {/* ================= LEFT FORM ================= */}
+          {/* LEFT */}
           <Col lg={4}>
             <Card>
               <CardBody>
-                <h4 className="card-title mb-4">Upload Event Photos</h4>
+                <h4>Upload Event Photos</h4>
 
                 <Form onSubmit={handleUpload}>
-                  {/* TITLE INPUT */}
-                  <div className="mb-3">
-                    <Label>Title</Label>
-                    <Input
-                      type="text"
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                      placeholder="Enter title"
-                    />
-                  </div>
+                  <Label>Select Event</Label>
+                  <Input
+                    type="select"
+                    value={selectedEvent}
+                    onChange={(e) => {
+                      const id = e.target.value;
+                      setSelectedEvent(id);
 
-                  {/* EVENT SELECT (OPTIONAL) */}
-                  <div className="mb-3">
-                    <Label>Select Event (Optional)</Label>
-                    <Input
-                      type="select"
-                      value={selectedEvent}
-                      onChange={(e) => {
-                        const eventId = e.target.value;
-                        setSelectedEvent(eventId);
-                        if (eventId) {
-                          fetchGallery(eventId);
-                        } else {
-                          setGalleryImages([]);
-                        }
-                      }}
-                    >
-                      <option value="">-- Optional --</option>
-                      {events.map((event) => (
-                        <option key={event.id} value={event.id}>
-                          {event.title}
-                        </option>
-                      ))}
-                    </Input>
-                  </div>
+                      if (!id) {
+                        setImages([]);
+                        setTitle("");
+                        return;
+                      }
 
-                  {/* FILE INPUT */}
-                  <div className="mb-3">
-                    <Label>Photos</Label>
-                    <Input
-                      type="file"
-                      multiple
-                      innerRef={fileRef}
-                      onChange={(e) => setSelectedFiles(e.target.files)}
-                    />
-                  </div>
+                      const ev = events.find((x) => x.id === id);
+                      setTitle(ev ? ev.title : "");
 
-                  <Button color="primary" className="w-100" type="submit">
-                    Upload to Gallery
+                      // ✅ only ONE controlled call
+                      fetchGallery(id);
+                    }}
+                  >
+                    <option value="">-- Select Event --</option>
+                    {events.map((e) => (
+                      <option key={e.id} value={e.id}>
+                        {e.title}
+                      </option>
+                    ))}
+                  </Input>
+
+                  <Label className="mt-3">Title</Label>
+                  <Input value={title} readOnly />
+
+                  <Label className="mt-3">Photos</Label>
+                  <Input
+                    type="file"
+                    multiple
+                    innerRef={fileRef}
+                    onChange={(e) => setFiles(e.target.files)}
+                  />
+
+                  <Button className="mt-3 w-100" color="primary">
+                    Upload
                   </Button>
                 </Form>
               </CardBody>
             </Card>
           </Col>
 
-          {/* ================= RIGHT GALLERY ================= */}
+          {/* RIGHT */}
           <Col lg={8}>
             <Card>
               <CardBody>
-                <h4 className="card-title mb-4">Gallery Grid Display</h4>
+                <h4>Gallery</h4>
 
-                {selectedEvent ? (
-                  <Row>
-                    {galleryImages.map((path, idx) => (
-                      <Col md={4} key={idx} className="mb-3">
-                        <img
-                          src={`${process.env.REACT_APP_API_URL}/storage/${path}`}
-                          alt="gallery"
-                          className="img-fluid rounded shadow"
-                          style={{
-                            height: "150px",
-                            width: "100%",
-                            objectFit: "cover",
-                          }}
-                        />
-                      </Col>
-                    ))}
-                  </Row>
-                ) : (
-                  <p className="text-muted">
-                    Select an event to view its gallery.
-                  </p>
+                {driveLink && (
+                  <a
+                    href={driveLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn btn-outline-primary mb-3"
+                  >
+                    Open Google Drive Folder
+                  </a>
                 )}
+
+                <Row>
+                  {images.map((img, i) => (
+                    <Col md={4} key={i} className="mb-3">
+                      <img
+                        src={`${process.env.REACT_APP_API_URL}/storage/${img}`}
+                        className="img-fluid rounded"
+                        style={{ height: 150, objectFit: "cover" }}
+                      />
+                    </Col>
+                  ))}
+                </Row>
               </CardBody>
             </Card>
           </Col>

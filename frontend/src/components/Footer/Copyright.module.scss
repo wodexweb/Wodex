@@ -1,27 +1,31 @@
-.copyright {
-  background: #3d0501; /* slightly darker than footer */
-  padding: 14px 6%;
+.copyrightContainer {
+  width: 100%; // Full width
+  z-index: 1; // Footer (z-index 2) ke piche
+  margin-top: -30px; // Footer ke piche pull karne ke liye
+}
+
+.copyrightBox {
+  background: #1a0200; // Slightly darker than main footer
+  padding: 40px 5% 20px; // Sideways padding as per container width
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 6px;
-  // margin-top: 100px;
+  color: rgba(255, 255, 255, 0.6);
   font-size: 13px;
-  color: #ffffff;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0; // Round style remove kar diya as per request
 
   b {
     color: #faa33d;
-    font-weight: 600;
+    font-weight: 700;
   }
 }
 
-@media (max-width: 576px) {
-  .copyright {
+@media (max-width: 768px) {
+  .copyrightBox {
     flex-direction: column;
+    gap: 10px;
     text-align: center;
-    font-size: 12px;
-    gap: 4px;
+    padding: 20px;
   }
 }
