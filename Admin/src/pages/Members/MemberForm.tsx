@@ -16,6 +16,20 @@ import {
 
 const api = new APIClient();
 
+/* ================= PREDEFINED OPTIONS ================= */
+
+const POSITIONS = [
+  "President",
+  "Hon. Secretary",
+  "Treasurer",
+  "President Elect",
+  "Past President",
+  "Executive Committee Member",
+  "Advisory Board",
+];
+
+const CATEGORIES = ["Core Committee", "Executive Committee", "Advisory Council", "General Member"];
+
 /* ================= TYPES ================= */
 
 interface MemberFormData {
@@ -31,9 +45,9 @@ const MemberForm: React.FC = () => {
 
   const [formData, setFormData] = useState<MemberFormData>({
     name: "",
-    position: "",
+    position: "", // Will be set by dropdown
     rank: "",
-    category: "",
+    category: "", // Will be set by dropdown
     photo: null,
   });
 
@@ -101,8 +115,6 @@ const MemberForm: React.FC = () => {
     }
   };
 
-  /* ================= UI ================= */
-
   return (
     <div className="page-content">
       <Container fluid>
@@ -120,6 +132,7 @@ const MemberForm: React.FC = () => {
                         <Input
                           type="text"
                           name="name"
+                          placeholder="Enter full name"
                           value={formData.name}
                           onChange={handleChange}
                           required
@@ -130,13 +143,21 @@ const MemberForm: React.FC = () => {
                     <Col md={6}>
                       <FormGroup className="mb-3">
                         <Label>Position</Label>
+                        {/* ✅ DROPDOWN FOR POSITION */}
                         <Input
-                          type="text"
+                          type="select"
                           name="position"
                           value={formData.position}
                           onChange={handleChange}
                           required
-                        />
+                        >
+                          <option value="">-- Select Position --</option>
+                          {POSITIONS.map((pos) => (
+                            <option key={pos} value={pos}>
+                              {pos}
+                            </option>
+                          ))}
+                        </Input>
                       </FormGroup>
                     </Col>
                   </Row>
@@ -144,10 +165,11 @@ const MemberForm: React.FC = () => {
                   <Row>
                     <Col md={6}>
                       <FormGroup className="mb-3">
-                        <Label>Rank</Label>
+                        <Label>Rank (Order of Appearance)</Label>
                         <Input
                           type="number"
                           name="rank"
+                          placeholder="e.g. 1, 2, 3"
                           value={formData.rank}
                           onChange={handleChange}
                           required
@@ -158,19 +180,27 @@ const MemberForm: React.FC = () => {
                     <Col md={6}>
                       <FormGroup className="mb-3">
                         <Label>Category</Label>
+                        {/* ✅ DROPDOWN FOR CATEGORY */}
                         <Input
-                          type="text"
+                          type="select"
                           name="category"
                           value={formData.category}
                           onChange={handleChange}
                           required
-                        />
+                        >
+                          <option value="">-- Select Category --</option>
+                          {CATEGORIES.map((cat) => (
+                            <option key={cat} value={cat}>
+                              {cat}
+                            </option>
+                          ))}
+                        </Input>
                       </FormGroup>
                     </Col>
                   </Row>
 
-                  {/* PHOTO */}
-                  <Row className="align-items-center">
+                  {/* PHOTO PREVIEW SECTION */}
+                  <Row className="align-items-center mt-3">
                     <Col md={6}>
                       <FormGroup className="mb-3">
                         <Label>Photo</Label>
@@ -180,6 +210,7 @@ const MemberForm: React.FC = () => {
                           innerRef={fileRef}
                           onChange={handlePhotoChange}
                         />
+                        <small className="text-muted">Recommended: Square image (1:1)</small>
                       </FormGroup>
                     </Col>
 
@@ -188,17 +219,17 @@ const MemberForm: React.FC = () => {
                         <img
                           src={preview}
                           alt="Preview"
-                          className="rounded-circle border"
+                          className="rounded-circle border shadow-sm"
                           style={{
-                            width: 160,
-                            height: 160,
+                            width: 140,
+                            height: 140,
                             objectFit: "cover",
                           }}
                         />
                       ) : (
                         <div
-                          className="border rounded-circle d-flex align-items-center justify-content-center text-muted"
-                          style={{ width: 160, height: 160 }}
+                          className="border rounded-circle d-flex align-items-center justify-content-center text-muted mx-auto"
+                          style={{ width: 140, height: 140, background: "#f8f9fa" }}
                         >
                           No image
                         </div>
@@ -207,9 +238,14 @@ const MemberForm: React.FC = () => {
                   </Row>
 
                   <div className="text-end mt-4">
-                    <Button color="primary" disabled={loading}>
-                      {loading && <Spinner size="sm" className="me-2" />}
-                      Save Member
+                    <Button color="primary" size="lg" disabled={loading} className="px-5">
+                      {loading ? (
+                        <>
+                          <Spinner size="sm" className="me-2" /> Saving...
+                        </>
+                      ) : (
+                        "Save Member"
+                      )}
                     </Button>
                   </div>
                 </Form>

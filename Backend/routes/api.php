@@ -156,4 +156,6 @@ Route::prefix('admin')->group(function () {
     Route::get('/gallery', [GalleryController::class, 'index']);               // list
     Route::get('/gallery/event/{eventId}', [GalleryController::class, 'byEvent']); // event-wise
     Route::delete('/gallery/{id}', [GalleryController::class, 'destroy']);     // delete
+    // Public route for the website
+Route::get('/galleries', [GalleryController::class, 'index']);
 });
