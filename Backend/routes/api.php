@@ -30,7 +30,8 @@ use App\Http\Controllers\Api\{
     NoticeController,
     PdfPageController,
     MembershipPlanController,
-    GalleryController
+    GalleryController,
+    AdminController
 };
 
 /*
@@ -128,6 +129,12 @@ Route::prefix('menu-items')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/admins', [AdminController::class, 'index']);
+    Route::post('/admins', [AdminController::class, 'store']);
+    Route::put('/admins/{id}', [AdminController::class, 'update']);
+    Route::delete('/admins/{id}', [AdminController::class, 'destroy']);
+
+
     Route::get('/admin/me', [AuthController::class, 'me']);
     Route::post('/admin/logout', [AuthController::class, 'logout']);
 
