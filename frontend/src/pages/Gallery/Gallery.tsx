@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios"; // or use your APIClient
-
+import axios from "axios";
 import styles from "./Gallery.module.scss";
 import PageHeaderArea from "../../components/PageHeaderArea/PageHeaderArea";
 
-// Match the structure returned by your backend index() method
 interface GalleryItem {
   gallery_id: number;
   gallery_title: string;
   event_title: string;
-  images: string[]; // These are full URLs from asset('storage/...')
+  images: string[]; 
 }
 
 const Gallery: React.FC = () => {
@@ -18,11 +16,15 @@ const Gallery: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Replace with your actual API URL
     const fetchGalleries = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/admin/gallery");
-        setGalleries(response.data);
+        // FIX 1: Use the PUBLIC endpoint, not the ADMIN endpoint
+        const response = await axios.get("http://localhost:8000/api/galleries");
+        
+        // FIX 2: Access response.data.data to get the array
+        if (response.data && response.data.success) {
+          setGalleries(response.data.data);
+        }
       } catch (error) {
         console.error("Error fetching gallery:", error);
       } finally {
@@ -40,13 +42,12 @@ const Gallery: React.FC = () => {
       <section className={styles.page}>
         <div className={styles.container}>
           {loading ? (
-            <p>Loading galleries...</p>
+            <p className="text-center">Loading galleries...</p>
           ) : (
             <div className={styles.grid}>
               {galleries.length > 0 ? (
                 galleries.map((item) => (
                   <div key={item.gallery_id} className={styles.card}>
-                    {/* Display the first image as a cover if available */}
                     {item.images.length > 0 && (
                       <div className={styles.imageWrapper}>
                         <img 
@@ -57,17 +58,19 @@ const Gallery: React.FC = () => {
                       </div>
                     )}
                     
-                    <h2>{item.gallery_title}</h2>
-                    <p>{item.event_title}</p>
+                    <div className={styles.cardContent}>
+                      <h2>{item.gallery_title}</h2>
+                      <p className={styles.eventTag}>{item.event_title}</p>
 
-                    {/* Linking to the detail page using ID */}
-                    <Link to={`/api/gallery/${item.gallery_id}`} className={styles.viewBtn}>
-                      View Photos ({item.images.length})
-                    </Link>
+                      {/* FIX 3: Link to your React Route, NOT the API endpoint */}
+                      <Link to={`/gallery/${item.gallery_id}`} className={styles.viewBtn}>
+                        View Photos ({item.images.length})
+                      </Link>
+                    </div>
                   </div>
                 ))
               ) : (
-                <p>No galleries found.</p>
+                <p className="text-center">No galleries found.</p>
               )}
             </div>
           )}

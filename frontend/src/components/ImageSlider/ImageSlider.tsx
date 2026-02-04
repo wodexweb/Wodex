@@ -7,19 +7,19 @@ const api = new APIClient();
 const ImageSlider: React.FC = () => {
   const [images, setImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
+useEffect(() => {
     const fetchAllGalleryImages = async () => {
       try {
-        // 1. Fetch all galleries from the backend
-        const res: any = await api.get("/api/admin/gallery");
+        // Use the API helper - usually it handles the /api/ prefix automatically
+        const res: any = await api.get("/api/galleries");
         
-        if (res && Array.isArray(res) && res.length > 0) {
-          // 2. Combine images from ALL events into one single array
-          // .flatMap handles nested arrays: [[img1, img2], [img3, img4]] -> [img1, img2, img3, img4]
-          const combinedImages = res.flatMap((event: any) => event.images || []);
+        // FIX: Extract the array from res.data
+        if (res && res.success && Array.isArray(res.data)) {
           
-          // 3. Optional: Shuffle images so the slider looks fresh on every refresh
+          // Combine images from ALL gallery objects
+          const combinedImages = res.data.flatMap((gallery: any) => gallery.images || []);
+          
+          // Shuffle them
           const shuffledImages = combinedImages.sort(() => 0.5 - Math.random());
           
           setImages(shuffledImages);
