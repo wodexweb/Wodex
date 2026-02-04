@@ -30,7 +30,8 @@ use App\Http\Controllers\Api\{
     NoticeController,
     PdfPageController,
     MembershipPlanController,
-    GalleryController
+    GalleryController,
+    AchievementController
 };
 
 /*
@@ -83,7 +84,8 @@ Route::apiResource('events', EventController::class);
 Route::apiResource('announcements', AnnouncementController::class);
 Route::apiResource('members', MemberController::class);
 Route::apiResource('registration', RegisterController::class);
-
+Route::apiResource('achievements', AchievementController::class)->only(['index', 'show']);
+Route::apiResource('notices', NoticeController::class)->only(['index', 'show']);
 /*
 |--------------------------------------------------------------------------
 | SETTINGS
@@ -112,14 +114,27 @@ Route::prefix('menus')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| MENU ITEMS
+| MENUS & MENU ITEMS (PUBLIC & ADMIN)
 |--------------------------------------------------------------------------
 */
+Route::prefix('menus')->group(function () {
+    Route::get('/', [MenuController::class, 'index']);
+    
+    // This is the specific route your useMenu hook calls
+    Route::get('/by-location/{location}', [MenuController::class, 'getByLocation']);
+    
+    Route::post('/', [MenuController::class, 'store']);
+    Route::get('/{id}', [MenuController::class, 'show']);
+});
+
 Route::prefix('menu-items')->group(function () {
     Route::post('/', [MenuItemController::class, 'store']);
     Route::post('/order', [MenuItemController::class, 'updateOrder']);
     Route::patch('/{id}/toggle', [MenuItemController::class, 'toggle']);
     Route::delete('/{id}', [MenuItemController::class, 'destroy']);
+    
+    // Added: Allow fetching items for a specific menu directly if needed
+    Route::get('/by-menu/{menuId}', [MenuItemController::class, 'index']);
 });
 
 /*
@@ -145,7 +160,7 @@ Route::prefix('admin')->group(function () {
     Route::apiResource('notices', NoticeController::class);
     Route::apiResource('pdf-pages', PdfPageController::class);
     Route::apiResource('membership-plans', MembershipPlanController::class);
-
+    Route::apiResource('achievements', AchievementController::class);
     /*
     |--------------------------------------------------------------------------
     | GALLERY (ADMIN)

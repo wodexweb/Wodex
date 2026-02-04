@@ -22,29 +22,34 @@ class MenuItem extends Model
 
     /* ================= RELATIONSHIPS ================= */
 
+    // The Menu this item belongs to
+    public function menu()
+    {
+        return $this->belongsTo(Menu::class);
+    }
+
     // Parent menu item (for submenu)
     public function parent()
     {
         return $this->belongsTo(MenuItem::class, 'parent_id');
     }
 
-    // Child menu items (dropdown)
+    // Child menu items (dropdown) - Fixed with recursive loading
     public function children()
     {
         return $this->hasMany(MenuItem::class, 'parent_id')
             ->where('is_active', true)
-            ->orderBy('order');
+            ->orderBy('order')
+            ->with('children'); // ✅ This allows infinite nesting for submenus
     }
 
     /* ================= SCOPES ================= */
 
-    // Only active menu items
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
     }
 
-    // Only top-level items
     public function scopeTopLevel($query)
     {
         return $query->whereNull('parent_id');

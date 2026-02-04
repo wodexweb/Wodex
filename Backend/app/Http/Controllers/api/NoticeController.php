@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Notice; // CRITICAL: This must be here
+use App\Models\Notice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Exception;
@@ -13,11 +13,19 @@ class NoticeController extends Controller
     public function index()
     {
         try {
-            // Fetching all notices from the database
-            return response()->json(Notice::orderBy('publish_date', 'desc')->get());
+            // Fetching active notices for the frontend
+            $notices = Notice::orderBy('publish_date', 'desc')->get();
+            
+            // WRAPPING: Match the { success: true, data: [...] } format
+            return response()->json([
+                'success' => true,
+                'data' => $notices
+            ], 200);
         } catch (Exception $e) {
-            // Returning the error message to help debug
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json([
+                'success' => false, 
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -30,7 +38,6 @@ class NoticeController extends Controller
                 'attachment'   => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             ]);
 
-            // Capture all fields including the newly added 'status'
             $data = $request->only([
                 'notice_title', 
                 'notice_description', 
@@ -45,40 +52,50 @@ class NoticeController extends Controller
 
             $notice = Notice::create($data);
 
-            return response()->json($notice, 201);
+            return response()->json([
+                'success' => true,
+                'data' => $notice
+            ], 201);
         } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
     }
 
-    // ... (include update and destroy methods as previously provided)
-
-
     public function update(Request $request, $id)
     {
-        $notice = Notice::findOrFail($id);
-        
-        // Handle multipart/form-data with PUT spoofing
-        $data = $request->all();
+        try {
+            $notice = Notice::findOrFail($id);
+            $data = $request->all();
 
-        if ($request->hasFile('attachment')) {
-            if ($notice->attachment_path) {
-                Storage::disk('public')->delete($notice->attachment_path);
+            if ($request->hasFile('attachment')) {
+                if ($notice->attachment_path) {
+                    Storage::disk('public')->delete($notice->attachment_path);
+                }
+                $data['attachment_path'] = $request->file('attachment')->store('notices', 'public');
             }
-            $data['attachment_path'] = $request->file('attachment')->store('notices', 'public');
-        }
 
-        $notice->update($data);
-        return response()->json(['message' => 'Notice updated successfully', 'data' => $notice]);
+            $notice->update($data);
+            return response()->json([
+                'success' => true, 
+                'message' => 'Notice updated successfully', 
+                'data' => $notice
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
     }
 
     public function destroy($id)
     {
-        $notice = Notice::findOrFail($id);
-        if ($notice->attachment_path) {
-            Storage::disk('public')->delete($notice->attachment_path);
+        try {
+            $notice = Notice::findOrFail($id);
+            if ($notice->attachment_path) {
+                Storage::disk('public')->delete($notice->attachment_path);
+            }
+            $notice->delete();
+            return response()->json(['success' => true, 'message' => 'Notice deleted successfully']);
+        } catch (Exception $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
-        $notice->delete();
-        return response()->json(['message' => 'Notice deleted successfully']);
     }
 }

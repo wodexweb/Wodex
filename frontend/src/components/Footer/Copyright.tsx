@@ -7,7 +7,7 @@ const Copyright: React.FC = () => {
       <div className={styles.copyrightBox}>
         <span>© 2026 AOP GUJARAT | All Rights Reserved.</span>
         <span>
-          Website Developed By : <b>Wodex Web</b>
+          Website Developed By : <b>TEAMS</b>
         </span>
       </div>
     </div>

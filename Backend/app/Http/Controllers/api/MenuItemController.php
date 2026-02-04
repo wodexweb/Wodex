@@ -109,4 +109,31 @@ class MenuItemController extends Controller
 
         $item->delete();
     }
+    // Add this method inside MenuItemController
+
+/**
+ * Get nested menu items by menu location slug
+ */
+public function getByLocation($location)
+{
+    // 1. Find the menu by its location string (e.g., 'footer-about')
+    $menu = \App\Models\Menu::where('location', $location)->first();
+
+    if (!$menu) {
+        return response()->json(['items' => []], 404);
+    }
+
+    // 2. Fetch only top-level items (parent_id is null) 
+    // and pull their children recursively using the relationship
+    $items = MenuItem::where('menu_id', $menu->id)
+        ->whereNull('parent_id')
+        ->where('is_active', true)
+        ->orderBy('order', 'asc')
+        ->with('children') // This pulls sub-menus automatically
+        ->get();
+
+    return response()->json([
+        'items' => $items
+    ]);
+}
 }

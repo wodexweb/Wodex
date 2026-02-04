@@ -30,9 +30,18 @@ const Achievements = () => {
     const fetchAchievements = useCallback(async () => {
         try {
             const response: any = await api.get("api/admin/achievements");
-            setAchievements(Array.isArray(response) ? response : []);
+            
+            /** * FIX: Laravel returns { success: true, data: [...] }
+             * We must check for response.data
+             */
+            if (response && response.data) {
+                setAchievements(response.data);
+            } else if (Array.isArray(response)) {
+                setAchievements(response);
+            }
         } catch (error) {
             console.error("Fetch Error", error);
+            setAchievements([]);
         }
     }, []);
 
@@ -54,7 +63,8 @@ const Achievements = () => {
 
         try {
             if (isEditing && selectedId) {
-                payload.append("_method", "PUT"); // Method spoofing for Laravel PUT with files
+                // Method spoofing for Laravel to handle PUT with FormData
+                payload.append("_method", "PUT"); 
                 await api.create(`api/admin/achievements/${selectedId}`, payload, {
                     headers: { "Content-Type": "multipart/form-data" }
                 });
@@ -67,7 +77,7 @@ const Achievements = () => {
             resetForm();
             fetchAchievements();
         } catch (error: any) {
-            alert("Action Failed: Check file size or backend validation.");
+            alert("Action Failed: Check file size or validation.");
         } finally {
             setLoading(false);
         }
@@ -138,12 +148,22 @@ const Achievements = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {achievements.map((item, idx) => (
-                                            <tr key={idx}>
+                                        {achievements.length > 0 ? achievements.map((item, idx) => (
+                                            <tr key={item.id || idx}>
                                                 <td>
-                                                    <img src={item.image_url} alt="" className="rounded shadow-sm" style={{ width: "50px", height: "40px", objectFit: "cover" }} />
+                                                    <img 
+                                                        src={item.image_url || "https://via.placeholder.com/50x40?text=No+Img"} 
+                                                        alt="" 
+                                                        className="rounded shadow-sm" 
+                                                        style={{ width: "50px", height: "40px", objectFit: "cover" }} 
+                                                    />
                                                 </td>
-                                                <td>{item.title}</td>
+                                                <td>
+                                                    <div className="fw-medium">{item.title}</div>
+                                                    <small className="text-muted d-block text-truncate" style={{maxWidth: '150px'}}>
+                                                        {item.description}
+                                                    </small>
+                                                </td>
                                                 <td>
                                                     <div className="d-flex align-items-center gap-2">
                                                         <Badge color={item.status === 'active' ? 'success' : 'danger'}>{item.status}</Badge>
@@ -154,10 +174,19 @@ const Achievements = () => {
                                                 </td>
                                                 <td>
                                                     <Button color="soft-info" size="sm" className="me-2" onClick={() => handleEdit(item)}>Edit</Button>
-                                                    <Button color="soft-danger" size="sm" onClick={async () => { if(window.confirm("Delete?")) { await api.delete(`api/admin/achievements/${item.id}`); fetchAchievements(); } }}>Delete</Button>
+                                                    <Button color="soft-danger" size="sm" onClick={async () => { 
+                                                        if(window.confirm("Delete?")) { 
+                                                            await api.delete(`api/admin/achievements/${item.id}`); 
+                                                            fetchAchievements(); 
+                                                        } 
+                                                    }}>Delete</Button>
                                                 </td>
                                             </tr>
-                                        ))}
+                                        )) : (
+                                            <tr>
+                                                <td colSpan={4} className="text-center py-4 text-muted">No records found.</td>
+                                            </tr>
+                                        )}
                                     </tbody>
                                 </Table>
                             </CardBody>

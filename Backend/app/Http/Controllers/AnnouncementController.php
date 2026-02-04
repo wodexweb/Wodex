@@ -27,7 +27,7 @@ class AnnouncementController extends Controller
             'description' => 'nullable|string',
             'link'        => 'nullable|url',
             'end_date'    => 'required|date|after_or_equal:today',
-            'photo'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'photo'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:10048',
         ]);
 
         $photoPath = null;

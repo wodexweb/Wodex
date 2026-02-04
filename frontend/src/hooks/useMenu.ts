@@ -15,9 +15,11 @@ export const useMenu = (location: string) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Matches the Laravel route: /api/menus/by-location/{location}
     api
       .get(`/api/menus/by-location/${location}`)
       .then((res: any) => {
+        // We expect { items: [...] } from Laravel
         setMenu(res?.items || []);
       })
       .catch(() => setMenu([]))
