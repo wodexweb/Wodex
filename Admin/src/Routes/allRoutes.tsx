@@ -100,7 +100,7 @@ const authProtectedRoutes = [
 
   // GALLERY ✅
   { path: "/gallery/add", component: <AddGallery /> },
-  // { path: "/gallery/manage", component: <ManageGallery /> },
+  // { path: "/gallery/manage", component: <ManageGallery /> }, 
 
   // MASTER SETTINGS
   { path: "/master-settings/general", component: <GenralSettings /> },

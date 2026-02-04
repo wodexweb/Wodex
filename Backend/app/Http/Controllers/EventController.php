@@ -26,7 +26,7 @@ class EventController extends Controller
         $validated = $request->validate([
             'title'       => 'required|string|max:255',
             'link'        => 'required|url',
-            'photo'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:10048',
+            'photo'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:100048',
             'description' => 'required|string',
             'end_date'    => 'required|date',
             'status'      => 'nullable|in:upcoming,recent,past',

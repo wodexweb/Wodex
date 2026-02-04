@@ -60,6 +60,16 @@ const BottomNavbar: React.FC = () => {
               </NavDropdown.Item>
             </NavDropdown>
 
+            
+            <Nav.Link
+              as={Link}
+              to="/achievement"
+              className={styles.navLink}
+              onClick={closeMenu}
+            >
+              Achievement
+            </Nav.Link>
+
             <NavDropdown title="Events">
               <NavDropdown.Item as={Link} to="/events" onClick={closeMenu}>
                 All Events
@@ -82,6 +92,8 @@ const BottomNavbar: React.FC = () => {
                 Past Events
               </NavDropdown.Item>
             </NavDropdown>
+
+            
 
             <NavDropdown title="Office Bearers">
               <NavDropdown.Item
@@ -123,7 +135,16 @@ const BottomNavbar: React.FC = () => {
               className={styles.navLink}
               onClick={closeMenu}
             >
-              Contact Us
+              Contact Us  
+            </Nav.Link>
+
+             <Nav.Link
+              as={Link}
+              to="/Notices"
+              className={styles.navLink}
+              onClick={closeMenu}
+            >
+              Notices
             </Nav.Link>
 
             {/* ================= DYNAMIC MENU (ADDED ONLY) ================= */}

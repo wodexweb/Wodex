@@ -30,7 +30,8 @@ use App\Http\Controllers\Api\{
     NoticeController,
     PdfPageController,
     MembershipPlanController,
-    GalleryController
+    GalleryController,
+    AchievementController
 };
 
 /*
@@ -48,20 +49,12 @@ use App\Http\Controllers\{
 
 /*
 |--------------------------------------------------------------------------
-| ADMIN CONTROLLERS
-|--------------------------------------------------------------------------
-*/
-
-/*
-|--------------------------------------------------------------------------
 | PUBLIC AUTH ROUTES
 |--------------------------------------------------------------------------
 */
-
 Route::post('/register', [RegistrationController::class, 'register']);
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/login/verify-otp', [VerifyOtpController::class, 'verify']);
-
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendOtp']);
 Route::post('/reset-password', [ResetPasswordController::class, 'reset']);
 
@@ -78,15 +71,18 @@ Route::middleware('throttle:5,1')->post('/submit-form', [PaymentController::clas
 | PUBLIC READ-ONLY RESOURCES
 |--------------------------------------------------------------------------
 */
-Route::apiResource('membership-plans', MembershipPlanController::class);
-Route::apiResource('events', EventController::class);
-Route::apiResource('announcements', AnnouncementController::class);
-Route::apiResource('members', MemberController::class);
-Route::apiResource('registration', RegisterController::class);
+Route::apiResource('membership-plans', MembershipPlanController::class)->only(['index', 'show']);
+Route::apiResource('events', EventController::class)->only(['index', 'show']);
+Route::apiResource('announcements', AnnouncementController::class)->only(['index', 'show']);
+Route::apiResource('members', MemberController::class)->only(['index', 'show']);
+Route::apiResource('registration', RegisterController::class)->only(['store']);
+
+Route::apiResource('achievements', AchievementController::class)->only(['index', 'show']);
+Route::apiResource('notices', NoticeController::class)->only(['index', 'show']);
 
 /*
 |--------------------------------------------------------------------------
-| SETTINGS
+| SETTINGS (ADMIN UPDATE, PUBLIC READ)
 |--------------------------------------------------------------------------
 */
 Route::get('settings', [SettingController::class, 'index']);
@@ -104,14 +100,11 @@ Route::post('header', [HeaderSettingController::class, 'update']);
 |--------------------------------------------------------------------------
 */
 Route::prefix('menus')->group(function () {
-    Route::get('/', [MenuController::class, 'index']);
-    Route::post('/', [MenuController::class, 'store']);
-    Route::get('/{id}', [MenuController::class, 'show']);
-
-    // ✅ CORRECT
-    Route::get('/by-location/{location}', [MenuController::class, 'byLocation']);
+    Route::get('/', [MenuController::class, 'index']);           // admin list
+    Route::post('/', [MenuController::class, 'store']);          // admin create
+    Route::get('/{id}', [MenuController::class, 'show']);        // admin edit
+    Route::get('/by-location/{location}', [MenuController::class, 'byLocation']); // frontend
 });
-
 
 /*
 |--------------------------------------------------------------------------
@@ -127,7 +120,7 @@ Route::prefix('menu-items')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| PROTECTED ADMIN AUTH ROUTES
+| PROTECTED AUTH ROUTES
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth:sanctum')->group(function () {
@@ -143,22 +136,28 @@ Route::middleware('auth:sanctum')->group(function () {
 | ADMIN PANEL ROUTES (PROTECTED)
 |--------------------------------------------------------------------------
 */
-Route::prefix('admin')->group(function () {
+Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
 
     Route::apiResource('notices', NoticeController::class);
     Route::apiResource('pdf-pages', PdfPageController::class);
     Route::apiResource('membership-plans', MembershipPlanController::class);
+    Route::apiResource('achievements', AchievementController::class);
 
     /*
     |--------------------------------------------------------------------------
     | GALLERY (ADMIN)
     |--------------------------------------------------------------------------
     */
-    Route::get('/gallery/events', [GalleryController::class, 'events']);        // dropdown
-    Route::post('/gallery', [GalleryController::class, 'store']);              // upload
-    Route::get('/gallery', [GalleryController::class, 'index']);               // list
-    Route::get('/gallery/event/{eventId}', [GalleryController::class, 'byEvent']); // event-wise
-    Route::delete('/gallery/{id}', [GalleryController::class, 'destroy']);     // delete
-    // Public route for the website
-    Route::get('/galleries', [GalleryController::class, 'index']);
+    Route::get('/gallery/events', [GalleryController::class, 'events']);
+    Route::post('/gallery', [GalleryController::class, 'store']);
+    Route::get('/gallery', [GalleryController::class, 'index']);
+    Route::get('/gallery/event/{eventId}', [GalleryController::class, 'byEvent']);
+    Route::delete('/gallery/{id}', [GalleryController::class, 'destroy']);
 });
+
+/*
+|--------------------------------------------------------------------------
+| PUBLIC GALLERY
+|--------------------------------------------------------------------------
+*/
+Route::get('/galleries', [GalleryController::class, 'index']);

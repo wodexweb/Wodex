@@ -6,6 +6,7 @@ import RecentEvents from "../components/Events/Recent/RecentEvents";
 import PastEvents from "../components/Events/Past/PastEvents";
 import Members from "../components/Members/Members";
 import ImageSlider from "../components/ImageSlider/ImageSlider";
+// import NoticePage from "./Notices/Notices";
 
 const Home: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ const Home: React.FC = () => {
       <RecentEvents />
       <PastEvents />
       <Members />
+      {/* <NoticePage /> */}
       <ImageSlider />
     </>
   );

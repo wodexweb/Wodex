@@ -13,7 +13,7 @@ class Gallery extends Model
     ];
 
     protected $casts = [
-        'images' => 'array'
+        'images' => 'array',
     ];
 
     public function event()

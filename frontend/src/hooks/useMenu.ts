@@ -35,11 +35,12 @@ export interface MenuItem {
   id: number;
   title: string;
   url: string;
+  children?: MenuItem[]; // ✅ FIXED
 }
 
 export const useMenu = (location: string) => {
   const [menu, setMenu] = useState<MenuItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     setLoading(true);
@@ -49,7 +50,7 @@ export const useMenu = (location: string) => {
       .then((res) => {
         console.log("MENU RESPONSE:", res);
 
-        // ✅ because interceptor already returns response.data
+        // interceptor already returns response.data
         if (Array.isArray(res)) {
           setMenu(res);
         } else if (Array.isArray(res?.data)) {

@@ -30,7 +30,13 @@ const Notices = () => {
   const fetchNotices = useCallback(async () => {
     try {
       const response: any = await api.get("api/admin/notices");
-      setNotices(Array.isArray(response) ? response : []);
+      
+      // FIX: Check for the 'data' property in the response object
+      if (response && response.data) {
+        setNotices(response.data);
+      } else if (Array.isArray(response)) {
+        setNotices(response);
+      }
     } catch (error: any) {
       console.error("Fetch Error:", error.response?.data || error.message);
     }

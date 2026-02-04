@@ -11,6 +11,12 @@ import AboutGPICC from "../pages/About/AboutSubLink_One/About";
 import BankDetails from "../pages/About/AboutSubLink_Two/BankDetails";
 import Logos from "../pages/About/AboutSubLink_Three/Logos";
 
+/* ACHIEVEMENT */
+import AchievementPage from "../pages/Achievement/Achievement.tsx";
+
+/* NOTICES */
+import NoticePage from "../pages/Notices/Notices"; // ADDED THIS
+
 /* EVENTS */
 import AllEvents from "../pages/Events/AllEvents";
 import UpcomingEvents from "../pages/Events/UpcomingEvents";
@@ -39,6 +45,12 @@ const AllRoutes: React.FC = () => {
         <Route path="/bank-details" element={<BankDetails />} />
         <Route path="/logos" element={<Logos />} />
 
+        {/* ACHIEVEMENT */}
+        <Route path="/achievement" element={<AchievementPage />} />
+
+        {/* NOTICES */}
+        <Route path="/notices" element={<NoticePage />} /> {/* ADDED THIS */}
+
         {/* EVENTS */}
         <Route path="/events" element={<AllEvents />} />
         <Route path="/events/upcoming" element={<UpcomingEvents />} />
@@ -52,6 +64,9 @@ const AllRoutes: React.FC = () => {
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/pdf-pages" element={<PdfPages />} />
+
+        {/* FALLBACK */}
+        <Route path="*" element={<div className="p-20 text-center">404 - Page Not Found</div>} />
       </Routes>
     </MainLayout>
   );

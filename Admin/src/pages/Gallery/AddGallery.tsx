@@ -26,6 +26,7 @@ const ManageGallery = () => {
   const [files, setFiles] = useState<FileList | null>(null);
   const [images, setImages] = useState<string[]>([]);
   const [driveLink, setDriveLink] = useState("");
+  const [loading, setLoading] = useState(false); // Added loading state
 
   const fileRef = useRef<HTMLInputElement | null>(null);
 
@@ -34,7 +35,6 @@ const ManageGallery = () => {
     api
       .get("/api/events")
       .then((res: any) => {
-        // backend gives { upcoming, recent, past }
         const allEvents = [
           ...(res.upcoming || []),
           ...(res.recent || []),
@@ -45,7 +45,7 @@ const ManageGallery = () => {
           allEvents.map((e: any) => ({
             id: String(e.id),
             title: e.title,
-          })),
+          }))
         );
       })
       .catch((err) => {
@@ -53,26 +53,29 @@ const ManageGallery = () => {
       });
   }, []);
 
-  /* ================= FETCH GALLERY ================= */
-  const fetchGallery = async (eventId: string) => {
-    if (!eventId) return; // ⛔ safety
+  /* ================= FETCH GALLERY (Manual Trigger) ================= */
+  const fetchGallery = async () => {
+    if (!selectedEvent) return alert("Please select an event first");
 
+    setLoading(true);
     try {
-      const res: any = await api.get(`/api/admin/gallery/event/${eventId}`);
+      const res: any = await api.get(`/api/admin/gallery/event/${selectedEvent}`);
 
-      // backend safe response handling
       if (!res || typeof res !== "object") {
         setImages([]);
-        return;
+        setDriveLink("");
+      } else {
+        setImages(Array.isArray(res.images) ? res.images : []);
+        setDriveLink(res.drive_link || "");
+        // Only update title if the backend provides it, otherwise keep dropdown selection
+        if (res.event_title) setTitle(res.event_title);
       }
-
-      setImages(Array.isArray(res.images) ? res.images : []);
-      setDriveLink(res.drive_link || "");
-      setTitle(res.event_title || "");
     } catch (err: any) {
       console.error("Gallery fetch failed:", err);
-      setImages([]); // ⛔ prevent UI crash
+      setImages([]);
       setDriveLink("");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -88,16 +91,19 @@ const ManageGallery = () => {
     formData.append("title", title);
 
     Array.from(files).forEach((f) => {
-      formData.append("files[]", f);
+      formData.append("photos[]", f);
     });
 
     try {
       await api.create("/api/admin/gallery", formData);
-      alert("Images uploaded");
-      fetchGallery(selectedEvent);
-
+      alert("Images uploaded successfully");
+      
+      // Clear file input after successful upload
       if (fileRef.current) fileRef.current.value = "";
       setFiles(null);
+      
+      // Automatically refresh the view after upload
+      fetchGallery();
     } catch (err) {
       console.error("Upload error:", err);
       alert("Upload failed");
@@ -108,41 +114,44 @@ const ManageGallery = () => {
     <div className="page-content">
       <Container fluid>
         <Row>
-          {/* LEFT */}
+          {/* LEFT: Controls */}
           <Col lg={4}>
             <Card>
               <CardBody>
-                <h4>Upload Event Photos</h4>
+                <h4>Manage Event Photos</h4>
 
                 <Form onSubmit={handleUpload}>
                   <Label>Select Event</Label>
-                  <Input
-                    type="select"
-                    value={selectedEvent}
-                    onChange={(e) => {
-                      const id = e.target.value;
-                      setSelectedEvent(id);
-
-                      if (!id) {
-                        setImages([]);
-                        setTitle("");
-                        return;
-                      }
-
-                      const ev = events.find((x) => x.id === id);
-                      setTitle(ev ? ev.title : "");
-
-                      // ✅ only ONE controlled call
-                      fetchGallery(id);
-                    }}
-                  >
-                    <option value="">-- Select Event --</option>
-                    {events.map((e) => (
-                      <option key={e.id} value={e.id}>
-                        {e.title}
-                      </option>
-                    ))}
-                  </Input>
+                  <div className="d-flex gap-2">
+                    <Input
+                      type="select"
+                      value={selectedEvent}
+                      onChange={(e) => {
+                        const id = e.target.value;
+                        setSelectedEvent(id);
+                        const ev = events.find((x) => x.id === id);
+                        setTitle(ev ? ev.title : "");
+                        // ❌ fetchGallery(id) call removed from here
+                      }}
+                    >
+                      <option value="">-- Select Event --</option>
+                      {events.map((e) => (
+                        <option key={e.id} value={e.id}>
+                          {e.title}
+                        </option>
+                      ))}
+                    </Input>
+                    
+                    {/* ✅ NEW: Manual View Button */}
+                    <Button 
+                        type="button" 
+                        color="info" 
+                        onClick={fetchGallery}
+                        disabled={!selectedEvent || loading}
+                    >
+                      {loading ? "..." : "View"}
+                    </Button>
+                  </div>
 
                   <Label className="mt-3">Title</Label>
                   <Input value={title} readOnly />
@@ -156,18 +165,21 @@ const ManageGallery = () => {
                   />
 
                   <Button className="mt-3 w-100" color="primary">
-                    Upload
+                    Upload New Photos
                   </Button>
                 </Form>
               </CardBody>
             </Card>
           </Col>
 
-          {/* RIGHT */}
+          {/* RIGHT: Display */}
           <Col lg={8}>
             <Card>
               <CardBody>
-                <h4>Gallery</h4>
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <h4>Gallery Preview</h4>
+                  {images.length > 0 && <span>{images.length} Images found</span>}
+                </div>
 
                 {driveLink && (
                   <a
@@ -181,15 +193,26 @@ const ManageGallery = () => {
                 )}
 
                 <Row>
-                  {images.map((img, i) => (
-                    <Col md={4} key={i} className="mb-3">
-                      <img
-                        src={`${process.env.REACT_APP_API_URL}/storage/${img}`}
-                        className="img-fluid rounded"
-                        style={{ height: 150, objectFit: "cover" }}
-                      />
+                  {images.length > 0 ? (
+                    images.map((img, i) => (
+                      <Col md={4} key={i} className="mb-3">
+                        <img
+                          src={`${process.env.REACT_APP_API_URL}/storage/${img}`}
+                          className="img-fluid rounded border"
+                          alt={`Gallery ${i}`}
+                          style={{ height: 150, width: '100%', objectFit: "cover" }}
+                        />
+                      </Col>
+                    ))
+                  ) : (
+                    <Col>
+                      <div className="text-center p-5 border rounded bg-light">
+                        {selectedEvent 
+                          ? "Click 'View' to see images for this event." 
+                          : "Select an event to get started."}
+                      </div>
                     </Col>
-                  ))}
+                  )}
                 </Row>
               </CardBody>
             </Card>
