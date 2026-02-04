@@ -18,13 +18,21 @@ const Gallery: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Replace with your actual API URL
     const fetchGalleries = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/admin/gallery");
-        setGalleries(response.data);
+        const response = await axios.get("/api/galleries");
+
+        // ✅ FIX: handle wrapped response
+        if (Array.isArray(response.data)) {
+          setGalleries(response.data);
+        } else if (Array.isArray(response.data?.data)) {
+          setGalleries(response.data.data);
+        } else {
+          setGalleries([]);
+        }
       } catch (error) {
         console.error("Error fetching gallery:", error);
+        setGalleries([]);
       } finally {
         setLoading(false);
       }
@@ -49,19 +57,22 @@ const Gallery: React.FC = () => {
                     {/* Display the first image as a cover if available */}
                     {item.images.length > 0 && (
                       <div className={styles.imageWrapper}>
-                        <img 
-                          src={item.images[0]} 
-                          alt={item.gallery_title} 
-                          className={styles.coverImage} 
+                        <img
+                          src={item.images[0]}
+                          alt={item.gallery_title}
+                          className={styles.coverImage}
                         />
                       </div>
                     )}
-                    
+
                     <h2>{item.gallery_title}</h2>
                     <p>{item.event_title}</p>
 
                     {/* Linking to the detail page using ID */}
-                    <Link to={`/api/gallery/${item.gallery_id}`} className={styles.viewBtn}>
+                    <Link
+                      to={`/api/gallery/${item.gallery_id}`}
+                      className={styles.viewBtn}
+                    >
                       View Photos ({item.images.length})
                     </Link>
                   </div>
