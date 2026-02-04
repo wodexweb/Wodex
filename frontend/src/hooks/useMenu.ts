@@ -1,3 +1,31 @@
+// import { useEffect, useState } from "react";
+// import { APIClient } from "../helpers/api_helper";
+
+// const api = new APIClient();
+
+// export interface MenuItem {
+//   id: number;
+//   title: string;
+//   url: string;
+//   children?: MenuItem[];
+// }
+
+// export const useMenu = (location: string) => {
+//   const [menu, setMenu] = useState<MenuItem[]>([]);
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     api
+//       .get(`/api/menus/by-location/${location}`)
+//       .then((res: any) => {
+//         setMenu(res?.items || []);
+//       })
+//       .catch(() => setMenu([]))
+//       .finally(() => setLoading(false));
+//   }, [location]);
+
+//   return { menu, loading };
+// };
 import { useEffect, useState } from "react";
 import { APIClient } from "../helpers/api_helper";
 
@@ -7,7 +35,6 @@ export interface MenuItem {
   id: number;
   title: string;
   url: string;
-  children?: MenuItem[];
 }
 
 export const useMenu = (location: string) => {
@@ -15,12 +42,28 @@ export const useMenu = (location: string) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
+
     api
-      .get(`/api/menus/by-location/${location}`)
-      .then((res: any) => {
-        setMenu(res?.items || []);
+      .get<any>(`/api/menus/by-location/${location}`)
+      .then((res) => {
+        console.log("MENU RESPONSE:", res);
+
+        // ✅ because interceptor already returns response.data
+        if (Array.isArray(res)) {
+          setMenu(res);
+        } else if (Array.isArray(res?.data)) {
+          setMenu(res.data);
+        } else if (Array.isArray(res?.items)) {
+          setMenu(res.items);
+        } else {
+          setMenu([]);
+        }
       })
-      .catch(() => setMenu([]))
+      .catch((err) => {
+        console.error("MENU ERROR:", err);
+        setMenu([]);
+      })
       .finally(() => setLoading(false));
   }, [location]);
 

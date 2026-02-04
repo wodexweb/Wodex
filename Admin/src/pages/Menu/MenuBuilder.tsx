@@ -47,7 +47,6 @@ interface Menu {
   id: number;
   name: string;
   location: "header" | "footer";
-  items: MenuItem[];
 }
 
 interface Props {
@@ -76,7 +75,6 @@ const SortableItem = ({
   return (
     <div ref={setNodeRef} style={style}>
       <div className="d-flex align-items-center justify-content-between border p-2 mb-2 rounded bg-white">
-        {/* DRAG HANDLE */}
         <div
           {...attributes}
           {...listeners}
@@ -134,15 +132,35 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
 
   useEffect(() => {
     fetchMenu();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
 
   const fetchMenu = async () => {
     try {
-      const data: any = await api.get(`/api/menus/by-location/${location}`);
-      setMenu(data);
-      setItems(data.items || []);
-    } catch {
+      setLoading(true);
+
+      // 1️⃣ Load menus to get menu_id
+      const menusRes: any = await api.get("/api/menus");
+      const foundMenu = menusRes.data.find(
+        (m: Menu) => m.location === location,
+      );
+
+      if (!foundMenu) {
+        setMenu(null);
+        setItems([]);
+        return;
+      }
+
+      setMenu(foundMenu);
+
+      // 2️⃣ Load menu items by location
+      const itemsRes: any = await api.get(`/api/menus/by-location/${location}`);
+
+      setItems(itemsRes.data || []);
+    } catch (err) {
+      console.error("FETCH MENU ERROR:", err);
       setMenu(null);
+      setItems([]);
     } finally {
       setLoading(false);
     }
@@ -159,17 +177,27 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!menu || !form.title || !form.url) return;
 
-    await api.create("/api/menu-items", {
-      menu_id: menu.id,
-      title: form.title,
-      url: form.url,
-      parent_id: form.parent_id || null,
-    });
+    if (!menu?.id) {
+      alert("Menu not loaded");
+      return;
+    }
 
-    setForm({ title: "", url: "", parent_id: "" });
-    fetchMenu();
+    if (!form.title || !form.url) return;
+
+    try {
+      await api.post("/api/menu-items", {
+        menu_id: menu.id,
+        title: form.title,
+        url: form.url,
+        parent_id: form.parent_id || null,
+      });
+
+      setForm({ title: "", url: "", parent_id: "" });
+      fetchMenu();
+    } catch (err) {
+      alert(err);
+    }
   };
 
   /* ================= ACTIONS ================= */
@@ -181,7 +209,7 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
   };
 
   const toggleItem = async (id: number) => {
-    await api.update(`/api/menu-items/${id}/toggle`);
+    await api.put(`/api/menu-items/${id}/toggle`);
     fetchMenu();
   };
 
@@ -197,7 +225,7 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
     const newItems = arrayMove(items, oldIndex, newIndex);
     setItems(newItems);
 
-    await api.create("/api/menu-items/order", {
+    await api.post("/api/menu-items/order", {
       items: newItems.map((item, index) => ({
         id: item.id,
         order: index + 1,
@@ -212,7 +240,6 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
     items.map((item) => (
       <div key={item.id} style={{ marginLeft: level * 20 }}>
         <SortableItem item={item} onDelete={deleteItem} onToggle={toggleItem} />
-
         {item.children &&
           item.children.length > 0 &&
           renderItems(item.children, level + 1)}
@@ -243,7 +270,7 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
 
             {items.length === 0 && (
               <p className="text-muted">
-                No menu items yet. Add one from the right panel →
+                No menu items yet. Add one from the right →
               </p>
             )}
 

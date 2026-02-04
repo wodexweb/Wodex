@@ -100,15 +100,57 @@ export const getLoggedInUser = () => {
 
 /* ================= API CLIENT ================= */
 
+// export class APIClient {
+//   post(arg0: string, formData: FormData, arg2: { headers: { "Content-Type": string; }; }): any {
+//     throw new Error("Method not implemented.");
+//   }
+//   get<T = any>(url: string, params?: any): Promise<T> {
+//     return axiosInstance.get(url, { params });
+//   }
+
+//   create<T = any>(
+//     url: string,
+//     data?: any,
+//     config?: AxiosRequestConfig
+//   ): Promise<T> {
+//     return axiosInstance.post(url, data, config);
+//   }
+
+//   update<T = any>(
+//     url: string,
+//     data?: any,
+//     config?: AxiosRequestConfig
+//   ): Promise<T> {
+//     if (data instanceof FormData) {
+//       if (!config) config = {};
+//       if (!config.headers) {
+//         config.headers = new AxiosHeaders();
+//       }
+
+//       (config.headers as AxiosHeaders).set(
+//         "Content-Type",
+//         "multipart/form-data"
+//       );
+//     }
+
+//     return axiosInstance.put(url, data, config);
+//   }
+
+//   delete<T = any>(
+//     url: string,
+//     config?: AxiosRequestConfig
+//   ): Promise<T> {
+//     return axiosInstance.delete(url, config);
+//   }
+// }
 export class APIClient {
-  post(arg0: string, formData: FormData, arg2: { headers: { "Content-Type": string; }; }): any {
-    throw new Error("Method not implemented.");
-  }
+  /* ================= BASIC METHODS ================= */
+
   get<T = any>(url: string, params?: any): Promise<T> {
     return axiosInstance.get(url, { params });
   }
 
-  create<T = any>(
+  post<T = any>(
     url: string,
     data?: any,
     config?: AxiosRequestConfig
@@ -116,16 +158,14 @@ export class APIClient {
     return axiosInstance.post(url, data, config);
   }
 
-  update<T = any>(
+  put<T = any>(
     url: string,
     data?: any,
     config?: AxiosRequestConfig
   ): Promise<T> {
     if (data instanceof FormData) {
       if (!config) config = {};
-      if (!config.headers) {
-        config.headers = new AxiosHeaders();
-      }
+      if (!config.headers) config.headers = new AxiosHeaders();
 
       (config.headers as AxiosHeaders).set(
         "Content-Type",
@@ -141,5 +181,26 @@ export class APIClient {
     config?: AxiosRequestConfig
   ): Promise<T> {
     return axiosInstance.delete(url, config);
+  }
+
+  /* ================= BACKWARD COMPATIBILITY ================= */
+  /* DO NOT REMOVE – used all over the project */
+
+  // create() → POST
+  create<T = any>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
+    return this.post(url, data, config);
+  }
+
+  // update() → PUT
+  update<T = any>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
+    return this.put(url, data, config);
   }
 }

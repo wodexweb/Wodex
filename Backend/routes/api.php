@@ -30,8 +30,7 @@ use App\Http\Controllers\Api\{
     NoticeController,
     PdfPageController,
     MembershipPlanController,
-    GalleryController,
-    AdminController
+    GalleryController
 };
 
 /*
@@ -106,10 +105,13 @@ Route::post('header', [HeaderSettingController::class, 'update']);
 */
 Route::prefix('menus')->group(function () {
     Route::get('/', [MenuController::class, 'index']);
-    Route::get('/by-location/{location}', [MenuController::class, 'getByLocation']);
     Route::post('/', [MenuController::class, 'store']);
     Route::get('/{id}', [MenuController::class, 'show']);
+
+    // ✅ CORRECT
+    Route::get('/by-location/{location}', [MenuController::class, 'byLocation']);
 });
+
 
 /*
 |--------------------------------------------------------------------------
@@ -129,12 +131,6 @@ Route::prefix('menu-items')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/admins', [AdminController::class, 'index']);
-    Route::post('/admins', [AdminController::class, 'store']);
-    Route::put('/admins/{id}', [AdminController::class, 'update']);
-    Route::delete('/admins/{id}', [AdminController::class, 'destroy']);
-
-
     Route::get('/admin/me', [AuthController::class, 'me']);
     Route::post('/admin/logout', [AuthController::class, 'logout']);
 
@@ -163,4 +159,6 @@ Route::prefix('admin')->group(function () {
     Route::get('/gallery', [GalleryController::class, 'index']);               // list
     Route::get('/gallery/event/{eventId}', [GalleryController::class, 'byEvent']); // event-wise
     Route::delete('/gallery/{id}', [GalleryController::class, 'destroy']);     // delete
+    // Public route for the website
+    Route::get('/galleries', [GalleryController::class, 'index']);
 });

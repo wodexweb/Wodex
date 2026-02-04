@@ -8,52 +8,70 @@ use Illuminate\Http\Request;
 
 class MenuController extends Controller
 {
-    /**
-     * List all menus (admin list)
-     */
+    /* ================= ADMIN ================= */
+
+    // GET /api/menus
     public function index()
     {
-        return response()->json(Menu::all(), 200);
+        return response()->json([
+            'data' => Menu::all()
+        ], 200);
     }
 
-    /**
-     * Create menu
-     */
+    // POST /api/menus
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name'     => 'required|string|max:255',
             'location' => 'required|in:header,footer',
         ]);
 
-        $menu = Menu::create($validated);
+        $menu = Menu::create([
+            'name'     => $validated['name'],
+            'location' => $validated['location'],
+            'status'   => true,
+        ]);
 
         return response()->json([
             'message' => 'Menu created successfully',
-            'data' => $menu
+            'data'    => $menu,
         ], 201);
     }
 
-    /**
-     * Get menu by ID (admin edit)
-     */
+    // GET /api/menus/{id}
     public function show($id)
     {
         $menu = Menu::with('items.children')->findOrFail($id);
-        return response()->json($menu, 200);
+
+        return response()->json([
+            'data' => $menu
+        ], 200);
     }
 
-    /**
-     * ✅ Get menu by location (header/footer)
-     * Used by MenuBuilder & frontend
-     */
-    public function getByLocation($location)
+    /* ================= FRONTEND ================= */
+
+    // GET /api/menus/by-location/{location}
+    public function byLocation(string $location)
     {
         $menu = Menu::where('location', $location)
             ->where('status', true)
-            ->with('items.children')
+            ->with([
+                'items' => function ($q) {
+                    $q->where('is_active', true)
+                        ->whereNull('parent_id')
+                        ->orderBy('order')
+                        ->with([
+                            'children' => function ($c) {
+                                $c->where('is_active', true)
+                                    ->orderBy('order');
+                            }
+                        ]);
+                }
+            ])
             ->first();
 
-        return response()->json($menu, 200);
+        return response()->json([
+            'data' => $menu ? $menu->items : []
+        ], 200);
     }
 }
