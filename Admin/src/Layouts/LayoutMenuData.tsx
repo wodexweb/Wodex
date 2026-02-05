@@ -280,12 +280,6 @@ const Navdata = () => {
           link: "/gallery/add",
           click: () => navigate("/gallery/add"),
         },
-        // {
-        //   id: "gallery-manage",
-        //   label: "Manage Gallery",
-        //   link: "/gallery/manage",
-        //   click: () => navigate("/gallery/manage"),
-        // },
       ],
     },
 

@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./Gallery.module.scss";
 import PageHeaderArea from "../../components/PageHeaderArea/PageHeaderArea";
-import { APIClient } from "../../helpers/api_helper";
+import { APIClient } from "../../helpers/api_helper"; // Import your helper
 
+// Initialize the API helper
 const api = new APIClient();
 
 interface GalleryItem {
@@ -18,18 +19,17 @@ const Gallery: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Inside Gallery.tsx
     const fetchGalleries = async () => {
       try {
-        // FIX 1: Use the PUBLIC endpoint, not the ADMIN endpoint
-        const res: any = await api.get("/api/galleries");
+        // ADDED 'api/' before 'galleries'
+        const response: any = await api.get("api/galleries");
 
-        // FIX 2: Access response.data.data to get the array
-        if (res.data && res.data.success) {
-          setGalleries(res.data.data);
+        if (response && response.success) {
+          setGalleries(response.data);
         }
       } catch (error) {
         console.error("Error fetching gallery:", error);
-        setGalleries([]);
       } finally {
         setLoading(false);
       }
@@ -45,7 +45,7 @@ const Gallery: React.FC = () => {
       <section className={styles.page}>
         <div className={styles.container}>
           {loading ? (
-            <p className="text-center">Loading galleries...</p>
+            <p className="text-center py-5">Loading galleries...</p>
           ) : (
             <div className={styles.grid}>
               {galleries.length > 0 ? (
@@ -65,7 +65,6 @@ const Gallery: React.FC = () => {
                       <h2>{item.gallery_title}</h2>
                       <p className={styles.eventTag}>{item.event_title}</p>
 
-                      {/* FIX 3: Link to your React Route, NOT the API endpoint */}
                       <Link
                         to={`/gallery/${item.gallery_id}`}
                         className={styles.viewBtn}
@@ -76,7 +75,7 @@ const Gallery: React.FC = () => {
                   </div>
                 ))
               ) : (
-                <p className="text-center">No galleries found.</p>
+                <p className="text-center py-5">No galleries found.</p>
               )}
             </div>
           )}

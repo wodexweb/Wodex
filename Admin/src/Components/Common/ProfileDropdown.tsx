@@ -7,22 +7,20 @@ import {
   DropdownToggle,
 } from "reactstrap";
 import { createSelector } from "reselect";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
-// fallback image
 import avatarFallback from "../../assets/images/users/user-dummy-img.jpg";
+import { fetchProfile } from "../../slices/auth/profile/thunk";
 
 const ProfileDropdown = () => {
-  /* ================= REDUX (SINGLE SOURCE) ================= */
+  const dispatch: any = useDispatch();
 
   const selectUser = createSelector(
     (state: any) => state.Profile,
-    (profile) => profile.user
+    (profile) => profile.user,
   );
 
   const reduxUser = useSelector(selectUser);
-
-  /* ================= LOCAL STATE (UI ONLY) ================= */
 
   const [userName, setUserName] = useState("Admin");
   const [avatar, setAvatar] = useState<string | null>(null);
@@ -30,26 +28,23 @@ const ProfileDropdown = () => {
 
   const toggleProfileDropdown = () => setIsProfileDropdown((prev) => !prev);
 
-  /* ================= SYNC REDUX → UI ================= */
-
+  // 🔥 FETCH PROFILE ONCE IF NOT AVAILABLE
   useEffect(() => {
     if (!reduxUser) {
-      setUserName("Admin");
-      setAvatar(null);
-      return;
+      dispatch(fetchProfile());
     }
+  }, [dispatch, reduxUser]);
 
-    // name priority (safe for otp / normal login)
+  // 🔄 SYNC REDUX → UI
+  useEffect(() => {
+    if (!reduxUser) return;
+
     const name =
       reduxUser.first_name || reduxUser.name || reduxUser.email || "Admin";
 
     setUserName(name);
-
-    // avatar
     setAvatar(reduxUser.avatar || null);
   }, [reduxUser]);
-
-  /* ================= UI ================= */
 
   return (
     <Dropdown
@@ -93,54 +88,3 @@ const ProfileDropdown = () => {
 };
 
 export default ProfileDropdown;
-
-// import React, { useState } from "react";
-// import { Link } from "react-router-dom";
-// import {
-//   Dropdown,
-//   DropdownItem,
-//   DropdownMenu,
-//   DropdownToggle,
-// } from "reactstrap";
-// import { createSelector } from "reselect";
-// import { useSelector } from "react-redux";
-
-// import avatarFallback from "../../assets/images/users/user-dummy-img.jpg";
-
-// const ProfileDropdown = () => {
-//   const selectUser = createSelector(
-//     (state: any) => state.Profile,
-//     (profile) => profile.user
-//   );
-
-//   const user = useSelector(selectUser);
-//   const [open, setOpen] = useState(false);
-
-//   const name = user?.name || user?.email || "Admin";
-//   const avatar = user?.avatar || avatarFallback;
-
-//   return (
-//     <Dropdown isOpen={open} toggle={() => setOpen(!open)}>
-//       <DropdownToggle className="btn">
-//         <img
-//           src={`${avatar}?t=${Date.now()}`}
-//           className="rounded-circle header-profile-user"
-//           alt="avatar"
-//         />
-//         <span className="ms-2">{name}</span>
-//       </DropdownToggle>
-
-//       <DropdownMenu end>
-//         <DropdownItem tag={Link} to="/profile">
-//           Profile
-//         </DropdownItem>
-//         <DropdownItem divider />
-//         <DropdownItem tag={Link} to="/logout">
-//           Logout
-//         </DropdownItem>
-//       </DropdownMenu>
-//     </Dropdown>
-//   );
-// };
-
-// export default ProfileDropdown;
