@@ -268,6 +268,14 @@ export class APIClient {
     return axiosInstance.post(url, data, config);
   }
 
+  patch<T = any>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig,
+  ): Promise<T> {
+    return axiosInstance.patch(url, data, config);
+  }
+
   put<T = any>(
     url: string,
     data?: any,

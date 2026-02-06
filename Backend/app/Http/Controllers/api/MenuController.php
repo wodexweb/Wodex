@@ -50,28 +50,27 @@ class MenuController extends Controller
 
     /* ================= FRONTEND ================= */
 
-    // GET /api/menus/by-location/{location}
-    public function byLocation(string $location)
-    {
-        $menu = Menu::where('location', $location)
-            ->where('status', true)
-            ->with([
-                'items' => function ($q) {
-                    $q->where('is_active', true)
-                        ->whereNull('parent_id')
-                        ->orderBy('order')
-                        ->with([
-                            'children' => function ($c) {
-                                $c->where('is_active', true)
-                                    ->orderBy('order');
-                            }
-                        ]);
-                }
-            ])
-            ->first();
+// GET /api/menus/by-location/{location}
+public function byLocation(string $location)
+{
+    $menu = Menu::where('location', $location)
+        ->where('status', true)
+        ->with([
+            'items' => function ($q) {
+                $q->whereNull('parent_id')   // ✅ NO is_active filter
+                  ->orderBy('order')
+                  ->with([
+                      'children' => function ($c) {
+                          $c->orderBy('order'); // ✅ NO is_active filter
+                      }
+                  ]);
+            }
+        ])
+        ->first();
 
-        return response()->json([
-            'data' => $menu ? $menu->items : []
-        ], 200);
-    }
+    return response()->json([
+        'data' => $menu ? $menu->items : []
+    ], 200);
+}
+
 }

@@ -70,6 +70,7 @@ const SortableItem = ({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    opacity: item.is_active ? 1 : 0.5, // ✅ key fix
   };
 
   return (
@@ -78,8 +79,8 @@ const SortableItem = ({
         <div
           {...attributes}
           {...listeners}
-          style={{ cursor: "grab" }}
           className="me-3 text-muted"
+          style={{ cursor: "grab" }}
         >
           ☰
         </div>
@@ -112,6 +113,7 @@ const SortableItem = ({
     </div>
   );
 };
+
 
 /* ================= COMPONENT ================= */
 
@@ -209,7 +211,7 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
   };
 
   const toggleItem = async (id: number) => {
-    await api.put(`/api/menu-items/${id}/toggle`);
+    await api.patch(`/api/menu-items/${id}/toggle`);
     fetchMenu();
   };
 
