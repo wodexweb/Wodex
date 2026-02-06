@@ -37,7 +37,7 @@ const VerifyOtp = () => {
       const response: any = await api.create("/api/login/verify-otp", { otp });
 
       const token = response.token;
-      const user = response.admin;
+      const user = response.user;
 
       if (!token) {
         throw new Error("Token missing");

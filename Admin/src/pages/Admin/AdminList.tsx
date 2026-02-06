@@ -43,7 +43,7 @@ const AdminList = () => {
 
   const fetchAdmins = async () => {
     try {
-      const res: any = await api.get("/api/admins");
+      const res: any = await api.get("/api/admin/admins");
       setAdmins(res || []);
     } catch {
       alert("Failed to load admins");

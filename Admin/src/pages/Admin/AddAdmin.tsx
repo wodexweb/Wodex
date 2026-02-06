@@ -40,7 +40,7 @@ const AddAdmin = () => {
     setLoading(true);
 
     try {
-      await api.create("/api/admins", formData);
+      await api.create("/api/admin/admins", formData);
       alert("Admin created successfully ✅");
       navigate("/admins");
     } catch (err) {

@@ -364,7 +364,8 @@ use App\Http\Controllers\Api\{
     PdfPageController,
     MembershipPlanController,
     GalleryController,
-    AchievementController
+    AchievementController,
+    AdminController
 };
 
 /*
@@ -444,7 +445,16 @@ Route::post('/registration', [RegisterController::class, 'store']);
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
+    /*
+    |--------------------------------------------------------------------------
+    | Role Based Auth
+    |--------------------------------------------------------------------------
+    */
 
+    Route::get('/admins', [AdminController::class, 'index']);
+    Route::post('/admins', [AdminController::class, 'store']);
+    Route::put('/admins/{id}', [AdminController::class, 'update']);
+    Route::delete('/admins/{id}', [AdminController::class, 'destroy']);
     /*
     |--------------------------------------------------------------------------
     | AUTH
@@ -482,26 +492,28 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     | ADMIN CRUD
     |--------------------------------------------------------------------------
     */
-    Route::apiResource('notices', NoticeController::class)
-        ->except(['show']);
+    Route::apiResource('notices', NoticeController::class);
+    // ->except(['show']);
 
-    Route::apiResource('announcements', AnnouncementController::class)
-        ->except(['show']);
+    Route::apiResource('announcements', AnnouncementController::class);
+    // ->except(['show']);
 
-    Route::apiResource('events', EventController::class)
-        ->except(['show']);
+    // Route::apiResource('events', EventController::class)
+    // ->except(['show']);
+    Route::apiResource('events', EventController::class);
+    // ->except(['show']);
 
-    Route::apiResource('members', MemberController::class)
-        ->except(['show']);
+    Route::apiResource('members', MemberController::class);
+    // ->except(['show']);
 
-    Route::apiResource('pdf-pages', PdfPageController::class)
-        ->except(['show']);
+    Route::apiResource('pdf-pages', PdfPageController::class);
+    // ->except(['show']);
 
-    Route::apiResource('membership-plans', MembershipPlanController::class)
-        ->except(['show']);
+    Route::apiResource('membership-plans', MembershipPlanController::class);
+    // ->except(['show']);
 
-    Route::apiResource('achievements', AchievementController::class)
-        ->except(['show']);
+    Route::apiResource('achievements', AchievementController::class);
+    // ->except(['show']);
 
     /*
     |--------------------------------------------------------------------------

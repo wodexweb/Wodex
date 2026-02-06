@@ -371,22 +371,326 @@
 //   return <>{menuItems}</>;
 // };
 
+// // export default Navdata;
+// import React, { useEffect, useState } from "react";
+// import { useNavigate, useLocation } from "react-router-dom";
+
+// const Navdata = () => {
+//   const navigate = useNavigate();
+//   const location = useLocation();
+
+//   // 🔑 ONE STATE FOR ALL DROPDOWNS
+//   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+
+//   /* ================= AUTO OPEN FROM URL ================= */
+//   useEffect(() => {
+//     const path = location.pathname;
+
+//     if (path.startsWith("/master-settings")) setActiveMenu("master-settings");
+//     else if (path.startsWith("/menu")) setActiveMenu("menu");
+//     else if (path.startsWith("/pages")) setActiveMenu("pages");
+//     else if (path.startsWith("/media-library")) setActiveMenu("media-library");
+//     else if (path.startsWith("/membership")) setActiveMenu("membership");
+//     else if (path.startsWith("/notices")) setActiveMenu("notices");
+//     else if (path.startsWith("/pdf-pages")) setActiveMenu("pdf-pages");
+//     else if (path.startsWith("/achievements")) setActiveMenu("achievements");
+//     else if (path.startsWith("/gallery")) setActiveMenu("gallery");
+//     else if (path.startsWith("/events")) setActiveMenu("events");
+//     else if (path.startsWith("/announcements")) setActiveMenu("announcements");
+//     else if (path.startsWith("/members")) setActiveMenu("members");
+//     else setActiveMenu(null);
+//   }, [location.pathname]);
+
+//   /* ================= TOGGLE ================= */
+//   const toggleMenu = (id: string) => {
+//     setActiveMenu((prev) => (prev === id ? null : id));
+//   };
+
+//   const menuItems = [
+//     { label: "Menu", isHeader: true },
+
+//     {
+//       id: "dashboard",
+//       label: "Dashboard",
+//       icon: "ri-dashboard-line",
+//       link: "/dashboard",
+//       click: () => navigate("/dashboard"),
+//     },
+
+//     /* ================= MASTER SETTINGS ================= */
+//     {
+//       id: "master-settings",
+//       label: "Master Settings",
+//       icon: "ri-settings-3-line",
+//       link: "/#",
+//       stateVariables: activeMenu === "master-settings",
+//       click: (e: any) => {
+//         e.preventDefault();
+//         toggleMenu("master-settings");
+//       },
+//       subItems: [
+//         {
+//           label: "General Settings",
+//           click: () => navigate("/master-settings/general"),
+//         },
+//         {
+//           label: "Contact Settings",
+//           click: () => navigate("/master-settings/contact"),
+//         },
+//         {
+//           label: "Header Settings",
+//           click: () => navigate("/master-settings/header"),
+//         },
+//       ],
+//     },
+
+//     /* ================= MENUS ================= */
+//     {
+//       id: "menu",
+//       label: "Menus",
+//       icon: "ri-menu-3-line",
+//       link: "/#",
+//       stateVariables: activeMenu === "menu",
+//       click: (e: any) => {
+//         e.preventDefault();
+//         toggleMenu("menu");
+//       },
+//       subItems: [
+//         { label: "Add Menu", click: () => navigate("/menu/addmenu") },
+//         { label: "Header Menu", click: () => navigate("/menu/header") },
+//         { label: "Footer Menu", click: () => navigate("/menu/footer") },
+//       ],
+//     },
+
+//     /* ================= PAGES ================= */
+//     {
+//       id: "pages",
+//       label: "Pages",
+//       icon: "ri-file-text-line",
+//       link: "/#",
+//       stateVariables: activeMenu === "pages",
+//       click: (e: any) => {
+//         e.preventDefault();
+//         toggleMenu("pages");
+//       },
+//       subItems: [
+//         { label: "Add Page", click: () => navigate("/pages/add") },
+//         { label: "Manage Pages", click: () => navigate("/pages/manage") },
+//       ],
+//     },
+
+//     /* ================= MEDIA ================= */
+//     {
+//       id: "media-library",
+//       label: "Media Library",
+//       icon: "ri-image-2-line",
+//       link: "/#",
+//       stateVariables: activeMenu === "media-library",
+//       click: (e: any) => {
+//         e.preventDefault();
+//         toggleMenu("media-library");
+//       },
+//       subItems: [
+//         { label: "Manage Media", click: () => navigate("/media-library") },
+//       ],
+//     },
+
+//     /* ================= MEMBERSHIP ================= */
+//     {
+//       id: "membership",
+//       label: "Membership",
+//       icon: "ri-vip-crown-line",
+//       link: "/#",
+//       stateVariables: activeMenu === "membership",
+//       click: (e: any) => {
+//         e.preventDefault();
+//         toggleMenu("membership");
+//       },
+//       subItems: [
+//         {
+//           label: "Membership Plans",
+//           click: () => navigate("/membership/plans"),
+//         },
+//       ],
+//     },
+
+//     /* ================= NOTICES ================= */
+//     {
+//       id: "notices",
+//       label: "Notice Board",
+//       icon: "ri-feedback-line",
+//       link: "/#",
+//       stateVariables: activeMenu === "notices",
+//       click: (e: any) => {
+//         e.preventDefault();
+//         toggleMenu("notices");
+//       },
+//       subItems: [
+//         { label: "Manage Notices", click: () => navigate("/notices") },
+//       ],
+//     },
+
+//     /* ================= PDF ================= */
+//     {
+//       id: "pdf-pages",
+//       label: "PDF Pages",
+//       icon: "ri-file-pdf-line",
+//       link: "/#",
+//       stateVariables: activeMenu === "pdf-pages",
+//       click: (e: any) => {
+//         e.preventDefault();
+//         toggleMenu("pdf-pages");
+//       },
+//       subItems: [{ label: "Manage PDFs", click: () => navigate("/pdf-pages") }],
+//     },
+
+//     /* ================= ACHIEVEMENTS ================= */
+//     {
+//       id: "achievements",
+//       label: "Achievements",
+//       icon: "ri-medal-line",
+//       link: "/#",
+//       stateVariables: activeMenu === "achievements",
+//       click: (e: any) => {
+//         e.preventDefault();
+//         toggleMenu("achievements");
+//       },
+//       subItems: [
+//         {
+//           label: "Manage Achievements",
+//           click: () => navigate("/achievements"),
+//         },
+//       ],
+//     },
+
+//     /* ================= GALLERY ================= */
+//     {
+//       id: "gallery",
+//       label: "Gallery",
+//       icon: "ri-gallery-line",
+//       link: "/#",
+//       stateVariables: activeMenu === "gallery",
+//       click: (e: any) => {
+//         e.preventDefault();
+//         toggleMenu("gallery");
+//       },
+//       subItems: [
+//         { label: "Add Gallery", click: () => navigate("/gallery/add") },
+//       ],
+//     },
+
+//     /* ================= EVENTS ================= */
+//     {
+//       id: "events",
+//       label: "Events",
+//       icon: "ri-calendar-event-line",
+//       link: "/#",
+//       stateVariables: activeMenu === "events",
+//       click: (e: any) => {
+//         e.preventDefault();
+//         toggleMenu("events");
+//       },
+//       subItems: [
+//         { label: "Create Event", click: () => navigate("/events/create") },
+//         { label: "Event List", click: () => navigate("/events/list") },
+//       ],
+//     },
+
+//     /* ================= ANNOUNCEMENTS ================= */
+//     {
+//       id: "announcements",
+//       label: "Announcements",
+//       icon: "ri-notification-3-line",
+//       link: "/#",
+//       stateVariables: activeMenu === "announcements",
+//       click: (e: any) => {
+//         e.preventDefault();
+//         toggleMenu("announcements");
+//       },
+//       subItems: [
+//         {
+//           label: "Create Announcement",
+//           click: () => navigate("/announcements/create"),
+//         },
+//         {
+//           label: "Announcement List",
+//           click: () => navigate("/announcements/list"),
+//         },
+//       ],
+//     },
+
+//     /* ================= MEMBERS ================= */
+//     {
+//       id: "members",
+//       label: "Members",
+//       icon: "ri-team-line",
+//       link: "/#",
+//       stateVariables: activeMenu === "members",
+//       click: (e: any) => {
+//         e.preventDefault();
+//         toggleMenu("members");
+//       },
+//       subItems: [
+//         { label: "Add Member", click: () => navigate("/members/create") },
+//         { label: "Member List", click: () => navigate("/members/list") },
+//       ],
+//     },
+//   ];
+
+//   return <>{menuItems}</>;
+// };
+
 // export default Navdata;
+
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { getRoleId } from "../helpers/api_helper";
+
+/* ================= ROLE ACCESS ================= */
+const ROLE_ACCESS: Record<number, string[]> = {
+  1: [
+    "dashboard",
+    "roles",
+    "master-settings",
+    "menu",
+    "pages",
+    "media-library",
+    "membership",
+    "notices",
+    "pdf-pages",
+    "achievements",
+    "events",
+    "announcements",
+    "members",
+  ],
+  2: [
+    "dashboard",
+    "menu",
+    "pages",
+    "media-library",
+    "notices",
+    "pdf-pages",
+    "achievements",
+    "events",
+    "announcements",
+  ],
+  3: ["dashboard", "membership"],
+};
 
 const Navdata = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const roleId = getRoleId();
 
-  // 🔑 ONE STATE FOR ALL DROPDOWNS
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
-  /* ================= AUTO OPEN FROM URL ================= */
+  /* ================= AUTO OPEN ================= */
   useEffect(() => {
     const path = location.pathname;
 
-    if (path.startsWith("/master-settings")) setActiveMenu("master-settings");
+    if (path.startsWith("/admins")) setActiveMenu("roles");
+    else if (path.startsWith("/master-settings")) setActiveMenu("master-settings");
     else if (path.startsWith("/menu")) setActiveMenu("menu");
     else if (path.startsWith("/pages")) setActiveMenu("pages");
     else if (path.startsWith("/media-library")) setActiveMenu("media-library");
@@ -394,30 +698,43 @@ const Navdata = () => {
     else if (path.startsWith("/notices")) setActiveMenu("notices");
     else if (path.startsWith("/pdf-pages")) setActiveMenu("pdf-pages");
     else if (path.startsWith("/achievements")) setActiveMenu("achievements");
-    else if (path.startsWith("/gallery")) setActiveMenu("gallery");
     else if (path.startsWith("/events")) setActiveMenu("events");
     else if (path.startsWith("/announcements")) setActiveMenu("announcements");
     else if (path.startsWith("/members")) setActiveMenu("members");
     else setActiveMenu(null);
   }, [location.pathname]);
 
-  /* ================= TOGGLE ================= */
   const toggleMenu = (id: string) => {
     setActiveMenu((prev) => (prev === id ? null : id));
   };
 
-  const menuItems = [
-    { label: "Menu", isHeader: true },
-
+  /* ================= MENU ITEMS ================= */
+  const allMenus: any[] = [
     {
       id: "dashboard",
       label: "Dashboard",
       icon: "ri-dashboard-line",
-      link: "/dashboard",
       click: () => navigate("/dashboard"),
     },
 
-    /* ================= MASTER SETTINGS ================= */
+    /* ROLES */
+    {
+      id: "roles",
+      label: "Roles",
+      icon: "ri-shield-user-line",
+      link: "/#",
+      stateVariables: activeMenu === "roles",
+      click: (e: any) => {
+        e.preventDefault();
+        toggleMenu("roles");
+      },
+      subItems: [
+        { label: "Add Role", click: () => navigate("/admins/create") },
+        { label: "List Of Roles", click: () => navigate("/admins") },
+      ],
+    },
+
+    /* MASTER SETTINGS */
     {
       id: "master-settings",
       label: "Master Settings",
@@ -429,22 +746,12 @@ const Navdata = () => {
         toggleMenu("master-settings");
       },
       subItems: [
-        {
-          label: "General Settings",
-          click: () => navigate("/master-settings/general"),
-        },
-        {
-          label: "Contact Settings",
-          click: () => navigate("/master-settings/contact"),
-        },
-        {
-          label: "Header Settings",
-          click: () => navigate("/master-settings/header"),
-        },
+        { label: "General Settings", click: () => navigate("/master-settings/general") },
+        { label: "Contact Settings", click: () => navigate("/master-settings/contact") },
+        { label: "Header Settings", click: () => navigate("/master-settings/header") },
       ],
     },
 
-    /* ================= MENUS ================= */
     {
       id: "menu",
       label: "Menus",
@@ -462,7 +769,6 @@ const Navdata = () => {
       ],
     },
 
-    /* ================= PAGES ================= */
     {
       id: "pages",
       label: "Pages",
@@ -479,7 +785,6 @@ const Navdata = () => {
       ],
     },
 
-    /* ================= MEDIA ================= */
     {
       id: "media-library",
       label: "Media Library",
@@ -490,12 +795,9 @@ const Navdata = () => {
         e.preventDefault();
         toggleMenu("media-library");
       },
-      subItems: [
-        { label: "Manage Media", click: () => navigate("/media-library") },
-      ],
+      subItems: [{ label: "Manage Media", click: () => navigate("/media-library") }],
     },
 
-    /* ================= MEMBERSHIP ================= */
     {
       id: "membership",
       label: "Membership",
@@ -506,15 +808,9 @@ const Navdata = () => {
         e.preventDefault();
         toggleMenu("membership");
       },
-      subItems: [
-        {
-          label: "Membership Plans",
-          click: () => navigate("/membership/plans"),
-        },
-      ],
+      subItems: [{ label: "Membership Plans", click: () => navigate("/membership/plans") }],
     },
 
-    /* ================= NOTICES ================= */
     {
       id: "notices",
       label: "Notice Board",
@@ -525,12 +821,9 @@ const Navdata = () => {
         e.preventDefault();
         toggleMenu("notices");
       },
-      subItems: [
-        { label: "Manage Notices", click: () => navigate("/notices") },
-      ],
+      subItems: [{ label: "Manage Notices", click: () => navigate("/notices") }],
     },
 
-    /* ================= PDF ================= */
     {
       id: "pdf-pages",
       label: "PDF Pages",
@@ -544,7 +837,6 @@ const Navdata = () => {
       subItems: [{ label: "Manage PDFs", click: () => navigate("/pdf-pages") }],
     },
 
-    /* ================= ACHIEVEMENTS ================= */
     {
       id: "achievements",
       label: "Achievements",
@@ -555,31 +847,9 @@ const Navdata = () => {
         e.preventDefault();
         toggleMenu("achievements");
       },
-      subItems: [
-        {
-          label: "Manage Achievements",
-          click: () => navigate("/achievements"),
-        },
-      ],
+      subItems: [{ label: "Manage Achievements", click: () => navigate("/achievements") }],
     },
 
-    /* ================= GALLERY ================= */
-    {
-      id: "gallery",
-      label: "Gallery",
-      icon: "ri-gallery-line",
-      link: "/#",
-      stateVariables: activeMenu === "gallery",
-      click: (e: any) => {
-        e.preventDefault();
-        toggleMenu("gallery");
-      },
-      subItems: [
-        { label: "Add Gallery", click: () => navigate("/gallery/add") },
-      ],
-    },
-
-    /* ================= EVENTS ================= */
     {
       id: "events",
       label: "Events",
@@ -596,7 +866,6 @@ const Navdata = () => {
       ],
     },
 
-    /* ================= ANNOUNCEMENTS ================= */
     {
       id: "announcements",
       label: "Announcements",
@@ -608,18 +877,11 @@ const Navdata = () => {
         toggleMenu("announcements");
       },
       subItems: [
-        {
-          label: "Create Announcement",
-          click: () => navigate("/announcements/create"),
-        },
-        {
-          label: "Announcement List",
-          click: () => navigate("/announcements/list"),
-        },
+        { label: "Create Announcement", click: () => navigate("/announcements/create") },
+        { label: "Announcement List", click: () => navigate("/announcements/list") },
       ],
     },
 
-    /* ================= MEMBERS ================= */
     {
       id: "members",
       label: "Members",
@@ -637,7 +899,12 @@ const Navdata = () => {
     },
   ];
 
-  return <>{menuItems}</>;
+  /* ================= FILTER BY ROLE ================= */
+  const allowedMenus = allMenus.filter((menu) =>
+    ROLE_ACCESS[roleId]?.includes(menu.id)
+  );
+
+  return <>{allowedMenus}</>;
 };
 
 export default Navdata;

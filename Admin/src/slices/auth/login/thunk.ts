@@ -112,7 +112,7 @@ export const loginUser = (values: any) => async (dispatch: any) => {
 
     // ✅ NORMAL LOGIN
     const token = response?.token || response?.accessToken;
-    const user = response?.admin || response?.user;
+    const user = response?.user;
 
     if (!token) {
       dispatch(apiError("Login API did not return token"));

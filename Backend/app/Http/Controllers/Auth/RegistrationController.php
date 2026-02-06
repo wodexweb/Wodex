@@ -119,10 +119,11 @@ class RegistrationController extends Controller
     private function profileData(Admin $admin)
     {
         return [
-            'id'     => $admin->id,
-            'name'   => $admin->name,
-            'email'  => $admin->email,
-            'avatar' => $admin->avatar
+            'id'       => $admin->id,
+            'name'     => $admin->name,
+            'email'    => $admin->email,
+            'role_id'  => $admin->role_id,   // IMPORTANT FIX
+            'avatar'   => $admin->avatar
                 ? asset('storage/' . $admin->avatar)
                 : null,
         ];

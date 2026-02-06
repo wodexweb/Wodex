@@ -65,6 +65,13 @@ import AddMenu from "../pages/Menu/AddMenu";
 import AddPage from "../pages/Pages/AddPage";
 import ManagePages from "../pages/Pages/ManagePages";
 
+// Role Based Route ADMINS
+
+import AddAdmin from "../pages/Admin/AddAdmin";
+import AdminList from "../pages/Admin/AdminList";
+import EditAdmin from "../pages/Admin/EditAdmin";
+
+
 /* ================= PUBLIC ROUTES ================= */
 
 const publicRoutes = [
@@ -82,6 +89,12 @@ const authProtectedRoutes = [
   { path: "/dashboard", component: <DashboardEcommerce /> },
   { path: "/index", component: <DashboardEcommerce /> },
   { path: "/profile", component: <UserProfile /> },
+
+  // ADMINS (ROLES)
+  { path: "/admins", component: <AdminList /> },
+  { path: "/admins/create", component: <AddAdmin /> },
+  { path: "/admins/edit/:id", component: <EditAdmin /> },
+
 
   // NOTICES
   { path: "/notices", component: <Notices /> },

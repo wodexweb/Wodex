@@ -45,7 +45,7 @@ const EditAdmin = () => {
     if (!id) return;
 
     api
-      .get(`/api/admins/${id}`)
+      .get(`/api/admin/admins/${id}`)
       .then((res: any) => {
         const data = res?.data ?? res;
         if (!data) return;

@@ -248,6 +248,20 @@ export const clearAuthorization = () => {
   sessionStorage.removeItem("authUser");
 };
 
+/* ===== NEW: ROLE HELPER ===== */
+
+export const getRoleId = (): number => {
+  const stored = sessionStorage.getItem("authUser");
+  if (!stored) return 0;
+
+  try {
+    const parsed = JSON.parse(stored);
+    return parsed?.user?.role_id ?? 0;
+  } catch {
+    return 0;
+  }
+};
+
 export const getLoggedInUser = () => {
   const stored = sessionStorage.getItem("authUser");
   return stored ? JSON.parse(stored) : null;
