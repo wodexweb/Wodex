@@ -62,7 +62,7 @@ const AddPage: React.FC = () => {
     setLoading(true);
 
     try {
-      await api.create("/api/pages", formData);
+      await api.create("/api/admin/pages", formData);
       navigate("/pages/manage");
     } catch (err) {
       alert(err || "Failed to create page");

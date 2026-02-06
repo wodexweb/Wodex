@@ -253,6 +253,13 @@ export const getLoggedInUser = () => {
   return stored ? JSON.parse(stored) : null;
 };
 
+/* ================= URL HELPERS ================= */
+
+export const getStorageUrl = (path?: string | null) => {
+  if (!path) return null;
+  return `${api.API_URL}/storage/${path}`;
+};
+
 /* ================= API CLIENT ================= */
 
 export class APIClient {

@@ -41,7 +41,7 @@ const MemberList: React.FC = () => {
 
   useEffect(() => {
     api
-      .get("/api/members")
+      .get("/api/admin/members")
       .then((res: any) => {
         let list: Member[] = [];
 

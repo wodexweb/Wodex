@@ -54,7 +54,7 @@ const ViewEvent = () => {
     if (!id) return;
 
     api
-      .get(`/api/events/${id}`)
+      .get(`/api/admin/events/${id}`)
       .then((res: any) => {
         // supports both wrapped & direct responses
         setEvent(res?.data?.data ?? res?.data ?? null);

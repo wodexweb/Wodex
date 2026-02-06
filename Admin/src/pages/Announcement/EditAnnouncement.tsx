@@ -41,7 +41,7 @@ const EditAnnouncement = () => {
     if (!id) return;
 
     api
-      .get(`/api/announcements/${id}`)
+      .get(`/api/admin/announcements/${id}`)
       .then((res) => {
         const data = res?.data?.data ?? res?.data ?? null;
         if (!data) return;
@@ -63,7 +63,7 @@ const EditAnnouncement = () => {
   /* ================= CHANGE ================= */
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -97,7 +97,7 @@ const EditAnnouncement = () => {
         payload.append("photo", imageFile);
       }
 
-      await api.create(`/api/announcements/${id}`, payload);
+      await api.create(`/api/admin/announcements/${id}`, payload);
 
       alert("Announcement updated successfully ✅");
       navigate("/announcements/list");

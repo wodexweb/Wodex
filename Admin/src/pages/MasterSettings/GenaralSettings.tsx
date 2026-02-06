@@ -60,7 +60,7 @@ const Settings: React.FC = () => {
 
   const fetchSettings = async () => {
     try {
-      const res: any = await api.get("/api/settings");
+      const res: any = await api.get("/api/admin/settings");
       // ✅ handle both response shapes
       const data = res.data ?? res;
 

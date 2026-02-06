@@ -30,7 +30,7 @@ interface EventItem {
 
 const statusUI = {
   upcoming: { label: "UPCOMING", className: "badge-soft-info" },
-  recent: { label: "ACTIVE", className: "badge-soft-success" },
+  recent: { label: "RECENT", className: "badge-soft-success" },
   past: { label: "PAST", className: "badge-soft-danger" },
 };
 
@@ -53,7 +53,7 @@ const EventList = () => {
 
   const fetchEvents = async () => {
     try {
-      const res: any = await api.get("/api/events");
+      const res: any = await api.get("/api/admin/events");
 
       const all = [
         ...(res.upcoming || []),
@@ -104,7 +104,7 @@ const EventList = () => {
 
     try {
       setDeletingId(id);
-      await api.delete(`/api/events/${id}`);
+      await api.delete(`/api/admin/events/${id}`);
       setEvents((prev) => prev.filter((e) => e.id !== id));
       setSelectedIds((prev) => prev.filter((x) => x !== id));
     } catch (err) {
@@ -129,7 +129,7 @@ const EventList = () => {
 
       // sequential delete (safe)
       for (const id of selectedIds) {
-        await api.delete(`/api/events/${id}`);
+        await api.delete(`/api/admin/events/${id}`);
       }
 
       setEvents((prev) => prev.filter((e) => !selectedIds.includes(e.id)));

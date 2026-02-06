@@ -37,7 +37,7 @@ const HeaderSettings: React.FC = () => {
 
   useEffect(() => {
     api
-      .get("/api/header")
+      .get("/api/admin/header")
       .then((res: any) => {
         // supports both wrapped & direct responses
         const data = res?.data ?? res;
