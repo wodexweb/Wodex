@@ -51,7 +51,7 @@ const EditEvent = () => {
     if (!id) return;
 
     api
-      .get(`/api/events/${id}`)
+      .get(`/api/admin/events/${id}`)
       .then((res: any) => {
         const data = res?.data?.data ?? res?.data ?? null;
         if (!data) return;

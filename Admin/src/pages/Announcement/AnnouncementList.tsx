@@ -40,7 +40,7 @@ const AnnouncementList: React.FC = () => {
 
   useEffect(() => {
     api
-      .get("/api/announcements")
+      .get("/api/admin/announcements")
       .then((res: any) => {
         let list: Announcement[] = [];
 
@@ -63,7 +63,7 @@ const AnnouncementList: React.FC = () => {
   const filteredAnnouncements = useMemo(() => {
     if (!search) return announcements;
     return announcements.filter((a) =>
-      a.title.toLowerCase().includes(search.toLowerCase())
+      a.title.toLowerCase().includes(search.toLowerCase()),
     );
   }, [announcements, search]);
 
@@ -79,7 +79,7 @@ const AnnouncementList: React.FC = () => {
 
   const toggleSelectOne = (id: number) => {
     setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
   };
 
@@ -116,7 +116,7 @@ const AnnouncementList: React.FC = () => {
       }
 
       setAnnouncements((prev) =>
-        prev.filter((a) => !selectedIds.includes(a.id))
+        prev.filter((a) => !selectedIds.includes(a.id)),
       );
       setSelectedIds([]);
     } catch {

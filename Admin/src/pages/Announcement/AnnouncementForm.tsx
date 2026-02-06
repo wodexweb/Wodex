@@ -43,7 +43,7 @@ const AnnouncementForm: React.FC = () => {
   /* ================= INPUT CHANGE ================= */
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -76,7 +76,7 @@ const AnnouncementForm: React.FC = () => {
         payload.append("photo", formData.photo);
       }
 
-      await api.create("/api/announcements", payload);
+      await api.create("/api/admin/announcements", payload);
 
       alert("Announcement created successfully ✅");
 

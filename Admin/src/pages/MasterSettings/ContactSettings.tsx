@@ -44,7 +44,7 @@ const ContactSettings: React.FC = () => {
 
   useEffect(() => {
     api
-      .get("/api/contact-settings")
+      .get("/api/admin/contact-settings")
       .then((res: any) => {
         // supports both wrapped & direct responses
         const data = res?.data ?? res;

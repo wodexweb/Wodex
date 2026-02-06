@@ -13,6 +13,7 @@ import {
   Row,
   Spinner,
 } from "reactstrap";
+
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
@@ -20,7 +21,6 @@ const api = new APIClient();
 
 const AddPage: React.FC = () => {
   const navigate = useNavigate();
-
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -115,10 +115,11 @@ const AddPage: React.FC = () => {
                     <Col md={12}>
                       <FormGroup>
                         <Label>Page Content</Label>
+
                         <CKEditor
                           editor={ClassicEditor as any}
                           data={formData.content}
-                          onChange={(_, editor: any) => {
+                          onChange={(event, editor) => {
                             const data = editor.getData();
                             setFormData((prev) => ({
                               ...prev,
@@ -126,6 +127,7 @@ const AddPage: React.FC = () => {
                             }));
                           }}
                         />
+
                       </FormGroup>
                     </Col>
                   </Row>

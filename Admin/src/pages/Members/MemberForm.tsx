@@ -92,7 +92,7 @@ const MemberForm: React.FC = () => {
         payload.append("photo", formData.photo);
       }
 
-      await api.create("/api/members", payload);
+      await api.create("/api/admin/members", payload);
 
       alert("Member added successfully ✅");
 

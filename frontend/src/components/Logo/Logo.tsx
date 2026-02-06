@@ -1,5 +1,6 @@
 import { useSettings } from "../../hooks/useSettings";
 import styles from "./Logo.module.scss";
+import { getStorageUrl } from "../../helpers/api_helper";
 
 const Logo: React.FC = () => {
   const { settings, loading } = useSettings();
@@ -11,11 +12,7 @@ const Logo: React.FC = () => {
       <div className={styles.inner}>
         <img
           className={styles.logo}
-          src={
-            settings.website_logo
-              ? `http://localhost:8000/storage/${settings.website_logo}`
-              : "/default-logo.png"
-          }
+          src={getStorageUrl(settings.website_logo)}
           alt={settings.website_title || "Website Logo"}
         />
       </div>

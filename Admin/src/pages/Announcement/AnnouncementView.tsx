@@ -37,7 +37,7 @@ const ViewAnnouncement: React.FC = () => {
     if (!id) return;
 
     api
-      .get(`/api/announcements/${id}`)
+      .get(`/api/admin/announcements/${id}`)
       .then((res: any) => {
         const data = res?.data?.data ?? res?.data ?? null;
         setAnnouncement(data);

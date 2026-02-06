@@ -13,7 +13,7 @@ const store = configureStore({
 });
 
 const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
+  document.getElementById("root") as HTMLElement,
 );
 
 root.render(
@@ -27,7 +27,7 @@ root.render(
     >
       <App />
     </BrowserRouter>
-  </Provider>
+  </Provider>,
 );
 
 reportWebVitals();

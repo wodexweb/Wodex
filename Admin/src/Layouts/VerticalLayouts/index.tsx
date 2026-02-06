@@ -16,7 +16,7 @@ const VerticalLayout = (props: any) => {
           {/* ===== HEADER ===== */}
           {item.isHeader ? (
             <li className="menu-title">
-              <span data-key="t-menu">{props.t(item.label)}</span>
+              <span>{props.t(item.label)}</span>
             </li>
           ) : item.subItems ? (
             /* ===== MENU WITH SUBMENU ===== */
@@ -24,14 +24,15 @@ const VerticalLayout = (props: any) => {
               <Link
                 to="/#"
                 className="nav-link menu-link"
-                data-bs-toggle="collapse"
+                data-bs-toggle="collapse" // 🔑 REQUIRED
                 aria-expanded={item.stateVariables ? "true" : "false"}
-                onClick={item.click}
+                onClick={(e) => {
+                  e.preventDefault(); // stop /#
+                  item.click && item.click(e); // toggle dropdown
+                }}
               >
-                {/* LEFT ICON */}
                 {item.icon && <i className={item.icon}></i>}
-
-                <span data-key={item.label}>{props.t(item.label)}</span>
+                <span>{props.t(item.label)}</span>
               </Link>
 
               <Collapse className="menu-dropdown" isOpen={item.stateVariables}>
@@ -39,9 +40,12 @@ const VerticalLayout = (props: any) => {
                   {item.subItems.map((sub: any, idx: number) => (
                     <li className="nav-item" key={idx}>
                       <Link
-                        to={sub.link}
+                        to="/#"
                         className="nav-link"
-                        onClick={sub.click}
+                        onClick={(e) => {
+                          e.preventDefault(); // stop /#
+                          sub.click && sub.click(); // navigate()
+                        }}
                       >
                         {props.t(sub.label)}
                       </Link>
@@ -54,12 +58,15 @@ const VerticalLayout = (props: any) => {
             /* ===== SINGLE MENU ===== */
             <li className="nav-item">
               <Link
-                to={item.link}
+                to="/#"
                 className="nav-link menu-link"
-                onClick={item.click}
+                onClick={(e) => {
+                  e.preventDefault(); // stop /#
+                  item.click && item.click(); // navigate()
+                }}
               >
                 {item.icon && <i className={item.icon}></i>}
-                <span data-key={item.label}>{props.t(item.label)}</span>
+                <span>{props.t(item.label)}</span>
               </Link>
             </li>
           )}

@@ -47,7 +47,7 @@ const EditMember: React.FC = () => {
     if (!id) return;
 
     api
-      .get(`/api/members/${id}`)
+      .get(`/api/admin/members/${id}`)
       .then((res: any) => {
         const m: Member = res?.data?.data ?? res?.data;
 

@@ -28,10 +28,10 @@ const AllEvents: React.FC = () => {
               {events.map((event) => (
                 <Card
                   key={event.id}
+                  id={event.id}
                   title={event.title}
                   image={event.photo_url ?? ""}
-                  link={event.link}
-                  date={event.end_date}
+                  date={event.date}
                 />
               ))}
             </div>

@@ -33,7 +33,7 @@ const ManageGallery = () => {
   /* ================= FETCH EVENTS ================= */
   useEffect(() => {
     api
-      .get("/api/events")
+      .get("/api/admin/events")
       .then((res: any) => {
         const allEvents = [
           ...(res.upcoming || []),
@@ -45,7 +45,7 @@ const ManageGallery = () => {
           allEvents.map((e: any) => ({
             id: String(e.id),
             title: e.title,
-          }))
+          })),
         );
       })
       .catch((err) => {
@@ -59,7 +59,9 @@ const ManageGallery = () => {
 
     setLoading(true);
     try {
-      const res: any = await api.get(`/api/admin/gallery/event/${selectedEvent}`);
+      const res: any = await api.get(
+        `/api/admin/gallery/event/${selectedEvent}`,
+      );
 
       if (!res || typeof res !== "object") {
         setImages([]);
@@ -97,11 +99,11 @@ const ManageGallery = () => {
     try {
       await api.create("/api/admin/gallery", formData);
       alert("Images uploaded successfully");
-      
+
       // Clear file input after successful upload
       if (fileRef.current) fileRef.current.value = "";
       setFiles(null);
-      
+
       // Automatically refresh the view after upload
       fetchGallery();
     } catch (err) {
@@ -141,13 +143,13 @@ const ManageGallery = () => {
                         </option>
                       ))}
                     </Input>
-                    
+
                     {/* ✅ NEW: Manual View Button */}
-                    <Button 
-                        type="button" 
-                        color="info" 
-                        onClick={fetchGallery}
-                        disabled={!selectedEvent || loading}
+                    <Button
+                      type="button"
+                      color="info"
+                      onClick={fetchGallery}
+                      disabled={!selectedEvent || loading}
                     >
                       {loading ? "..." : "View"}
                     </Button>
@@ -178,7 +180,9 @@ const ManageGallery = () => {
               <CardBody>
                 <div className="d-flex justify-content-between align-items-center mb-3">
                   <h4>Gallery Preview</h4>
-                  {images.length > 0 && <span>{images.length} Images found</span>}
+                  {images.length > 0 && (
+                    <span>{images.length} Images found</span>
+                  )}
                 </div>
 
                 {driveLink && (
@@ -200,15 +204,19 @@ const ManageGallery = () => {
                           src={`${process.env.REACT_APP_API_URL}/storage/${img}`}
                           className="img-fluid rounded border"
                           alt={`Gallery ${i}`}
-                          style={{ height: 150, width: '100%', objectFit: "cover" }}
+                          style={{
+                            height: 150,
+                            width: "100%",
+                            objectFit: "cover",
+                          }}
                         />
                       </Col>
                     ))
                   ) : (
                     <Col>
                       <div className="text-center p-5 border rounded bg-light">
-                        {selectedEvent 
-                          ? "Click 'View' to see images for this event." 
+                        {selectedEvent
+                          ? "Click 'View' to see images for this event."
                           : "Select an event to get started."}
                       </div>
                     </Col>

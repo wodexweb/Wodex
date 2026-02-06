@@ -19,7 +19,7 @@ export interface PdfPageItem {
 
 export const PdfPagesAPI = {
   async getAll(): Promise<PdfPageItem[]> {
-    const res = await api.get<PdfPageItem[]>("/api/admin/pdf-pages");
+    const res = await api.get<PdfPageItem[]>("/api/pdf-pages");
     return Array.isArray(res) ? res : [];
   },
 };
@@ -122,6 +122,6 @@ export const EventsAPI = {
 
   async getById(id: string | number): Promise<EventItem | null> {
     const all = await this.getAll();
-    return all.find(e => String(e.id) === String(id)) || null;
+    return all.find((e) => String(e.id) === String(id)) || null;
   },
 };

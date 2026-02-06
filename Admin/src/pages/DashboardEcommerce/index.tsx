@@ -15,7 +15,7 @@ const DashboardEcommerce: React.FC = () => {
 
   const selectUser = createSelector(
     (state: any) => state.Profile,
-    (profile) => profile?.user
+    (profile) => profile?.user,
   );
 
   const reduxUser = useSelector(selectUser);
@@ -80,7 +80,7 @@ const DashboardEcommerce: React.FC = () => {
     <div className="page-content">
       <Container fluid>
         {/* ================= HEADER ================= */}
-        <Row className="mb-4 align-items-center">
+        <Row className="mb-4 align-items-center ">
           <Col md={8}>
             <h4 className="mb-1 fw-semibold">Good Morning, {adminName} 👋</h4>
             <p className="text-muted mb-0">
@@ -115,10 +115,10 @@ const DashboardEcommerce: React.FC = () => {
         </Row>
 
         {/* ================= STATS ================= */}
-        <Row>
+        <Row className="justify-content-center g-4">
           {/* EVENTS */}
-          <Col xl={3} md={6} className="mb-4">
-            <Card className="shadow-sm dashboard-card">
+          <Col xl={4} md={6} className="mb-4">
+            <Card className="shadow-sm dashboard-card border-events">
               <CardBody>
                 <div className="d-flex justify-content-between align-items-center">
                   <div>
@@ -146,8 +146,8 @@ const DashboardEcommerce: React.FC = () => {
           </Col>
 
           {/* ANNOUNCEMENTS */}
-          <Col xl={3} md={6} className="mb-4">
-            <Card className="shadow-sm dashboard-card">
+          <Col xl={4} md={6} className="mb-4">
+            <Card className="shadow-sm dashboard-card border-announcements">
               <CardBody>
                 <div className="d-flex justify-content-between align-items-center">
                   <div>
@@ -173,8 +173,8 @@ const DashboardEcommerce: React.FC = () => {
           </Col>
 
           {/* MEMBERS */}
-          <Col xl={3} md={6} className="mb-4">
-            <Card className="shadow-sm dashboard-card">
+          <Col xl={4} md={6} className="mb-4">
+            <Card className="shadow-sm dashboard-card border-members">
               <CardBody>
                 <div className="d-flex justify-content-between align-items-center">
                   <div>
@@ -194,30 +194,6 @@ const DashboardEcommerce: React.FC = () => {
                   onClick={() => navigate("/members/list")}
                 >
                   View members →
-                </Button>
-              </CardBody>
-            </Card>
-          </Col>
-
-          {/* SYSTEM STATUS */}
-          <Col xl={3} md={6} className="mb-4">
-            <Card className="shadow-sm dashboard-card">
-              <CardBody>
-                <div className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <p className="text-muted mb-1">SYSTEM STATUS</p>
-                    <h4 className="fw-bold mb-0">Online</h4>
-                    <p className="text-success mt-2 mb-0">
-                      All services running
-                    </p>
-                  </div>
-                  <div className="avatar-sm bg-success bg-opacity-10 rounded d-flex align-items-center justify-content-center">
-                    <i className="ri-shield-check-line text-success fs-3" />
-                  </div>
-                </div>
-
-                <Button size="sm" color="link" className="mt-3 p-0">
-                  View details →
                 </Button>
               </CardBody>
             </Card>

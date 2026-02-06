@@ -30,6 +30,9 @@
 
 //   return { settings, loading };
 // };
+
+
+
 import { useEffect, useState } from "react";
 import { APIClient } from "../../helpers/api_helper";
 
@@ -50,7 +53,7 @@ export const useSettings = () => {
     let mounted = true;
 
     api
-      .get<Setting>("/api/settings")
+      .get<Setting>("/api/admin/settings")
       .then((data) => {
         if (mounted) {
           setSettings(data);

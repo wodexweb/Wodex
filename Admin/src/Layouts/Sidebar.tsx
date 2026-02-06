@@ -14,6 +14,7 @@ import VerticalLayout from "./VerticalLayouts";
 import TwoColumnLayout from "./TwoColumnLayout";
 import HorizontalLayout from "./HorizontalLayout";
 
+import { getStorageUrl } from "../helpers/api_helper";
 // settings hook
 import { useSettings } from "../Components/Hooks/useSettings";
 
@@ -42,9 +43,7 @@ const Sidebar = ({ layoutType }: any) => {
     }
   };
 
-  const logoUrl = settings?.admin_logo
-    ? `http://localhost:8000/storage/${settings.admin_logo}`
-    : null;
+  const logoUrl = getStorageUrl(settings?.admin_logo);
 
   const logoText =
     settings?.system_name || settings?.website_title || "Admin Panel";

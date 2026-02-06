@@ -52,7 +52,7 @@ const ManagePages = () => {
 
   const fetchPages = async () => {
     try {
-      const res: any = await api.get("/api/pages");
+      const res: any = await api.get("/api/admin/pages");
       setPages(res || []);
     } catch {
       alert("Failed to load pages");

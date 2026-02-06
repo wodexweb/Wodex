@@ -29,7 +29,7 @@ const AddAdmin = () => {
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -57,9 +57,7 @@ const AddAdmin = () => {
           <Col xl={12} lg={11}>
             <Card className="shadow-sm">
               <CardBody className="p-4 p-lg-5">
-                <h4 className="mb-4 border-bottom pb-3">
-                  Create New Admin
-                </h4>
+                <h4 className="mb-4 border-bottom pb-3">Create New Admin</h4>
 
                 <Form onSubmit={handleSubmit}>
                   {/* ROW 1 */}
@@ -125,9 +123,7 @@ const AddAdmin = () => {
                   {/* SUBMIT */}
                   <div className="text-center mt-4">
                     <Button color="primary" disabled={loading}>
-                      {loading && (
-                        <Spinner size="sm" className="me-2" />
-                      )}
+                      {loading && <Spinner size="sm" className="me-2" />}
                       Create Role
                     </Button>
                   </div>

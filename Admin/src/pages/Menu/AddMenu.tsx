@@ -43,7 +43,7 @@ const AddMenu: React.FC = () => {
     }
 
     try {
-      await api.create("/api/menus", formData);
+      await api.create("/api/admin/menus", formData);
       alert("Menu created successfully");
       navigate(`/menu/${formData.location}`);
     } catch (error) {

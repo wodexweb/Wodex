@@ -142,7 +142,7 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
       setLoading(true);
 
       // 1️⃣ Load menus to get menu_id
-      const menusRes: any = await api.get("/api/menus");
+      const menusRes: any = await api.get("/api/admin/menus");
       const foundMenu = menusRes.data.find(
         (m: Menu) => m.location === location,
       );
@@ -156,7 +156,9 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
       setMenu(foundMenu);
 
       // 2️⃣ Load menu items by location
-      const itemsRes: any = await api.get(`/api/menus/by-location/${location}`);
+      const itemsRes: any = await api.get(
+        `/api/admin/menus/by-location/${location}`,
+      );
 
       setItems(itemsRes.data || []);
     } catch (err) {
@@ -188,7 +190,7 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
     if (!form.title || !form.url) return;
 
     try {
-      await api.post("/api/menu-items", {
+      await api.post("/api/admin/menu-items", {
         menu_id: menu.id,
         title: form.title,
         url: form.url,
@@ -206,12 +208,12 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
 
   const deleteItem = async (id: number) => {
     if (!window.confirm("Delete this menu item?")) return;
-    await api.delete(`/api/menu-items/${id}`);
+    await api.delete(`/api/admin/menu-items/${id}`);
     fetchMenu();
   };
 
   const toggleItem = async (id: number) => {
-    await api.patch(`/api/menu-items/${id}/toggle`);
+    await api.patch(`/api/admin/menu-items/${id}/toggle`);
     fetchMenu();
   };
 
@@ -227,7 +229,7 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
     const newItems = arrayMove(items, oldIndex, newIndex);
     setItems(newItems);
 
-    await api.post("/api/menu-items/order", {
+    await api.post("/api/admin/menu-items/order", {
       items: newItems.map((item, index) => ({
         id: item.id,
         order: index + 1,

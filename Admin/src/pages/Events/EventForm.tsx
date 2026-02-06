@@ -61,7 +61,7 @@ const EventForm = () => {
       if (formData.photo) payload.append("photo", formData.photo);
 
       // ✅ CORRECT API CALL (NO /api here)
-      await api.create("/api/events", payload, {
+      await api.create("/api/admin/events", payload, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

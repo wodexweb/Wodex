@@ -34,7 +34,7 @@ const MemberView: React.FC = () => {
     if (!id) return;
 
     api
-      .get(`/api/members/${id}`)
+      .get(`/api/admin/members/${id}`)
       .then((res: any) => {
         const data = res?.data?.data ?? res?.data ?? null;
         setMember(data);
