@@ -16,6 +16,16 @@
 // @import "../scss/rtl/pages-rtl";
 
 //Rigthsidebar offcanvas
+
+/* CKEditor Fix */
+.ck-editor__editable_inline {
+  min-height: 300px !important;
+}
+
+.ck.ck-editor {
+  width: 100%;
+}
+
 .offcanvas-header-dark {
   .btn-close {
     filter: invert(1) grayscale(100%) brightness(200%);

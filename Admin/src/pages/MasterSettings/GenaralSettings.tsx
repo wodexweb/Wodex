@@ -125,7 +125,7 @@ const Settings: React.FC = () => {
         }
       });
 
-      await api.create("/api/settings", payload);
+      await api.create("/api/admin/settings", payload);
       alert("Settings updated successfully");
       fetchSettings();
     } catch (error) {

@@ -19,7 +19,6 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import Route from "./Routes";
 import { fetchProfile } from "./slices/auth/profile/thunk";
-
 import "./assets/scss/themes.scss";
 
 function App() {

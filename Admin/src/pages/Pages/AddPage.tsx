@@ -13,8 +13,6 @@ import {
   Row,
   Spinner,
 } from "reactstrap";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 const api = new APIClient();
 
@@ -62,7 +60,7 @@ const AddPage: React.FC = () => {
     setLoading(true);
 
     try {
-      await api.create("/api/admin/pages", formData);
+      await api.create("/api/pages", formData);
       navigate("/pages/manage");
     } catch (err) {
       alert(err || "Failed to create page");
@@ -115,17 +113,7 @@ const AddPage: React.FC = () => {
                     <Col md={12}>
                       <FormGroup>
                         <Label>Page Content</Label>
-                        <CKEditor
-                          editor={ClassicEditor as any}
-                          data={formData.content}
-                          onChange={(_, editor: any) => {
-                            const data = editor.getData();
-                            setFormData((prev) => ({
-                              ...prev,
-                              content: data,
-                            }));
-                          }}
-                        />
+                        
                       </FormGroup>
                     </Col>
                   </Row>
