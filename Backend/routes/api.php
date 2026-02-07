@@ -487,6 +487,7 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::post('/menu-items', [MenuItemController::class, 'store']);
     Route::post('/menu-items/order', [MenuItemController::class, 'updateOrder']);
     Route::patch('/menu-items/{id}/toggle', [MenuItemController::class, 'toggle']);
+    Route::patch('/menu-items/{id}', [MenuItemController::class, 'update']);
     Route::delete('/menu-items/{id}', [MenuItemController::class, 'destroy']);
 
     /*
