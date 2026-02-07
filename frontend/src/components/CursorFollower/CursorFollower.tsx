@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./cursor.module.scss";
 
 const CursorFollower: React.FC = () => {
     const dotRef = useRef<HTMLDivElement>(null);
     const ringRef = useRef<HTMLDivElement>(null);
+    const [clicked, setClicked] = useState(false);
 
     const mouse = useRef({ x: 0, y: 0 });
     const ring = useRef({ x: 0, y: 0 });
@@ -13,14 +14,18 @@ const CursorFollower: React.FC = () => {
             mouse.current.x = e.clientX;
             mouse.current.y = e.clientY;
 
-            // dot instant follow
             if (dotRef.current) {
                 dotRef.current.style.left = e.clientX + "px";
                 dotRef.current.style.top = e.clientY + "px";
             }
         };
 
+        const down = () => setClicked(true);
+        const up = () => setClicked(false);
+
         document.addEventListener("mousemove", move);
+        document.addEventListener("mousedown", down);
+        document.addEventListener("mouseup", up);
 
         const animate = () => {
             ring.current.x += (mouse.current.x - ring.current.x) * 0.18;
@@ -36,14 +41,20 @@ const CursorFollower: React.FC = () => {
 
         animate();
 
-        return () => document.removeEventListener("mousemove", move);
+        return () => {
+            document.removeEventListener("mousemove", move);
+            document.removeEventListener("mousedown", down);
+            document.removeEventListener("mouseup", up);
+        };
     }, []);
-
 
     return (
         <>
             <div ref={ringRef} className={styles.cursorRing}></div>
-            <div ref={dotRef} className={styles.cursorDot}></div>
+            <div
+                ref={dotRef}
+                className={`${styles.cursorDot} ${clicked ? styles.expand : ""}`}
+            ></div>
         </>
     );
 };
