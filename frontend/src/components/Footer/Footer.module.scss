@@ -8,6 +8,26 @@
   box-shadow: 5px 5px 20px rgba(218, 165, 32, 0.3); // Gold shadow soft kiya
   position: relative; // Z-index ke liye zaroori
   z-index: 2;
+
+  animation: footerGlow 3s ease-in-out infinite;
+}
+
+@keyframes footerGlow {
+  0% {
+    box-shadow:
+      0 0 8px rgba(218, 165, 32, 0.15),
+      0 0 18px rgba(218, 165, 32, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 20px rgba(218, 165, 32, 0.35),
+      0 0 35px rgba(218, 165, 32, 0.45);
+  }
+  100% {
+    box-shadow:
+      0 0 8px rgba(218, 165, 32, 0.15),
+      0 0 18px rgba(218, 165, 32, 0.2);
+  }
 }
 
 .footer {

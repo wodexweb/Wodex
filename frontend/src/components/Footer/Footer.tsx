@@ -190,7 +190,12 @@ import {
   FaYoutube,
   FaInstagram,
   FaMapMarkerAlt,
+  FaUniversity,
+  FaCreditCard
 } from "react-icons/fa";
+
+// import { FaUniversity, FaCreditCard } from "react-icons/fa";
+
 
 import { useContactSettings } from "../../hooks/useFooterSettings";
 import { useMenu } from "../../hooks/useMenu";
@@ -333,6 +338,41 @@ const Footer: React.FC = () => {
               </div>
             </div>
           </div>
+          {/* BANK DETAILS BOX */}
+          <div className={styles.bankBox}>
+            <div className={styles.bankItem}>
+              <FaUniversity className={styles.bankIcon} />
+              <div>
+                <label>Bank Account Name</label>
+                <p>Gujarat Pediatric Intensive Care Chapter</p>
+              </div>
+            </div>
+
+            <div className={styles.bankItem}>
+              <FaCreditCard className={styles.bankIcon} />
+              <div>
+                <label>Account Number</label>
+                <p>085605002186</p>
+              </div>
+            </div>
+
+            <div className={styles.bankItem}>
+              <FaCreditCard className={styles.bankIcon} />
+              <div>
+                <label>IFSC Code</label>
+                <p>ICIC0000856</p>
+              </div>
+            </div>
+
+            <div className={styles.bankItem}>
+              <FaMapMarkerAlt className={styles.bankIcon} />
+              <div>
+                <label>Branch</label>
+                <p>Chala, Vapi</p>
+              </div>
+            </div>
+          </div>
+
         </div>
       </footer>
     </div>
