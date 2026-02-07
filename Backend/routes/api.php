@@ -523,6 +523,7 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::get('/gallery/events', [GalleryController::class, 'events']);
+    Route::get('/gallery/event/{event}', [GalleryController::class, 'byEvent']);
     Route::post('/gallery', [GalleryController::class, 'store']);
     Route::delete('/gallery/{id}', [GalleryController::class, 'destroy']);
 });

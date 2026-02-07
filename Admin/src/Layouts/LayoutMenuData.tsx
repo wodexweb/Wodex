@@ -660,6 +660,7 @@ const ROLE_ACCESS: Record<number, string[]> = {
     "notices",
     "pdf-pages",
     "achievements",
+    "gallery",
     "events",
     "announcements",
     "members",
@@ -698,6 +699,7 @@ const Navdata = () => {
     else if (path.startsWith("/notices")) setActiveMenu("notices");
     else if (path.startsWith("/pdf-pages")) setActiveMenu("pdf-pages");
     else if (path.startsWith("/achievements")) setActiveMenu("achievements");
+    else if (path.startsWith("/gallery")) setActiveMenu("gallery");
     else if (path.startsWith("/events")) setActiveMenu("events");
     else if (path.startsWith("/announcements")) setActiveMenu("announcements");
     else if (path.startsWith("/members")) setActiveMenu("members");
@@ -848,6 +850,21 @@ const Navdata = () => {
         toggleMenu("achievements");
       },
       subItems: [{ label: "Manage Achievements", click: () => navigate("/achievements") }],
+    },
+    /* ================= GALLERY ================= */
+    {
+      id: "gallery",
+      label: "Gallery",
+      icon: "ri-gallery-line",
+      link: "/#",
+      stateVariables: activeMenu === "gallery",
+      click: (e: any) => {
+        e.preventDefault();
+        toggleMenu("gallery");
+      },
+      subItems: [
+        { label: "Add Gallery", click: () => navigate("/gallery/add") },
+      ],
     },
 
     {
