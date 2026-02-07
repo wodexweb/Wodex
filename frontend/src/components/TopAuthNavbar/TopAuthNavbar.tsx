@@ -1,5 +1,6 @@
 import React from "react";
 import { Container, Nav } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import styles from "./TopAuthNavbar.module.scss";
 
 const TopAuthNavbar: React.FC = () => {
@@ -7,10 +8,12 @@ const TopAuthNavbar: React.FC = () => {
     <div className={styles.topBar}>
       <Container className={styles.inner}>
         <Nav className={styles.nav}>
-          <Nav.Link href="/login" className={styles.link}>
+          <Nav.Link as={Link} to="/login" className={styles.link}>
             Login
           </Nav.Link>
-          <Nav.Link href="/membership" className={styles.link}>
+
+          {/* CONNECTED */}
+          <Nav.Link as={Link} to="/payment" className={styles.link}>
             Apply for Membership
           </Nav.Link>
         </Nav>

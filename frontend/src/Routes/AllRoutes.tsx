@@ -31,6 +31,9 @@ import Gallery from "../pages/Gallery/Gallery";
 import ContactUs from "../pages/ContactUs/ContactUs";
 import PdfPages from "../pages/PDF-Pages/PdfPages";
 
+import PaymentPage from "../pages/Payment/PaymentPage.tsx";
+
+
 const AllRoutes: React.FC = () => {
   return (
     <MainLayout>
@@ -63,6 +66,7 @@ const AllRoutes: React.FC = () => {
         <Route path="/members-directory" element={<MembersDirectory />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/payment" element={<PaymentPage />} />
         <Route path="/pdf-pages" element={<PdfPages />} />
 
         {/* FALLBACK */}

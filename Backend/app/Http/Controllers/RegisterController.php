@@ -24,6 +24,6 @@ class RegisterController extends Controller
         return response()->json([
             'success' => true,
             'data' => $user
-        ]);
+        ]);     
     }
 }

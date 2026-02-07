@@ -437,7 +437,9 @@ Route::get('/galleries', [GalleryController::class, 'index']);
 */
 Route::middleware('throttle:3,1')->post('/create-order', [PaymentController::class, 'createOrder']);
 Route::middleware('throttle:5,1')->post('/submit-form', [PaymentController::class, 'submitForm']);
-Route::post('/registration', [RegisterController::class, 'store']);
+Route::apiResource('registration', RegisterController::class)
+    ->only(['index', 'show']);
+
 
 /*
 |--------------------------------------------------------------------------

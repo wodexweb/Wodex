@@ -1,0 +1,129 @@
+.wrapper {
+  max-width: 760px;
+  margin: 40px auto;
+}
+
+.planBar {
+  background: #f39c34;
+  padding: 16px 22px;
+  display: flex;
+  justify-content: space-between;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #bcbdbf;
+  border-radius: 14px;
+  padding: 40px;
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inputBox {
+  display: flex;
+  align-items: center;
+  border: 1px solid #bcbdbf;
+  border-radius: 8px;
+  padding: 0 12px;
+
+  svg {
+    margin-right: 10px;
+    color: #6b7280;
+  }
+
+  input {
+    border: none;
+    flex: 1;
+    padding: 15px 0;
+    outline: none;
+  }
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #bcbdbf;
+  border-radius: 8px;
+}
+
+.gender {
+  display: flex;
+  gap: 25px;
+}
+
+/* PASSWORD BAR */
+.passwordRow {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+.segmentBar {
+  display: flex;
+  gap: 6px;
+
+  span {
+    width: 40px;
+    height: 6px;
+    background: #d1d5db;
+    border-radius: 4px;
+  }
+
+  .active1 {
+    background: #ef4444 !important;
+  }
+  .active2 {
+    background: #f97316 !important;
+  }
+  .active3 {
+    background: #eab308 !important;
+  }
+  .active4 {
+    background: #22c55e !important;
+  }
+}
+
+.strengthText {
+  font-size: 14px;
+}
+
+.gatewayTitle {
+  text-align: center;
+  border-top: 1px solid #bcbdbf;
+  padding-top: 30px;
+  font-weight: 600;
+}
+
+.gatewayBox {
+  border: 2px solid #f39c34;
+  max-width: 300px;
+  margin: 0 auto;
+  padding: 14px;
+  text-align: center;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.payBtn {
+  display: block;
+  margin: 10px auto 0;
+  width: 240px;
+  padding: 15px;
+  background: #1e5bd9;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.formLocked {
+  pointer-events: none;
+  opacity: 0.6;
+}
