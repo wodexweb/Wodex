@@ -179,6 +179,8 @@
 // src/components/Footer/Footer.tsx
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { motion, type Variants } from "framer-motion";
+
 import styles from "./Footer.module.scss";
 import Logo from "../../assets/logo/Asset 1@2x-8 1.png";
 
@@ -194,34 +196,55 @@ import {
   FaCreditCard
 } from "react-icons/fa";
 
-// import { FaUniversity, FaCreditCard } from "react-icons/fa";
-
-
 import { useContactSettings } from "../../hooks/useFooterSettings";
 import { useMenu } from "../../hooks/useMenu";
 
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.22, 1, 0.36, 1],   // smooth easeOut curve
+    },
+  },
+};
+
+
 const Footer: React.FC = () => {
   const { data } = useContactSettings();
-
-  // ✅ ONLY QUICK LINKS
-  // ✅ CORRECT
   const { menu: quickMenu, loading } = useMenu("footer");
 
   return (
     <div className={styles.footerWrapper}>
       <footer className={styles.footer}>
         <div className={styles.container}>
+
           {/* LOGO */}
-          <div className={styles.topHeader}>
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            className={styles.topHeader}
+          >
             <div className={styles.logoBox}>
               <img src={Logo} alt="AOP Logo" />
             </div>
             <h2>ACADEMY OF PEDIATRICS GUJARAT</h2>
-          </div>
+          </motion.div>
 
           <div className={styles.divider} />
 
-          <div className={styles.footerGrid}>
+          {/* GRID */}
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            className={styles.footerGrid}
+          >
             {/* CONNECT */}
             <div className={styles.col}>
               <h4>CONNECT WITH US</h4>
@@ -266,31 +289,22 @@ const Footer: React.FC = () => {
               </div>
             </div>
 
-            {/* ABOUT (STATIC) */}
+            {/* ABOUT */}
             <div className={styles.col}>
               <h4>ABOUT</h4>
               <ul>
-                <li>
-                  <span className={styles.linkText}>AOP Gujarat</span>
-                </li>
-                <li>
-                  <span className={styles.linkText}>Our Mission</span>
-                </li>
-                <li>
-                  <span className={styles.linkText}>Executive Body</span>
-                </li>
-                <li>
-                  <span className={styles.linkText}>Constitution</span>
-                </li>
+                <li><span className={styles.linkText}>AOP Gujarat</span></li>
+                <li><span className={styles.linkText}>Our Mission</span></li>
+                <li><span className={styles.linkText}>Executive Body</span></li>
+                <li><span className={styles.linkText}>Constitution</span></li>
               </ul>
             </div>
 
-            {/* ✅ QUICK LINKS (DYNAMIC) */}
+            {/* QUICK LINKS */}
             <div className={styles.col}>
               <h4>QUICK LINKS</h4>
               <ul>
                 {loading && <li className={styles.linkText}>Loading...</li>}
-
                 {!loading && quickMenu.length === 0 && (
                   <li className={styles.linkText}>No links found</li>
                 )}
@@ -311,19 +325,13 @@ const Footer: React.FC = () => {
               </ul>
             </div>
 
-            {/* POLICIES (STATIC) */}
+            {/* POLICIES */}
             <div className={styles.col}>
               <h4>POLICIES</h4>
               <ul>
-                <li>
-                  <span className={styles.linkText}>Terms & Conditions</span>
-                </li>
-                <li>
-                  <span className={styles.linkText}>Privacy Policy</span>
-                </li>
-                <li>
-                  <span className={styles.linkText}>Refund Policy</span>
-                </li>
+                <li><span className={styles.linkText}>Terms & Conditions</span></li>
+                <li><span className={styles.linkText}>Privacy Policy</span></li>
+                <li><span className={styles.linkText}>Refund Policy</span></li>
               </ul>
             </div>
 
@@ -337,9 +345,16 @@ const Footer: React.FC = () => {
                 </p>
               </div>
             </div>
-          </div>
-          {/* BANK DETAILS BOX */}
-          <div className={styles.bankBox}>
+          </motion.div>
+
+          {/* BANK BOX */}
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            className={styles.bankBox}
+          >
             <div className={styles.bankItem}>
               <FaUniversity className={styles.bankIcon} />
               <div>
@@ -371,7 +386,7 @@ const Footer: React.FC = () => {
                 <p>Chala, Vapi</p>
               </div>
             </div>
-          </div>
+          </motion.div>
 
         </div>
       </footer>

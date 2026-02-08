@@ -1,12 +1,11 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { AiFillHome } from "react-icons/ai";
+import { motion, type Variants } from "framer-motion";
 import { FiPhoneCall } from "react-icons/fi";
 import { HiLocationMarker } from "react-icons/hi";
 import styles from "./ContactUs.module.scss";
 import PageHeaderArea from "../../components/PageHeaderArea/PageHeaderArea";
 
-/* Random images (change or add more) */
+/* Random images */
 const images = [
   "/images/contact/contact1.png",
   "/images/contact/contact2.png",
@@ -15,23 +14,37 @@ const images = [
 
 const randomImage = images[Math.floor(Math.random() * images.length)];
 
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.22, 1, 0.36, 1],   // smooth easeOut curve
+    },
+  },
+};
+
+
 const ContactUs: React.FC = () => {
   return (
     <>
-      {/* HEADER */}
       <PageHeaderArea title="ContactUs" current="ContactUs" />
 
-      {/* PAGE */}
       <section className={styles.page}>
         <div className={styles.container}>
           <div className={styles.grid}>
+
             {/* LEFT CARD */}
-            <div className={styles.leftCard}>
-              <img
-                src={randomImage}
-                alt="Support"
-                className={styles.illustration}
-              />
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.3 }}
+              className={styles.leftCard}
+            >
+              <img src={randomImage} alt="Support" className={styles.illustration} />
 
               <h2>Need Assistance?</h2>
               <h3>Reach Out to Our Support Team</h3>
@@ -40,14 +53,23 @@ const ContactUs: React.FC = () => {
                 If you have any queries or suggestions regarding this portal,
                 please feel free to reach out to us at
                 <br />
-                <a href="mailto:secretary@gpicc.co.in">secretary@gpicc.co.in</a>
+                <a href="mailto:secretary@gpicc.co.in">
+                  secretary@gpicc.co.in
+                </a>
               </p>
-            </div>
+            </motion.div>
 
             {/* RIGHT COLUMN */}
             <div className={styles.rightCol}>
+
               {/* PRESIDENT */}
-              <div className={styles.infoCard}>
+              <motion.div
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true }}
+                className={styles.infoCard}
+              >
                 <img
                   src="/images/office/1.jpg"
                   alt="Dr. Himanshu Tadvi"
@@ -62,10 +84,16 @@ const ContactUs: React.FC = () => {
                     <FiPhoneCall /> 99138 33122
                   </p>
                 </div>
-              </div>
+              </motion.div>
 
               {/* SECRETARY */}
-              <div className={styles.infoCard}>
+              <motion.div
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true }}
+                className={styles.infoCard}
+              >
                 <img
                   src="/images/office/2.jpg"
                   alt="Dr. Amit Chitalia"
@@ -80,10 +108,16 @@ const ContactUs: React.FC = () => {
                     <FiPhoneCall /> 90999 87400
                   </p>
                 </div>
-              </div>
+              </motion.div>
 
               {/* ADDRESS */}
-              <div className={styles.infoCard}>
+              <motion.div
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true }}
+                className={styles.infoCard}
+              >
                 <div className={styles.iconBox}>
                   <HiLocationMarker />
                 </div>
@@ -91,11 +125,12 @@ const ContactUs: React.FC = () => {
                 <div>
                   <h4>Address</h4>
                   <p className={styles.address}>
-                    5th Floor, Saachi Hospital, Near Akash Ganga Apartment, Opp.
-                    New Civil Hospital, Surat 395002.
+                    5th Floor, Saachi Hospital, Near Akash Ganga Apartment,
+                    Opp. New Civil Hospital, Surat 395002.
                   </p>
                 </div>
-              </div>
+              </motion.div>
+
             </div>
           </div>
         </div>

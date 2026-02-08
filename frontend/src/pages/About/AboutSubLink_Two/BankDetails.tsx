@@ -1,6 +1,6 @@
 import React from "react";
 import "./BankDetails.scss";
-import { AiFillHome } from "react-icons/ai";
+import { motion } from "framer-motion";
 import PageHeaderArea from "../../../components/PageHeaderArea/PageHeaderArea";
 
 import {
@@ -9,16 +9,17 @@ import {
   FaRegCreditCard,
   FaMapMarkerAlt,
 } from "react-icons/fa";
-import { Link } from "react-router-dom";
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0 },
+};
 
 const BankDetails: React.FC = () => {
   return (
     <div className="bank-details">
-      {/* HERO */}
       <PageHeaderArea title="BankDetails" current="BankDetails" />
-      
 
-      {/* CONTENT */}
       <section className="content">
         <h2>
           Bank Details For Gujarat Pediatric <br />
@@ -26,8 +27,16 @@ const BankDetails: React.FC = () => {
         </h2>
 
         <div className="details-wrapper">
-          {/* LEFT ORANGE BOX */}
-          <div className="bank-card">
+
+          {/* LEFT BOX */}
+          <motion.div
+            className="bank-card"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <div className="info-item">
               <FaUniversity className="icon" />
               <div>
@@ -59,10 +68,17 @@ const BankDetails: React.FC = () => {
                 <p>Chala, Vapi</p>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* RIGHT IMAGE */}
-          <div className="image-card">
+          <motion.div
+            className="image-card"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             <img
               src="https://images.unsplash.com/photo-1607746882042-944635dfe10e"
               alt="Little Lives Matter"
@@ -71,7 +87,8 @@ const BankDetails: React.FC = () => {
               <h3>Little Lives Matter</h3>
               <p>Help Them Grow</p>
             </div>
-          </div>
+          </motion.div>
+
         </div>
       </section>
     </div>

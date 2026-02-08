@@ -1,7 +1,6 @@
 import React from "react";
 import "./About.scss";
-import { AiFillHome } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import PageHeaderArea from "../../../components/PageHeaderArea/PageHeaderArea";
 
 type FocusItem = {
@@ -37,53 +36,66 @@ const focusData: FocusItem[] = [
   },
 ];
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0 },
+};
+
 const AboutGPICC: React.FC = () => {
   return (
     <div className="about-gpicc">
-      {/* HERO */}
       <PageHeaderArea title="About" current="About" />
 
-      {/* CONTENT */}
       <section className="content">
         <h2>Empowering sick kids care, Everywhere!</h2>
 
-        <p className="intro">
+        <motion.p
+          className="intro"
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
           The Gujarat Pediatric Intensive Care Chapter was established in 2018
           at Karamsad, rooted in a deep commitment to advancing pediatric
-          intensive care across Gujarat – especially in underserved and
-          resource-limited rural areas. Our chapter was born out of a pressing
-          need to bridge the gaps in healthcare access, build local capacity,
-          and empower medical professionals serving critically ill children,
-          regardless of where they practice.
-        </p>
+          intensive care across Gujarat.
+        </motion.p>
 
         <div className="card-grid">
-          <div className="card">
+          <motion.div
+            className="card"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <h3>Our Mission</h3>
-            <p>
-              We are dedicated to providing continuous education and hands-on
-              training to pediatricians, general practitioners, nurses, and
-              other healthcare workers working in resource-constrained settings.
-              We firmly believe that with the right training, protocols, and
-              support, even basic setups can deliver high-quality intensive care
-              for critically ill children.
-            </p>
-          </div>
+            <p>We are dedicated to providing continuous education...</p>
+          </motion.div>
 
-          <div className="card">
+          <motion.div
+            className="card"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             <h3>Our Vision</h3>
-            <p>
-              We envision a future where every child in Gujarat – regardless of
-              geography – has access to safe, evidence-based, and compassionate
-              intensive care. Through every workshop we host, every webinar we
-              conduct, every protocol we create, and every partnership we build,
-              we stay true to our core belief: Every child in Gujarat deserves
-              the best chance at life.
-            </p>
-          </div>
+            <p>We envision a future where every child in Gujarat...</p>
+          </motion.div>
         </div>
 
-        <div className="card full">
+        <motion.div
+          className="card full"
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
           <h3>Our Focus</h3>
           <ul className="focus-list">
             {focusData.map((item, index) => (
@@ -92,18 +104,21 @@ const AboutGPICC: React.FC = () => {
               </li>
             ))}
           </ul>
-        </div>
+        </motion.div>
 
-        <div className="card full">
+        <motion.div
+          className="card full"
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
           <h3>Our Reach and Impact</h3>
           <p>
-            Since 2018, IAP has evolved into a respected platform that bridges
-            the gap between tertiary care centers and peripheral setups across
-            the state. We collaborate with national pediatric forums and
-            critical care networks, bringing the latest advances and global best
-            practices to Gujarat while addressing its unique local challenges.
+            Since 2018, IAP has evolved into a respected platform...
           </p>
-        </div>
+        </motion.div>
       </section>
     </div>
   );

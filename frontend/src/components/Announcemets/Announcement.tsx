@@ -33,9 +33,8 @@ const AnnouncementSection: React.FC = () => {
   return (
     <>
       <section
-        className={`${styles.section} section--dark ${
-          isEmpty ? styles.sectionEmpty : ""
-        }`}
+        className={`${styles.section} section--dark ${isEmpty ? styles.sectionEmpty : ""
+          }`}
       >
         <h2 className={styles.heading}>ANNOUNCEMENT</h2>
 
@@ -49,15 +48,19 @@ const AnnouncementSection: React.FC = () => {
               {visibleItems.map((item) => (
                 <Card
                   key={item.id}
+                  id={item.id}
                   title={item.title}
                   image={item.photo_url ?? ""}
-                  onClick={() => {
+                  date={item.end_date}
+                  onClick={() => {         // NEW
                     setActive(item);
                     setOpen(true);
                   }}
                 />
               ))}
             </div>
+
+
 
             {items.length > 3 && (
               <div className={styles.viewMoreWrap}>

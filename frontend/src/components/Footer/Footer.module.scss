@@ -68,11 +68,50 @@
   }
 }
 
+// .divider {
+//   width: 100%;
+//   height: 1px;
+//   background: rgba(255, 255, 255, 0.1);
+//   margin-bottom: 50px;
+// }
+
 .divider {
+  position: relative;
   width: 100%;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.1);
+  height: 0.4px;
+  background: rgba(255, 255, 255, 0.15);
   margin-bottom: 50px;
+  overflow: hidden;
+}
+
+/* moving glow beam */
+.divider::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -40%;
+  width: 40%;
+  height: 4px;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 180, 80, 0.9),
+    rgba(255, 140, 0, 1),
+    transparent
+  );
+
+  filter: blur(6px);
+  animation: dividerBeam 3.5s linear infinite;
+}
+
+@keyframes dividerBeam {
+  from {
+    left: -40%;
+  }
+  to {
+    left: 120%;
+  }
 }
 
 .footerGrid {
