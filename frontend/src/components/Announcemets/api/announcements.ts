@@ -6,6 +6,7 @@ export interface Announcement {
   id: number;
   title: string;
   photo_url: string | null;
+  end_date?: string;
 }
 
 interface AnnouncementResponse {

@@ -2,26 +2,27 @@ import React, { useEffect, useState } from "react";
 import styles from "./ImageSlider.module.scss";
 import { APIClient } from "../../helpers/api_helper";
 
+
 const api = new APIClient();
 
 const ImageSlider: React.FC = () => {
   const [images, setImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-useEffect(() => {
+  useEffect(() => {
     const fetchAllGalleryImages = async () => {
       try {
         // Use the API helper - usually it handles the /api/ prefix automatically
         const res: any = await api.get("/api/galleries");
-        
+
         // FIX: Extract the array from res.data
         if (res && res.success && Array.isArray(res.data)) {
-          
+
           // Combine images from ALL gallery objects
           const combinedImages = res.data.flatMap((gallery: any) => gallery.images || []);
-          
+
           // Shuffle them
           const shuffledImages = combinedImages.sort(() => 0.5 - Math.random());
-          
+
           setImages(shuffledImages);
         }
       } catch (err) {

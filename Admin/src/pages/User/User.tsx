@@ -1,157 +1,252 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useEffect, useState, useCallback } from "react";
+import { APIClient } from "../../helpers/api_helper";
+import {
+  Card,
+  CardBody,
+  Col,
+  Container,
+  Row,
+  Table,
+  Badge,
+  Spinner,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
+  Button,
+} from "reactstrap";
+import { useNavigate } from "react-router-dom";
 
-interface UserInfo {
+const api = new APIClient();
+
+/* ================= TYPES ================= */
+
+interface Registration {
+  id: number;
   name: string;
   surname: string;
-  mobile: string;
   email: string;
+  mobile: string;
   city: string;
+  status?: "paid" | "pending";
 }
 
-interface MembershipInfo {
-  title: string;
-}
+/* ================= COMPONENT ================= */
 
-interface Purchase {
-  id: number;
-  amount: string;
-  status: string;
-  start_date: string;
-  end_date: string;
-  user: UserInfo | null;
-  membership: MembershipInfo | null;
-}
+const UserMembershipPurchases: React.FC = () => {
+  const [data, setData] = useState<Registration[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-const User: React.FC = () => {
-  const [data, setData] = useState<Purchase[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchPurchases();
-  }, []);
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
-  const fetchPurchases = async () => {
+  /* ================= FETCH ================= */
+
+  const fetchPurchases = useCallback(async () => {
     try {
-      const res = await axios.get(
-        "http://127.0.0.1:8000/api/admin/memberships"
-      );
-      setData(res.data);
-    } catch (err) {
-      console.error(err);
-      setError("Failed to load data");
+      setLoading(true);
+      const res: any = await api.get("/api/registration");
+      setData(res?.data ?? []);
+    } catch (e) {
+      setError("Failed to load membership data ❌");
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  useEffect(() => {
+    fetchPurchases();
+  }, [fetchPurchases]);
+
+  /* ================= ACTIONS ================= */
+
+  // ✅ Approve
+  const approveMembership = async (id: number) => {
+    if (!window.confirm("Approve this membership?")) return;
+
+    try {
+      await api.put(`/api/registration/${id}`);
+      fetchPurchases();
+    } catch {
+      alert("Failed to approve membership ❌");
+    }
   };
 
+  // ❌ Delete (fraud)
+  const deleteMember = async (id: number) => {
+    if (!window.confirm("Delete this user? This cannot be undone!")) return;
+
+    try {
+      await api.delete(`/api/registration/${id}`);
+      fetchPurchases();
+    } catch {
+      alert("Failed to delete member ❌");
+    }
+  };
+
+  // ✏️ Edit
+  const editMember = (id: number) => {
+    navigate(`/admin/registration/edit/${id}`);
+  };
+
+  /* ================= PAGINATION ================= */
+
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentItems = data.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+
+  /* ================= UI ================= */
+
   return (
-    <div style={styles.container}>
-      <h2 style={styles.heading}>User Membership Purchases</h2>
+    <div className="page-content">
+      <Container fluid>
+        <Row>
+          <Col lg={12}>
+            <Card>
+              <CardBody>
+                <div className="d-flex justify-content-between mb-3">
+                  <h4>User Membership Purchases</h4>
+                  <Badge color="info">Total: {data.length}</Badge>
+                </div>
 
-      {loading && <p style={styles.infoText}>Loading...</p>}
+                {loading ? (
+                  <div className="text-center py-5">
+                    <Spinner />
+                  </div>
+                ) : error ? (
+                  <div className="alert alert-danger">{error}</div>
+                ) : (
+                  <>
+                    <Table hover responsive a lign="middle" className="table-nowrap">
+                      <thead className="table-light">
+                        <tr>
+                          <th>#</th>
+                          <th>User</th>
+                          <th>Contact</th>
+                          <th>City</th>
+                          <th>Membership</th>
+                          <th>Status</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
 
-      {error && <p style={styles.errorText}>{error}</p>}
+                      <tbody>
+                        {currentItems.map((item, index) => (
+                          <tr key={item.id}>
+                            <td>
+                              {(currentPage - 1) * itemsPerPage + index + 1}
+                            </td>
 
-      {!loading && !error && data.length === 0 && (
-        <p style={styles.infoText}>No membership purchases found.</p>
-      )}
+                            <td>
+                              <strong>
+                                {item.name} {item.surname}
+                              </strong>
+                              <br />
+                              <small>{item.email}</small>
+                            </td>
 
-      {!loading && !error && data.length > 0 && (
-        <div style={styles.tableWrapper}>
-          <table style={styles.table}>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>User</th>
-                <th>Mobile</th>
-                <th>Email</th>
-                <th>City</th>
-                <th>Membership</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-              </tr>
-            </thead>
+                            <td>{item.mobile}</td>
+                            <td>{item.city}</td>
 
-            <tbody>
-              {data.map((item, index) => (
-                <tr key={item.id}>
-                  <td>{index + 1}</td>
-                  <td>
-                    {item.user
-                      ? `${item.user.name} ${item.user.surname}`
-                      : "N/A"}
-                  </td>
-                  <td>{item.user?.mobile || "N/A"}</td>
-                  <td>{item.user?.email || "N/A"}</td>
-                  <td>{item.user?.city || "N/A"}</td>
-                  <td>{item.membership?.title || "N/A"}</td>
-                  <td>₹{item.amount}</td>
-                  <td>
-                    <span
-                      style={{
-                        ...styles.status,
-                        background:
-                          item.status === "paid" ? "#e6fffa" : "#fff5f5",
-                        color:
-                          item.status === "paid" ? "#047857" : "#b91c1c",
-                      }}
-                    >
-                      {item.status}
-                    </span>
-                  </td>
-                  <td>{item.start_date}</td>
-                  <td>{item.end_date}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+                            <td>
+                              <span className="fw-bold text-primary">
+                                Lifetime
+                              </span>
+                              <Badge color="success" pill className="ms-2">
+                                ∞
+                              </Badge>
+                            </td>
+
+                            <td>
+                              <Badge
+                                color={item.status === "paid" ? "success" : "warning"}
+                                pill
+                              >
+                                {item.status === "paid" ? "Approved" : "Pending"}
+                              </Badge>
+                            </td>
+
+                            <td className="d-flex gap-2">
+                              {item.status !== "paid" && (
+                                <Button
+                                  color="success"
+                                  size="sm"
+                                  onClick={() => approveMembership(item.id)}
+                                >
+                                  Approve
+                                </Button>
+                              )}
+
+                              <Button
+                                color="primary"
+                                size="sm"
+                                onClick={() => editMember(item.id)}
+                              >
+                                Edit
+                              </Button>
+
+                              <Button
+                                color="danger"
+                                size="sm"
+                                onClick={() => deleteMember(item.id)}
+                              >
+                                Delete
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+
+                        {currentItems.length === 0 && (
+                          <tr>
+                            <td colSpan={7} className="text-center text-muted">
+                              No records found
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </Table>
+
+                    {/* Pagination */}
+                    {totalPages > 1 && (
+                      <Pagination className="justify-content-center">
+                        <PaginationItem disabled={currentPage === 1}>
+                          <PaginationLink
+                            previous
+                            onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
+                          />
+                        </PaginationItem>
+
+                        {Array.from({ length: totalPages }).map((_, i) => (
+                          <PaginationItem key={i} active={currentPage === i + 1}>
+                            <PaginationLink onClick={() => setCurrentPage(i + 1)}>
+                              {i + 1}
+                            </PaginationLink>
+                          </PaginationItem>
+                        ))}
+
+                        <PaginationItem disabled={currentPage === totalPages}>
+                          <PaginationLink
+                            next
+                            onClick={() =>
+                              setCurrentPage(p => Math.min(p + 1, totalPages))
+                            }
+                          />
+                        </PaginationItem>
+                      </Pagination>
+                    )}
+                  </>
+                )}
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 };
 
-/* ================= STYLES ================= */
-
-const styles: { [key: string]: React.CSSProperties } = {
-  container: {
-    padding: 20,
-    background: "#ffffff",
-    borderRadius: 8,
-  },
-  heading: {
-    marginBottom: 15,
-    fontSize: 22,
-    fontWeight: 600,
-  },
-  infoText: {
-    color: "#555",
-    marginTop: 10,
-  },
-  errorText: {
-    color: "#dc2626",
-    marginTop: 10,
-  },
-  tableWrapper: {
-    overflowX: "auto",
-    marginTop: 10,
-  },
-  table: {
-    width: "100%",
-    borderCollapse: "collapse",
-  },
-  status: {
-    padding: "4px 10px",
-    borderRadius: 12,
-    fontSize: 12,
-    fontWeight: 600,
-    textTransform: "capitalize",
-    display: "inline-block",
-  },
-};
-
-export default User;
+export default UserMembershipPurchases;

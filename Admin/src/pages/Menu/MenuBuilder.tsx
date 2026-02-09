@@ -59,10 +59,12 @@ const SortableItem = ({
   item,
   onDelete,
   onToggle,
+  onEdit,
 }: {
   item: MenuItem;
   onDelete: (id: number) => void;
   onToggle: (id: number) => void;
+  onEdit: (item: MenuItem) => void;
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: item.id });
@@ -70,16 +72,16 @@ const SortableItem = ({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: item.is_active ? 1 : 0.5, // ✅ key fix
+    opacity: item.is_active ? 1 : 0.6,
   };
 
   return (
     <div ref={setNodeRef} style={style}>
-      <div className="d-flex align-items-center justify-content-between border p-2 mb-2 rounded bg-white">
+      <div className="d-flex align-items-center justify-content-between border p-2 mb-2 rounded bg-body text-body">
         <div
           {...attributes}
           {...listeners}
-          className="me-3 text-muted"
+          className="me-3 opacity-75"
           style={{ cursor: "grab" }}
         >
           ☰
@@ -87,7 +89,7 @@ const SortableItem = ({
 
         <div className="flex-grow-1">
           <strong>{item.title}</strong>
-          <div className="text-muted small">{item.url}</div>
+          <div className="small opacity-75">{item.url}</div>
         </div>
 
         <div className="d-flex gap-2">
@@ -98,6 +100,15 @@ const SortableItem = ({
             onClick={() => onToggle(item.id)}
           >
             {item.is_active ? "Enabled" : "Disabled"}
+          </Button>
+
+          <Button
+            size="sm"
+            color="info"
+            outline
+            onClick={() => onEdit(item)}
+          >
+            Edit
           </Button>
 
           <Button
@@ -114,13 +125,13 @@ const SortableItem = ({
   );
 };
 
-
 /* ================= COMPONENT ================= */
 
 const MenuBuilder: React.FC<Props> = ({ location }) => {
   const [menu, setMenu] = useState<Menu | null>(null);
   const [items, setItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
 
   const [form, setForm] = useState({
     title: "",
@@ -129,8 +140,6 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
   });
 
   const sensors = useSensors(useSensor(PointerSensor));
-
-  /* ================= FETCH MENU ================= */
 
   useEffect(() => {
     fetchMenu();
@@ -141,7 +150,6 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
     try {
       setLoading(true);
 
-      // 1️⃣ Load menus to get menu_id
       const menusRes: any = await api.get("/api/admin/menus");
       const foundMenu = menusRes.data.find(
         (m: Menu) => m.location === location,
@@ -155,22 +163,19 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
 
       setMenu(foundMenu);
 
-      // 2️⃣ Load menu items by location
       const itemsRes: any = await api.get(
         `/api/admin/menus/by-location/${location}`,
       );
 
       setItems(itemsRes.data || []);
     } catch (err) {
-      console.error("FETCH MENU ERROR:", err);
+      console.error(err);
       setMenu(null);
       setItems([]);
     } finally {
       setLoading(false);
     }
   };
-
-  /* ================= FORM ================= */
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -179,32 +184,42 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-
-    if (!menu?.id) {
-      alert("Menu not loaded");
-      return;
-    }
-
-    if (!form.title || !form.url) return;
-
-    try {
-      await api.post("/api/admin/menu-items", {
-        menu_id: menu.id,
-        title: form.title,
-        url: form.url,
-        parent_id: form.parent_id || null,
-      });
-
-      setForm({ title: "", url: "", parent_id: "" });
-      fetchMenu();
-    } catch (err) {
-      alert(err);
-    }
+  const handleEdit = (item: MenuItem) => {
+    setEditingItem(item);
+    setForm({
+      title: item.title,
+      url: item.url,
+      parent_id: item.parent_id ? String(item.parent_id) : "",
+    });
   };
 
-  /* ================= ACTIONS ================= */
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!menu?.id) return;
+
+    try {
+      if (editingItem) {
+        await api.patch(`/api/admin/menu-items/${editingItem.id}`, {
+          title: form.title,
+          url: form.url,
+          parent_id: form.parent_id || null,
+        });
+      } else {
+        await api.post("/api/admin/menu-items", {
+          menu_id: menu.id,
+          title: form.title,
+          url: form.url,
+          parent_id: form.parent_id || null,
+        });
+      }
+
+      setForm({ title: "", url: "", parent_id: "" });
+      setEditingItem(null);
+      fetchMenu();
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const deleteItem = async (id: number) => {
     if (!window.confirm("Delete this menu item?")) return;
@@ -216,8 +231,6 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
     await api.patch(`/api/admin/menu-items/${id}/toggle`);
     fetchMenu();
   };
-
-  /* ================= DRAG END ================= */
 
   const handleDragEnd = async (event: any) => {
     const { active, over } = event;
@@ -238,19 +251,20 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
     });
   };
 
-  /* ================= RENDER ================= */
-
   const renderItems = (items: MenuItem[], level = 0) =>
     items.map((item) => (
       <div key={item.id} style={{ marginLeft: level * 20 }}>
-        <SortableItem item={item} onDelete={deleteItem} onToggle={toggleItem} />
+        <SortableItem
+          item={item}
+          onDelete={deleteItem}
+          onToggle={toggleItem}
+          onEdit={handleEdit}
+        />
         {item.children &&
           item.children.length > 0 &&
           renderItems(item.children, level + 1)}
       </div>
     ));
-
-  /* ================= UI ================= */
 
   if (loading) {
     return (
@@ -266,18 +280,10 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
 
   return (
     <Row>
-      {/* LEFT – MENU LIST */}
       <Col md={7}>
         <Card className="mb-4">
           <CardBody>
             <h5 className="mb-3">{menu.name}</h5>
-
-            {items.length === 0 && (
-              <p className="text-muted">
-                No menu items yet. Add one from the right →
-              </p>
-            )}
-
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
@@ -294,35 +300,24 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
         </Card>
       </Col>
 
-      {/* RIGHT – ADD FORM */}
       <Col md={5}>
         <Card>
           <CardBody>
-            <h5 className="mb-3">Add Menu Item</h5>
+            <h5>{editingItem ? "Edit Menu Item" : "Add Menu Item"}</h5>
 
             <Form onSubmit={handleSubmit}>
               <FormGroup>
                 <Label>Title</Label>
-                <Input
-                  name="title"
-                  value={form.title}
-                  onChange={handleChange}
-                  required
-                />
+                <Input name="title" value={form.title} onChange={handleChange} />
               </FormGroup>
 
               <FormGroup>
                 <Label>URL</Label>
-                <Input
-                  name="url"
-                  value={form.url}
-                  onChange={handleChange}
-                  required
-                />
+                <Input name="url" value={form.url} onChange={handleChange} />
               </FormGroup>
 
               <FormGroup>
-                <Label>Parent Menu (optional)</Label>
+                <Label>Parent Menu</Label>
                 <Input
                   type="select"
                   name="parent_id"
@@ -338,14 +333,14 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
                 </Input>
               </FormGroup>
 
-              <Button color="primary" type="submit" className="w-100">
-                Add Menu Item
+              <Button type="submit" color="primary" className="w-100">
+                {editingItem ? "Update Menu Item" : "Add Menu Item"}
               </Button>
-            </Form>
-          </CardBody>
-        </Card>
-      </Col>
-    </Row>
+          </Form>
+        </CardBody>
+      </Card>
+    </Col>
+    </Row >
   );
 };
 

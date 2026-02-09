@@ -23,6 +23,13 @@ const profileSlice = createSlice({
       state.success = false;
       state.error = null;
     },
+
+    // ✅ ADD THIS
+    clearProfile(state) {
+      state.user = null;
+      state.success = false;
+      state.error = null;
+    },
   },
 });
 
@@ -30,6 +37,7 @@ export const {
   profileSuccess,
   profileError,
   clearProfileStatus,
+  clearProfile, // export
 } = profileSlice.actions;
 
 export default profileSlice.reducer;

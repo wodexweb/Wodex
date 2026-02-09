@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->string('city');
             $table->string('pincode', 10);
             $table->string('ciap')->nullable();
+             $table->enum('status', ['pending', 'paid'])->default('pending');
             $table->timestamps();
         });
     }

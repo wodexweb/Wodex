@@ -15,6 +15,13 @@
   justify-content: center;
   gap: 22px;
   width: 100%;
+  flex-wrap: wrap; // allow next line
+  row-gap: 10px;
+}
+
+/* ensure collapse grows automatically */
+:global(.navbar-collapse) {
+  justify-content: center;
 }
 
 /* ================= NAV TEXT ================= */
@@ -91,20 +98,18 @@
 /* ================================================= */
 
 @media (max-width: 990px) {
-  /* 🔥 Hamburger right side */
   :global(.navbar-toggler) {
     margin-left: auto;
     border: none;
   }
 
   :global(.navbar-toggler-icon) {
-    filter: brightness(0) invert(1); /* white icon */
+    filter: brightness(0) invert(1);
   }
 
-  /* 🔥 Overlay menu – does NOT push content */
   :global(.navbar-collapse) {
     position: absolute;
-    top: 56px; /* navbar height */
+    top: 56px;
     left: 0;
     width: 100%;
     background: #290300;
@@ -113,7 +118,6 @@
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
   }
 
-  /* Vertical menu */
   .navLinks {
     flex-direction: column;
     align-items: flex-start;
@@ -126,13 +130,18 @@
     width: 100%;
   }
 
-  /* 🔥 Dropdown inline + white text */
+  /* 🔥 actual nav link spacing */
+  :global(.nav-link) {
+    padding-left: 22px !important; /* left gap */
+  }
+
   .navbar :global(.dropdown-menu) {
     position: static !important;
     transform: none !important;
     box-shadow: none;
     background: transparent;
-    padding-left: 16px;
+    // padding-left: 16px;
+    margin-left: 50px;
   }
 
   .navbar :global(.dropdown-item) {

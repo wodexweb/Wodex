@@ -67,6 +67,44 @@ class MenuItemController extends Controller
         ], 200);
     }
 
+
+    public function update(Request $request, $id)
+{
+    $item = MenuItem::findOrFail($id);
+
+    $validated = $request->validate([
+        'title'     => 'required|string|max:255',
+        'url'       => 'required|string|max:255',
+        'parent_id' => 'nullable|exists:menu_items,id',
+    ]);
+
+    // Prevent assigning parent from another menu
+    if (!empty($validated['parent_id'])) {
+        $parent = MenuItem::find($validated['parent_id']);
+        if ($parent->menu_id !== $item->menu_id) {
+            return response()->json([
+                'message' => 'Parent item does not belong to this menu'
+            ], 422);
+        }
+    }
+
+    $item->update([
+        'title'     => $validated['title'],
+        'url'       => $validated['url'],
+        'parent_id' => $validated['parent_id'] ?? null,
+    ]);
+
+    return response()->json([
+        'message' => 'Menu item updated',
+        'item'    => $item
+    ], 200);
+}
+
+
+
+
+
+
     /**
      * Enable / Disable menu item
      */

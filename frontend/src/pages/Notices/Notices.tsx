@@ -2,34 +2,61 @@ import React, { useState, useEffect } from "react";
 import styles from "./Notices.module.scss";
 import PageHeaderArea from "../../components/PageHeaderArea/PageHeaderArea";
 import { Bell, Calendar, Download, FileText } from "lucide-react";
+import { motion } from "framer-motion";
 
-const NoticeCard = ({ notice_title, notice_description, publish_date, attachment_path }: any) => {
-  // Format the publish date
-  const date = publish_date 
-    ? new Date(publish_date).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }) 
+const fadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0 },
+};
+
+const NoticeCard = ({
+  notice_title,
+  notice_description,
+  publish_date,
+  attachment_path,
+}: any) => {
+  const date = publish_date
+    ? new Date(publish_date).toLocaleDateString("en-US", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    })
     : "";
 
-  // Helper to get full URL for attachment
-  const attachmentUrl = attachment_path ? `http://localhost:8000/storage/${attachment_path}` : null;
+  const attachmentUrl = attachment_path
+    ? `http://localhost:8000/storage/${attachment_path}`
+    : null;
 
   return (
-    <div className={styles.noticeCard}>
+    <motion.div
+      className={styles.noticeCard}
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      transition={{ duration: 0.5 }}
+    >
       <div className={styles.iconBox}>
         <Bell size={22} />
       </div>
-      
+
       <div className={styles.details}>
         <div className={styles.meta}>
           <Calendar size={14} className="me-1" />
           <span>Published on: {date}</span>
         </div>
-        
+
         <h3 className={styles.title}>{notice_title}</h3>
         <p className={styles.content}>{notice_description}</p>
 
         {attachmentUrl && (
           <div className={styles.attachmentSection}>
-            <a href={attachmentUrl} target="_blank" rel="noopener noreferrer" className={styles.downloadBtn}>
+            <a
+              href={attachmentUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.downloadBtn}
+            >
               <FileText size={16} className="me-2" />
               View Attachment
               <Download size={14} className="ms-2" />
@@ -37,7 +64,7 @@ const NoticeCard = ({ notice_title, notice_description, publish_date, attachment
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -58,17 +85,29 @@ const NoticePage: React.FC = () => {
   return (
     <>
       <PageHeaderArea title="Notice Board" current="Notices" />
+
       <section className={styles.page}>
         <div className={styles.container}>
           <div className={styles.contentHeader}>
             <h2>Important Announcements</h2>
-            <p>Stay updated with the latest news and official notices from GPICC.</p>
+            <p>
+              Stay updated with the latest news and official notices from GPICC.
+            </p>
           </div>
 
           <div className={styles.list}>
             {!loading && notices.length > 0 ? (
-              notices.map((notice) => (
-                <NoticeCard key={notice.id} {...notice} />
+              notices.map((notice, i) => (
+                <motion.div
+                  key={notice.id}
+                  variants={fadeUp}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.08 }}
+                >
+                  <NoticeCard {...notice} />
+                </motion.div>
               ))
             ) : !loading ? (
               <div className={styles.empty}>No active notices found.</div>

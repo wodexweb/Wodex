@@ -1,3 +1,51 @@
+// // import { profileSuccess, profileError } from "./reducer";
+// // import { APIClient } from "../../../helpers/api_helper";
+
+// // const api = new APIClient();
+
+// // /* ================= FETCH PROFILE ================= */
+
+// // export const fetchProfile = () => async (dispatch: any) => {
+// //   try {
+// //     const res: any = await api.get("/api/admin/profile");
+
+// //     const stored = JSON.parse(localStorage.getItem("authUser") || "{}");
+
+// //     localStorage.setItem(
+// //       "authUser",
+// //       JSON.stringify({
+// //         ...stored,
+// //         user: res.user,
+// //       }),
+// //     );
+
+// //     dispatch(profileSuccess(res.user));
+// //   } catch (error) {
+// //     dispatch(profileError("Failed to load profile"));
+// //   }
+// // };
+
+// // /* ================= UPDATE PROFILE ================= */
+
+// // export const editProfile = (formData: FormData) => async (dispatch: any) => {
+// //   try {
+// //     const res: any = await api.create("/api/admin/profile", formData);
+
+// //     const stored = JSON.parse(localStorage.getItem("authUser") || "{}");
+
+// //     localStorage.setItem(
+// //       "authUser",
+// //       JSON.stringify({
+// //         ...stored,
+// //         user: res.user,
+// //       }),
+// //     );
+
+// //     dispatch(profileSuccess(res.user));
+// //   } catch (error) {
+// //     dispatch(profileError("Profile update failed"));
+// //   }
+// // };
 // import { profileSuccess, profileError } from "./reducer";
 // import { APIClient } from "../../../helpers/api_helper";
 
@@ -9,9 +57,10 @@
 //   try {
 //     const res: any = await api.get("/api/admin/profile");
 
-//     const stored = JSON.parse(localStorage.getItem("authUser") || "{}");
+//     const stored = JSON.parse(sessionStorage.getItem("authUser") || "{}");
 
-//     localStorage.setItem(
+//     // ✅ update sessionStorage user
+//     sessionStorage.setItem(
 //       "authUser",
 //       JSON.stringify({
 //         ...stored,
@@ -31,9 +80,10 @@
 //   try {
 //     const res: any = await api.create("/api/admin/profile", formData);
 
-//     const stored = JSON.parse(localStorage.getItem("authUser") || "{}");
+//     const stored = JSON.parse(sessionStorage.getItem("authUser") || "{}");
 
-//     localStorage.setItem(
+//     // ✅ update sessionStorage user
+//     sessionStorage.setItem(
 //       "authUser",
 //       JSON.stringify({
 //         ...stored,
@@ -46,6 +96,7 @@
 //     dispatch(profileError("Profile update failed"));
 //   }
 // };
+
 import { profileSuccess, profileError } from "./reducer";
 import { APIClient } from "../../../helpers/api_helper";
 
@@ -59,11 +110,11 @@ export const fetchProfile = () => async (dispatch: any) => {
 
     const stored = JSON.parse(sessionStorage.getItem("authUser") || "{}");
 
-    // ✅ update sessionStorage user
+    // safer: rebuild object instead of spreading blindly
     sessionStorage.setItem(
       "authUser",
       JSON.stringify({
-        ...stored,
+        token: stored?.token,
         user: res.user,
       }),
     );
@@ -82,11 +133,10 @@ export const editProfile = (formData: FormData) => async (dispatch: any) => {
 
     const stored = JSON.parse(sessionStorage.getItem("authUser") || "{}");
 
-    // ✅ update sessionStorage user
     sessionStorage.setItem(
       "authUser",
       JSON.stringify({
-        ...stored,
+        token: stored?.token,
         user: res.user,
       }),
     );

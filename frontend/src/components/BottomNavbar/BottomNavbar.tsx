@@ -60,7 +60,7 @@ const BottomNavbar: React.FC = () => {
               </NavDropdown.Item>
             </NavDropdown>
 
-            
+
             <Nav.Link
               as={Link}
               to="/achievement"
@@ -92,8 +92,6 @@ const BottomNavbar: React.FC = () => {
                 Past Events
               </NavDropdown.Item>
             </NavDropdown>
-
-            
 
             <NavDropdown title="Office Bearers">
               <NavDropdown.Item
@@ -135,10 +133,10 @@ const BottomNavbar: React.FC = () => {
               className={styles.navLink}
               onClick={closeMenu}
             >
-              Contact Us  
+              Contact Us
             </Nav.Link>
 
-             <Nav.Link
+            <Nav.Link
               as={Link}
               to="/Notices"
               className={styles.navLink}

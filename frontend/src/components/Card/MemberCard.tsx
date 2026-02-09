@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./MemberCard.module.scss";
+import AnimateIn from "../Animations/AnimateIn";
 
 interface MemberProps {
   name: string;
@@ -9,14 +10,16 @@ interface MemberProps {
 
 const MemberCard: React.FC<MemberProps> = ({ name, role, image }) => {
   return (
-    <div className={styles.card}>
-      <div className={styles.imageWrapper}>
-        <img src={image} alt={name} />
-      </div>
+    <AnimateIn>
+      <div className={styles.card}>
+        <div className={styles.imageWrapper}>
+          <img src={image} alt={name} />
+        </div>
 
-      <h4 className={styles.name}>{name}</h4>
-      <p className={styles.role}>{role}</p>
-    </div>
+        <h4 className={styles.name}>{name}</h4>
+        <p className={styles.role}>{role}</p>
+      </div>
+    </AnimateIn>
   );
 };
 

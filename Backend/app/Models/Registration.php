@@ -46,11 +46,11 @@
 //     }
 // }
 
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Payment; // ✅ ADD THIS
 
 class Registration extends Model
 {
@@ -69,11 +69,12 @@ class Registration extends Model
         'city',
         'pincode',
         'ciap',
+        'status',
+        'start_date',    // ✅ ADD (lifetime)
+        'end_date',      // ✅ ADD (nullable)
     ];
 
-    protected $hidden = [
-        'password',
-    ];
+    protected $hidden = ['password'];
 
     protected $casts = [
         'dob' => 'date',
@@ -81,7 +82,7 @@ class Registration extends Model
         'updated_at' => 'datetime',
     ];
 
-    // AUTO HASH PASSWORD SAFELY
+    // AUTO HASH PASSWORD
     public function setPasswordAttribute($value)
     {
         if (Hash::needsRehash($value)) {
@@ -92,7 +93,7 @@ class Registration extends Model
     }
 
     /**
-     * User has many payments
+     * Registration has many payments
      */
     public function payments()
     {

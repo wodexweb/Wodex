@@ -439,6 +439,11 @@ Route::middleware('throttle:3,1')->post('/create-order', [PaymentController::cla
 Route::middleware('throttle:5,1')->post('/submit-form', [PaymentController::class, 'submitForm']);
 Route::apiResource('registration', RegisterController::class)
     ->only(['index', 'show']);
+    // Delete a member
+Route::delete('/registration/{id}', [RegisterController::class, 'destroy']);
+
+// Approve/Update a member (This fixes your 405 error)
+Route::put('/registration/{id}', [RegisterController::class, 'update']);
 
 
 /*
@@ -452,7 +457,7 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     | Role Based Auth
     |--------------------------------------------------------------------------
     */
-
+    Route::get('/admins/{id}',[AdminController::class, 'show']);
     Route::get('/admins', [AdminController::class, 'index']);
     Route::post('/admins', [AdminController::class, 'store']);
     Route::put('/admins/{id}', [AdminController::class, 'update']);
@@ -487,6 +492,7 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::post('/menu-items', [MenuItemController::class, 'store']);
     Route::post('/menu-items/order', [MenuItemController::class, 'updateOrder']);
     Route::patch('/menu-items/{id}/toggle', [MenuItemController::class, 'toggle']);
+    Route::patch('/menu-items/{id}', [MenuItemController::class, 'update']);
     Route::delete('/menu-items/{id}', [MenuItemController::class, 'destroy']);
 
     /*
@@ -523,6 +529,7 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::get('/gallery/events', [GalleryController::class, 'events']);
+    Route::get('/gallery/event/{event}', [GalleryController::class, 'byEvent']);
     Route::post('/gallery', [GalleryController::class, 'store']);
     Route::delete('/gallery/{id}', [GalleryController::class, 'destroy']);
 });
