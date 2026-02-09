@@ -336,11 +336,11 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
               <Button type="submit" color="primary" className="w-100">
                 {editingItem ? "Update Menu Item" : "Add Menu Item"}
               </Button>
-            </Form>
-          </CardBody>
-        </Card>
-      </Col>
-    </Row>
+          </Form>
+        </CardBody>
+      </Card>
+    </Col>
+    </Row >
   );
 };
 
