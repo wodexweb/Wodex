@@ -663,6 +663,8 @@ const ROLE_ACCESS: Record<number, string[]> = {
     "events",
     "announcements",
     "members",
+    "gallray",
+    "User"
   ],
   2: [
     "dashboard",
@@ -674,6 +676,8 @@ const ROLE_ACCESS: Record<number, string[]> = {
     "achievements",
     "events",
     "announcements",
+    "gallray",
+    "User"
   ],
   3: ["dashboard", "membership"],
 };
@@ -700,7 +704,8 @@ const Navdata = () => {
     else if (path.startsWith("/achievements")) setActiveMenu("achievements");
     else if (path.startsWith("/events")) setActiveMenu("events");
     else if (path.startsWith("/announcements")) setActiveMenu("announcements");
-    else if (path.startsWith("/members")) setActiveMenu("members");
+    else if (path.startsWith("/members")) setActiveMenu("members")
+    else if (path.startsWith("/user")) setActiveMenu("user")
     else setActiveMenu(null);
   }, [location.pathname]);
 
@@ -897,7 +902,24 @@ const Navdata = () => {
         { label: "Member List", click: () => navigate("/members/list") },
       ],
     },
+    
+    {
+      id: "User",
+      label: "User",
+      icon: "ri-team-line",
+      link: "/#",
+      stateVariables: activeMenu === "User",
+      click: (e: any) => {
+        e.preventDefault();
+        toggleMenu("User");
+      },
+      subItems: [
+        { label: "User List", click: () => navigate("/users") },
+      ],
+    },
   ];
+
+  
 
   /* ================= FILTER BY ROLE ================= */
   const allowedMenus = allMenus.filter((menu) =>

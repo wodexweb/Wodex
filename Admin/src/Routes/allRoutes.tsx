@@ -30,8 +30,11 @@ import Logout from "../pages/Authentication/Logout";
 import Register from "../pages/Authentication/Register";
 import ForgetPasswordPage from "../pages/Authentication/ForgetPassword";
 
-// User
+// User Profile
 import UserProfile from "../pages/Authentication/user-profile";
+
+// 🔥 USERS (Membership Purchases Page)
+import User from "../pages/User/User";
 
 // EVENTS
 import EventList from "../pages/Events/EventList";
@@ -65,12 +68,10 @@ import AddMenu from "../pages/Menu/AddMenu";
 import AddPage from "../pages/Pages/AddPage";
 import ManagePages from "../pages/Pages/ManagePages";
 
-// Role Based Route ADMINS
-
+// ADMINS
 import AddAdmin from "../pages/Admin/AddAdmin";
 import AdminList from "../pages/Admin/AdminList";
 import EditAdmin from "../pages/Admin/EditAdmin";
-
 
 /* ================= PUBLIC ROUTES ================= */
 
@@ -90,11 +91,13 @@ const authProtectedRoutes = [
   { path: "/index", component: <DashboardEcommerce /> },
   { path: "/profile", component: <UserProfile /> },
 
-  // ADMINS (ROLES)
+  // ADMINS
   { path: "/admins", component: <AdminList /> },
   { path: "/admins/create", component: <AddAdmin /> },
   { path: "/admins/edit/:id", component: <EditAdmin /> },
 
+  // 🔥 USERS (Membership Purchases)
+  { path: "/users", component: <User /> },
 
   // NOTICES
   { path: "/notices", component: <Notices /> },
@@ -111,9 +114,8 @@ const authProtectedRoutes = [
   // MEDIA
   { path: "/media-library", component: <MediaLibrary /> },
 
-  // GALLERY ✅
+  // GALLERY
   { path: "/gallery/add", component: <AddGallery /> },
-  // { path: "/gallery/manage", component: <ManageGallery /> },
 
   // MASTER SETTINGS
   { path: "/master-settings/general", component: <GenralSettings /> },
