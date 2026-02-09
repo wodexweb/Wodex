@@ -44,18 +44,26 @@ const EditAdmin = () => {
   useEffect(() => {
     if (!id) return;
 
+    setLoading(true);
+
     api
-      .get(`/api/admin/admins/${id}`)
+      .get(`/api/admin/admins/${id}`) // ✅ FIXED ENDPOINT
       .then((res: any) => {
         const data = res?.data ?? res;
-        if (!data) return;
+
+        if (!data || !data.id) {
+          setAdmin(null);
+          return;
+        }
 
         setAdmin(data);
         setName(data.name);
         setEmail(data.email);
         setRoleId(String(data.role_id));
       })
-      .catch(() => setAdmin(null))
+      .catch(() => {
+        setAdmin(null);
+      })
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -68,7 +76,7 @@ const EditAdmin = () => {
     setSaving(true);
 
     api
-      .update(`/api/admins/${id}`, {
+      .update(`/api/admin/admins/${id}`, {
         name,
         email,
         role_id: roleId,
@@ -106,7 +114,7 @@ const EditAdmin = () => {
     );
   }
 
-  /* ================= FORM UI ================= */
+  /* ================= FORM ================= */
 
   return (
     <div className="page-content">
@@ -115,7 +123,6 @@ const EditAdmin = () => {
           <Col xl={10}>
             <Card className="border-0 shadow-sm">
               <CardBody>
-                {/* HEADER */}
                 <div className="border-bottom pb-3 mb-4">
                   <h4 className="mb-1 fw-semibold">Edit Admin</h4>
                   <p className="text-muted mb-0">
@@ -125,7 +132,6 @@ const EditAdmin = () => {
 
                 <Form onSubmit={handleSubmit}>
                   <Row>
-                    {/* NAME */}
                     <Col lg={6}>
                       <FormGroup className="mb-3">
                         <Label className="fw-semibold">Name</Label>
@@ -137,7 +143,6 @@ const EditAdmin = () => {
                       </FormGroup>
                     </Col>
 
-                    {/* EMAIL */}
                     <Col lg={6}>
                       <FormGroup className="mb-3">
                         <Label className="fw-semibold">Email</Label>
@@ -150,7 +155,6 @@ const EditAdmin = () => {
                       </FormGroup>
                     </Col>
 
-                    {/* ROLE */}
                     <Col lg={4}>
                       <FormGroup className="mb-4">
                         <Label className="fw-semibold">Role</Label>
@@ -166,7 +170,6 @@ const EditAdmin = () => {
                       </FormGroup>
                     </Col>
 
-                    {/* ACTIONS */}
                     <Col xs={12}>
                       <div className="d-flex gap-2">
                         <Button

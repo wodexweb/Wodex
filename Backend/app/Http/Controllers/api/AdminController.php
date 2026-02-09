@@ -65,6 +65,15 @@ class AdminController extends Controller
         ]);
     }
 
+
+
+    public function show($id)
+{
+    return response()->json(
+        Admin::findOrFail($id)
+    );
+}
+
     /* ================= DELETE ADMIN ================= */
 
     public function destroy($id)
