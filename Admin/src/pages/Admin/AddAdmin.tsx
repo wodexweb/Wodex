@@ -41,7 +41,7 @@ const AddAdmin = () => {
 
     try {
       await api.create("/api/admin/admins", formData);
-      alert("Admin created successfully ✅");
+      alert("Role created successfully ✅");
       navigate("/admins");
     } catch (err) {
       alert(err);
@@ -57,7 +57,7 @@ const AddAdmin = () => {
           <Col xl={12} lg={11}>
             <Card className="shadow-sm">
               <CardBody className="p-4 p-lg-5">
-                <h4 className="mb-4 border-bottom pb-3">Create New Admin</h4>
+                <h4 className="mb-4 border-bottom pb-3">Create New Role</h4>
 
                 <Form onSubmit={handleSubmit}>
                   {/* ROW 1 */}

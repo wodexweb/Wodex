@@ -43,27 +43,39 @@ class AdminController extends Controller
     }
 
     /* ================= UPDATE ADMIN ================= */
-
     public function update(Request $request, $id)
     {
         $admin = Admin::findOrFail($id);
-
-        $request->validate([
-            'name'    => 'required|string|max:255',
-            'email'   => "required|email|unique:admin,email,$id",
-            'role_id' => 'required|in:1,2,3',
+    
+        $data = $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email',
+            'role_id' => 'required|integer',
+            'password' => 'nullable|min:6',
         ]);
-
-        $admin->update([
-            'name'    => $request->name,
-            'email'   => $request->email,
-            'role_id' => $request->role_id,
-        ]);
-
+    
+        if (!empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
+        }
+    
+        $admin->update($data);
+    
         return response()->json([
-            'message' => 'Admin updated successfully',
+            'message' => 'Admin updated successfully'
         ]);
     }
+    
+
+
+
+    public function show($id)
+{
+    return response()->json(
+        Admin::findOrFail($id)
+    );
+}
 
     /* ================= DELETE ADMIN ================= */
 

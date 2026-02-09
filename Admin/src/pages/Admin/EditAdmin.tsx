@@ -37,6 +37,7 @@ const EditAdmin = () => {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [roleId, setRoleId] = useState("1");
 
   /* ================= LOAD ADMIN ================= */
@@ -44,11 +45,17 @@ const EditAdmin = () => {
   useEffect(() => {
     if (!id) return;
 
+    setLoading(true);
+
     api
-      .get(`/api/admin/admins/${id}`)
+      .get(`/api/admin/admins/${id}`) // ✅ MATCHES BACKEND ROUTE
       .then((res: any) => {
         const data = res?.data ?? res;
-        if (!data) return;
+
+        if (!data || !data.id) {
+          setAdmin(null);
+          return;
+        }
 
         setAdmin(data);
         setName(data.name);
@@ -67,12 +74,19 @@ const EditAdmin = () => {
 
     setSaving(true);
 
+    const payload: any = {
+      name,
+      email,
+      role_id: roleId,
+    };
+
+    // ✅ Only send password if user entered one
+    if (password.trim()) {
+      payload.password = password;
+    }
+
     api
-      .update(`/api/admins/${id}`, {
-        name,
-        email,
-        role_id: roleId,
-      })
+      .update(`/api/admin/admins/${id}`, payload)
       .then(() => {
         alert("Admin updated successfully ✅");
         navigate("/admins");
@@ -106,7 +120,7 @@ const EditAdmin = () => {
     );
   }
 
-  /* ================= FORM UI ================= */
+  /* ================= FORM ================= */
 
   return (
     <div className="page-content">
@@ -115,11 +129,10 @@ const EditAdmin = () => {
           <Col xl={10}>
             <Card className="border-0 shadow-sm">
               <CardBody>
-                {/* HEADER */}
                 <div className="border-bottom pb-3 mb-4">
-                  <h4 className="mb-1 fw-semibold">Edit Admin</h4>
+                  <h4 className="mb-1 fw-semibold">Edit Role</h4>
                   <p className="text-muted mb-0">
-                    Update admin details and role
+                    Update role details
                   </p>
                 </div>
 
@@ -146,6 +159,21 @@ const EditAdmin = () => {
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           required
+                        />
+                      </FormGroup>
+                    </Col>
+
+                    {/* PASSWORD (OPTIONAL) */}
+                    <Col lg={6}>
+                      <FormGroup className="mb-3">
+                        <Label className="fw-semibold">
+                          New Password (optional)
+                        </Label>
+                        <Input
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="Leave blank to keep current password"
                         />
                       </FormGroup>
                     </Col>
@@ -179,7 +207,7 @@ const EditAdmin = () => {
                         </Button>
 
                         <Button color="primary" disabled={saving}>
-                          {saving ? "Saving..." : "Update Admin"}
+                          {saving ? "Saving..." : "Update Role"}
                         </Button>
                       </div>
                     </Col>

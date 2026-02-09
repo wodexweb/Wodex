@@ -82,7 +82,7 @@ const AdminList = () => {
   /* ================= SINGLE DELETE ================= */
 
   const handleDelete = async (id: number) => {
-    if (!window.confirm("Delete this admin permanently?")) return;
+    if (!window.confirm("Delete this role permanently?")) return;
 
     try {
       setDeletingId(id);
@@ -101,7 +101,7 @@ const AdminList = () => {
   const handleBulkDelete = async () => {
     if (
       !window.confirm(
-        `Delete ${selectedIds.length} selected admins permanently?`,
+        `Delete ${selectedIds.length} selected roles permanently?`,
       )
     )
       return;
@@ -146,7 +146,7 @@ const AdminList = () => {
               {/* ================= HEADER ================= */}
               <CardHeader className="d-flex justify-content-between align-items-center">
                 <div>
-                  <h5 className="mb-0">Admins</h5>
+                  <h5 className="mb-0">Roles</h5>
 
                   {selectedIds.length > 0 && (
                     <small className="text-muted">
