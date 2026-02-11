@@ -37,7 +37,7 @@ class AdminController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Admin created successfully',
+            'message' => 'Role created successfully',
             'admin'   => $admin,
         ], 201);
     }
@@ -63,7 +63,7 @@ class AdminController extends Controller
         $admin->update($data);
     
         return response()->json([
-            'message' => 'Admin updated successfully'
+            'message' => 'Role updated successfully'
         ]);
     }
     
@@ -86,7 +86,7 @@ class AdminController extends Controller
         $admin->delete();
 
         return response()->json([
-            'message' => 'Admin deleted successfully',
+            'message' => 'Role deleted successfully',
         ]);
     }
 }

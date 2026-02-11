@@ -15,6 +15,9 @@ import {
 import { useNavigate } from "react-router-dom";
 import { APIClient } from "../../helpers/api_helper";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const api = new APIClient();
 
 const AddAdmin = () => {
@@ -41,10 +44,12 @@ const AddAdmin = () => {
 
     try {
       await api.create("/api/admin/admins", formData);
-      alert("Role created successfully ✅");
-      navigate("/admins");
-    } catch (err) {
-      alert(err);
+      toast.success("Role created successfully ✅");
+      setTimeout(() => {
+        navigate("/admins");
+      }, 1500);
+    } catch {
+      toast.error("Faild Creating Role");
     } finally {
       setLoading(false);
     }
@@ -57,7 +62,9 @@ const AddAdmin = () => {
           <Col xl={12} lg={11}>
             <Card className="shadow-sm">
               <CardBody className="p-4 p-lg-5">
-                <h4 className="mb-4 border-bottom pb-3">Create New Role</h4>
+                <h4 className="mb-4 border-bottom pb-3">
+                  Create New Role
+                </h4>
 
                 <Form onSubmit={handleSubmit}>
                   {/* ROW 1 */}
@@ -133,6 +140,9 @@ const AddAdmin = () => {
           </Col>
         </Row>
       </Container>
+
+      {/* 🔔 Page-level ToastContainer (same pattern everywhere) */}
+      <ToastContainer />
     </div>
   );
 };

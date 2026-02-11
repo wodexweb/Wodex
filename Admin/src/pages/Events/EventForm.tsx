@@ -14,6 +14,9 @@ import {
   Spinner,
 } from "reactstrap";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const api = new APIClient();
 
 const EventForm = () => {
@@ -60,14 +63,9 @@ const EventForm = () => {
       if (formData.status) payload.append("status", formData.status);
       if (formData.photo) payload.append("photo", formData.photo);
 
-      // ✅ CORRECT API CALL (NO /api here)
-      await api.create("/api/admin/events", payload, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await api.create("/api/admin/events", payload);
 
-      alert("Event created successfully");
+      toast.success("Event created successfully 🎉");
 
       setFormData({
         title: "",
@@ -80,8 +78,8 @@ const EventForm = () => {
 
       setPreview(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
-    } catch (err) {
-      alert(err);
+    } catch {
+      toast.error("Failed to create event ❌");
     } finally {
       setLoading(false);
     }
@@ -92,9 +90,9 @@ const EventForm = () => {
       <Container fluid>
         <Row className="justify-content-center">
           <Col xl={12} lg={11}>
-            <Card className="shadow-sm">
-              <CardBody className="p-4 p-lg-5">
-                <h4 className="mb-4 border-bottom pb-3">Event Form</h4>
+            <Card>
+              <CardBody>
+                <h4 className="mb-4">Add Event</h4>
 
                 <Form onSubmit={handleSubmit}>
                   {/* ROW 1 */}
@@ -189,24 +187,22 @@ const EventForm = () => {
 
                   {/* IMAGE PREVIEW */}
                   {preview && (
-                    <Row className="mb-3">
-                      <Col className="text-center">
-                        <img
-                          src={preview}
-                          alt="Preview"
-                          className="img-thumbnail"
-                          style={{
-                            width: 180,
-                            height: 180,
-                            objectFit: "cover",
-                          }}
-                        />
-                      </Col>
-                    </Row>
+                    <div className="text-center mb-3">
+                      <img
+                        src={preview}
+                        alt="Preview"
+                        className="img-thumbnail"
+                        style={{
+                          width: 180,
+                          height: 180,
+                          objectFit: "cover",
+                        }}
+                      />
+                    </div>
                   )}
 
                   {/* SUBMIT */}
-                  <div className="text-center mt-4">
+                  <div className="text-center">
                     <Button color="primary" disabled={loading}>
                       {loading && <Spinner size="sm" className="me-2" />}
                       Publish Event
@@ -218,6 +214,9 @@ const EventForm = () => {
           </Col>
         </Row>
       </Container>
+
+      {/* 🔔 TOAST CONTAINER (same as Register page) */}
+      <ToastContainer />
     </div>
   );
 };

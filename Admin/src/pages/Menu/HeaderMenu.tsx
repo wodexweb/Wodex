@@ -1,6 +1,8 @@
 import React from "react";
 import { Container, Row, Col, Card, CardBody } from "reactstrap";
 import MenuBuilder from "./MenuBuilder";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const HeaderMenu = () => {
   return (
@@ -21,6 +23,8 @@ const HeaderMenu = () => {
           </Col>
         </Row>
       </Container>
+      <ToastContainer />
+
     </div>
   );
 };

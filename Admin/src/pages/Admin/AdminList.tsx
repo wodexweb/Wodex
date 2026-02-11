@@ -14,6 +14,9 @@ import {
 } from "reactstrap";
 import { APIClient } from "../../helpers/api_helper";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const api = new APIClient();
 
 /* ================= ROLE LABEL ================= */
@@ -46,7 +49,7 @@ const AdminList = () => {
       const res: any = await api.get("/api/admin/admins");
       setAdmins(res || []);
     } catch {
-      alert("Failed to load admins");
+      toast.error("Failed to load roles");
     } finally {
       setLoading(false);
     }
@@ -79,47 +82,84 @@ const AdminList = () => {
     );
   };
 
+  /* ================= TOAST CONFIRM ================= */
+
+  const confirmDeleteToast = (
+    message: string,
+    onConfirm: () => void,
+  ) => {
+    toast.warning(
+      ({ closeToast }) => (
+        <div>
+          <p className="mb-2">{message}</p>
+          <div className="d-flex gap-2">
+            <Button
+              color="danger"
+              size="sm"
+              onClick={() => {
+                onConfirm();
+                closeToast?.();
+              }}
+            >
+              Yes, Delete
+            </Button>
+            <Button
+              color="secondary"
+              size="sm"
+              onClick={closeToast}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      ),
+      { autoClose: false },
+    );
+  };
+
   /* ================= SINGLE DELETE ================= */
 
-  const handleDelete = async (id: number) => {
-    if (!window.confirm("Delete this role permanently?")) return;
-
-    try {
-      setDeletingId(id);
-      await api.delete(`/api/admins/${id}`);
-      setAdmins((prev) => prev.filter((a) => a.id !== id));
-      setSelectedIds((prev) => prev.filter((x) => x !== id));
-    } catch (err) {
-      alert(err || "Delete failed");
-    } finally {
-      setDeletingId(null);
-    }
+  const handleDelete = (id: number) => {
+    confirmDeleteToast("Delete this role permanently?", async () => {
+      try {
+        setDeletingId(id);
+        await api.delete(`/api/admin/admins/${id}`);
+        setAdmins((prev) => prev.filter((a) => a.id !== id));
+        setSelectedIds((prev) => prev.filter((x) => x !== id));
+        toast.success("Role deleted successfully");
+      } catch {
+        toast.error("Delete failed");
+      } finally {
+        setDeletingId(null);
+      }
+    });
   };
 
   /* ================= BULK DELETE ================= */
 
-  const handleBulkDelete = async () => {
-    if (
-      !window.confirm(
-        `Delete ${selectedIds.length} selected roles permanently?`,
-      )
-    )
-      return;
+  const handleBulkDelete = () => {
+    confirmDeleteToast(
+      `Delete ${selectedIds.length} selected roles permanently?`,
+      async () => {
+        try {
+          setBulkDeleting(true);
 
-    try {
-      setBulkDeleting(true);
+          for (const id of selectedIds) {
+            await api.delete(`/api/admin/admins/${id}`);
+          }
 
-      for (const id of selectedIds) {
-        await api.delete(`/api/admins/${id}`);
-      }
-
-      setAdmins((prev) => prev.filter((a) => !selectedIds.includes(a.id)));
-      setSelectedIds([]);
-    } catch {
-      alert("Bulk delete failed");
-    } finally {
-      setBulkDeleting(false);
-    }
+          setAdmins((prev) =>
+            prev.filter((a) => !selectedIds.includes(a.id)),
+          );
+          setSelectedIds([]);
+          toast.success("Selected roles deleted successfully");
+        } catch {
+          toast.error("Bulk delete failed");
+        } finally {
+          setBulkDeleting(false);
+        }
+      },
+    );
   };
 
   /* ================= LOADING ================= */
@@ -222,26 +262,11 @@ const AdminList = () => {
                           <td>#{a.id}</td>
                           <td>{a.name}</td>
                           <td>{a.email}</td>
-
-                          <td>
-                            <span
-                              className="badge badge-soft-primary text-uppercase"
-                              style={{
-                                fontSize: "11px",
-                                fontWeight: 600,
-                                padding: "6px 10px",
-                                borderRadius: "6px",
-                              }}
-                            >
-                              {roleLabel(a.role_id)}
-                            </span>
-                          </td>
-
+                          <td>{roleLabel(a.role_id)}</td>
                           <td>
                             {new Date(a.created_at).toLocaleDateString()}
                           </td>
 
-                          {/* ACTIONS */}
                           <td className="text-end">
                             <Link
                               to={`/admins/edit/${a.id}`}
@@ -263,7 +288,6 @@ const AdminList = () => {
                           </td>
                         </tr>
                       ))}
-
                       {filteredAdmins.length === 0 && (
                         <tr>
                           <td colSpan={7} className="text-center py-4">
@@ -279,6 +303,9 @@ const AdminList = () => {
           </Col>
         </Row>
       </Container>
+
+      {/* 🔔 Toast Container */}
+      <ToastContainer />
     </div>
   );
 };

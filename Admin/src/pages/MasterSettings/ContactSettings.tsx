@@ -13,7 +13,8 @@ import {
   Container,
   Spinner,
 } from "reactstrap";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const api = new APIClient();
 
 /* ================= TYPES ================= */
@@ -115,11 +116,11 @@ const ContactSettings: React.FC = () => {
     if (!formData) return;
 
     try {
-      await api.create("/api/contact-settings", formData);
-      alert("Contact settings updated successfully");
+      await api.create("/api/admin/contact-settings", formData);
+      toast.success("Contact settings updated successfully");
     } catch (error: any) {
       console.error("CONTACT SETTINGS ERROR 👉", error);
-      alert("Failed to update contact settings");
+      toast.error("Failed to update contact settings");
     }
   };
 
@@ -308,6 +309,8 @@ const ContactSettings: React.FC = () => {
           </Row>
         )}
       </Container>
+      <ToastContainer />
+
     </div>
   );
 };
