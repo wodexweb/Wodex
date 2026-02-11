@@ -14,6 +14,9 @@ import {
 } from "reactstrap";
 import { APIClient } from "../../helpers/api_helper";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const api = new APIClient();
 
 /* ================= TYPES ================= */
@@ -66,7 +69,7 @@ const EventList = () => {
 
       setEvents(all);
     } catch {
-      alert("Failed to load events");
+      toast.error("Failed to load events");
     } finally {
       setLoading(false);
     }
@@ -97,48 +100,85 @@ const EventList = () => {
     );
   };
 
+  /* ================= TOAST CONFIRM ================= */
+
+  const confirmDeleteToast = (
+    message: string,
+    onConfirm: () => void,
+  ) => {
+    toast.warning(
+      ({ closeToast }) => (
+        <div>
+          <p className="mb-2">{message}</p>
+          <div className="d-flex gap-2">
+            <Button
+              color="danger"
+              size="sm"
+              onClick={() => {
+                onConfirm();
+                closeToast?.();
+              }}
+            >
+              Yes, Delete
+            </Button>
+            <Button
+              color="secondary"
+              size="sm"
+              onClick={closeToast}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      ),
+      { autoClose: false },
+    );
+  };
+
   /* ================= SINGLE DELETE ================= */
 
-  const handleDelete = async (id: number) => {
-    if (!window.confirm("Are you sure you want to delete this event?")) return;
-
-    try {
-      setDeletingId(id);
-      await api.delete(`/api/admin/events/${id}`);
-      setEvents((prev) => prev.filter((e) => e.id !== id));
-      setSelectedIds((prev) => prev.filter((x) => x !== id));
-    } catch (err) {
-      alert(err || "Delete failed");
-    } finally {
-      setDeletingId(null);
-    }
+  const handleDelete = (id: number) => {
+    confirmDeleteToast(
+      "Are you sure you want to delete this event?",
+      async () => {
+        try {
+          setDeletingId(id);
+          await api.delete(`/api/admin/events/${id}`);
+          setEvents((prev) => prev.filter((e) => e.id !== id));
+          setSelectedIds((prev) => prev.filter((x) => x !== id));
+          toast.success("Event deleted successfully");
+        } catch {
+          toast.error("Delete failed");
+        } finally {
+          setDeletingId(null);
+        }
+      },
+    );
   };
 
   /* ================= BULK DELETE ================= */
 
-  const handleBulkDelete = async () => {
-    if (
-      !window.confirm(
-        `Delete ${selectedIds.length} selected events permanently?`,
-      )
-    )
-      return;
-
-    try {
-      setBulkDeleting(true);
-
-      // sequential delete (safe)
-      for (const id of selectedIds) {
-        await api.delete(`/api/admin/events/${id}`);
-      }
-
-      setEvents((prev) => prev.filter((e) => !selectedIds.includes(e.id)));
-      setSelectedIds([]);
-    } catch {
-      alert("Bulk delete failed");
-    } finally {
-      setBulkDeleting(false);
-    }
+  const handleBulkDelete = () => {
+    confirmDeleteToast(
+      `Delete ${selectedIds.length} selected events permanently?`,
+      async () => {
+        try {
+          setBulkDeleting(true);
+          for (const id of selectedIds) {
+            await api.delete(`/api/admin/events/${id}`);
+          }
+          setEvents((prev) =>
+            prev.filter((e) => !selectedIds.includes(e.id)),
+          );
+          setSelectedIds([]);
+          toast.success("Selected events deleted successfully");
+        } catch {
+          toast.error("Bulk delete failed");
+        } finally {
+          setBulkDeleting(false);
+        }
+      },
+    );
   };
 
   /* ================= LOADING ================= */
@@ -260,13 +300,13 @@ const EventList = () => {
                           </td>
 
                           <td>{e.title}</td>
-                          <td>{new Date(e.end_date).toLocaleDateString()}</td>
+                          <td>
+                            {new Date(e.end_date).toLocaleDateString()}
+                          </td>
 
                           <td>
                             <span
-                              className={`badge ${
-                                statusUI[e.status].className
-                              } text-uppercase`}
+                              className={`badge ${statusUI[e.status].className} text-uppercase`}
                               style={{
                                 fontSize: "11px",
                                 fontWeight: 600,
@@ -278,7 +318,6 @@ const EventList = () => {
                             </span>
                           </td>
 
-                          {/* ACTIONS */}
                           <td className="text-end">
                             <Link
                               to={`/events/view/${e.id}`}
@@ -300,7 +339,9 @@ const EventList = () => {
                               disabled={deletingId === e.id}
                               onClick={() => handleDelete(e.id)}
                             >
-                              {deletingId === e.id ? "Deleting..." : "Remove"}
+                              {deletingId === e.id
+                                ? "Deleting..."
+                                : "Remove"}
                             </Button>
                           </td>
                         </tr>
@@ -321,6 +362,9 @@ const EventList = () => {
           </Col>
         </Row>
       </Container>
+
+      {/* 🔔 ToastContainer (same pattern as Register page) */}
+      <ToastContainer />
     </div>
   );
 };

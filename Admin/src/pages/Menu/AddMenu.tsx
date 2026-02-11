@@ -13,6 +13,8 @@ import {
   Input,
   Container,
 } from "reactstrap";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 /* ================= API ================= */
 const api = new APIClient();
@@ -44,11 +46,13 @@ const AddMenu: React.FC = () => {
 
     try {
       await api.create("/api/admin/menus", formData);
-      alert("Menu created successfully");
-      navigate(`/menu/${formData.location}`);
+      toast.success("Menu created successfully");
+      setTimeout(() => {
+        navigate(`/menu/${formData.location}`);
+      }, 1500);
     } catch (error) {
       console.error("ADD MENU ERROR 👉", error);
-      alert("Failed to create menu");
+      toast.error("Failed to create menu");
     }
   };
 
@@ -102,6 +106,8 @@ const AddMenu: React.FC = () => {
           </Col>
         </Row>
       </Container>
+      <ToastContainer />
+
     </div>
   );
 };

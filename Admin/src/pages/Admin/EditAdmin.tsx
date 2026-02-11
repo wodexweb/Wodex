@@ -15,6 +15,9 @@ import {
 } from "reactstrap";
 import { APIClient } from "../../helpers/api_helper";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const api = new APIClient();
 
 /* ================= TYPES ================= */
@@ -48,7 +51,7 @@ const EditAdmin = () => {
     setLoading(true);
 
     api
-      .get(`/api/admin/admins/${id}`) // ✅ MATCHES BACKEND ROUTE
+      .get(`/api/admin/admins/${id}`)
       .then((res: any) => {
         const data = res?.data ?? res;
 
@@ -80,7 +83,6 @@ const EditAdmin = () => {
       role_id: roleId,
     };
 
-    // ✅ Only send password if user entered one
     if (password.trim()) {
       payload.password = password;
     }
@@ -88,11 +90,13 @@ const EditAdmin = () => {
     api
       .update(`/api/admin/admins/${id}`, payload)
       .then(() => {
-        alert("Admin updated successfully ✅");
-        navigate("/admins");
+        toast.success("Role updated successfully ✅");
+        setTimeout(() => {
+          navigate("/admins");
+        }, 1500);
       })
       .catch(() => {
-        alert("Failed to update admin ❌");
+        toast.error("Failed to update Role ❌");
       })
       .finally(() => setSaving(false));
   };
@@ -138,7 +142,6 @@ const EditAdmin = () => {
 
                 <Form onSubmit={handleSubmit}>
                   <Row>
-                    {/* NAME */}
                     <Col lg={6}>
                       <FormGroup className="mb-3">
                         <Label className="fw-semibold">Name</Label>
@@ -150,7 +153,6 @@ const EditAdmin = () => {
                       </FormGroup>
                     </Col>
 
-                    {/* EMAIL */}
                     <Col lg={6}>
                       <FormGroup className="mb-3">
                         <Label className="fw-semibold">Email</Label>
@@ -163,7 +165,6 @@ const EditAdmin = () => {
                       </FormGroup>
                     </Col>
 
-                    {/* PASSWORD (OPTIONAL) */}
                     <Col lg={6}>
                       <FormGroup className="mb-3">
                         <Label className="fw-semibold">
@@ -178,7 +179,6 @@ const EditAdmin = () => {
                       </FormGroup>
                     </Col>
 
-                    {/* ROLE */}
                     <Col lg={4}>
                       <FormGroup className="mb-4">
                         <Label className="fw-semibold">Role</Label>
@@ -194,7 +194,6 @@ const EditAdmin = () => {
                       </FormGroup>
                     </Col>
 
-                    {/* ACTIONS */}
                     <Col xs={12}>
                       <div className="d-flex gap-2">
                         <Button
@@ -218,6 +217,9 @@ const EditAdmin = () => {
           </Col>
         </Row>
       </Container>
+
+      {/* 🔔 ToastContainer (same pattern everywhere) */}
+      <ToastContainer />
     </div>
   );
 };

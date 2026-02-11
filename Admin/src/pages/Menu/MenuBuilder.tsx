@@ -28,6 +28,9 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 /* ================= API ================= */
 const api = new APIClient();
 
@@ -143,7 +146,6 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
 
   useEffect(() => {
     fetchMenu();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
 
   const fetchMenu = async () => {
@@ -168,8 +170,8 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
       );
 
       setItems(itemsRes.data || []);
-    } catch (err) {
-      console.error(err);
+    } catch {
+      toast.error("Failed to load menu ❌");
       setMenu(null);
       setItems([]);
     } finally {
@@ -204,6 +206,7 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
           url: form.url,
           parent_id: form.parent_id || null,
         });
+        toast.success("Menu item updated successfully ✅");
       } else {
         await api.post("/api/admin/menu-items", {
           menu_id: menu.id,
@@ -211,25 +214,65 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
           url: form.url,
           parent_id: form.parent_id || null,
         });
+        toast.success("Menu item added successfully ✅");
       }
 
       setForm({ title: "", url: "", parent_id: "" });
       setEditingItem(null);
-      fetchMenu();
-    } catch (err) {
-      console.error(err);
+
+      setTimeout(() => {
+        fetchMenu();
+      }, 1000);
+
+    } catch {
+      toast.error("Failed to save menu item ❌");
     }
   };
 
-  const deleteItem = async (id: number) => {
-    if (!window.confirm("Delete this menu item?")) return;
-    await api.delete(`/api/admin/menu-items/${id}`);
-    fetchMenu();
+  const deleteItem = (id: number) => {
+    toast.warning(
+      ({ closeToast }) => (
+        <div>
+          <p className="mb-2">Delete this menu item?</p>
+          <div className="d-flex gap-2">
+            <Button
+              size="sm"
+              color="danger"
+              onClick={async () => {
+                try {
+                  await api.delete(`/api/admin/menu-items/${id}`);
+                  toast.success("Menu item deleted successfully");
+                  setTimeout(() => {
+                    fetchMenu();
+                  }, 1000);
+                } catch {
+                  toast.error("Delete failed ❌");
+                }
+                closeToast?.();
+              }}
+            >
+              Yes, Delete
+            </Button>
+            <Button size="sm" color="secondary" onClick={closeToast}>
+              Cancel
+            </Button>
+          </div>
+        </div>
+      ),
+      { autoClose: false },
+    );
   };
 
   const toggleItem = async (id: number) => {
-    await api.patch(`/api/admin/menu-items/${id}/toggle`);
-    fetchMenu();
+    try {
+      await api.patch(`/api/admin/menu-items/${id}/toggle`);
+      toast.success("Menu item status updated");
+      setTimeout(() => {
+        fetchMenu();
+      }, 1000);
+    } catch {
+      toast.error("Failed to update status ❌");
+    }
   };
 
   const handleDragEnd = async (event: any) => {
@@ -249,6 +292,12 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
         parent_id: item.parent_id ?? null,
       })),
     });
+
+    toast.success("Menu order updated");
+
+    setTimeout(() => {
+      fetchMenu();
+    }, 1000);
   };
 
   const renderItems = (items: MenuItem[], level = 0) =>
@@ -279,68 +328,73 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
   }
 
   return (
-    <Row>
-      <Col md={7}>
-        <Card className="mb-4">
-          <CardBody>
-            <h5 className="mb-3">{menu.name}</h5>
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
-            >
-              <SortableContext
-                items={items.map((i) => i.id)}
-                strategy={verticalListSortingStrategy}
+    <>
+      <Row>
+        <Col md={7}>
+          <Card className="mb-4">
+            <CardBody>
+              <h5 className="mb-3">{menu.name}</h5>
+
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
               >
-                {renderItems(items)}
-              </SortableContext>
-            </DndContext>
-          </CardBody>
-        </Card>
-      </Col>
-
-      <Col md={5}>
-        <Card>
-          <CardBody>
-            <h5>{editingItem ? "Edit Menu Item" : "Add Menu Item"}</h5>
-
-            <Form onSubmit={handleSubmit}>
-              <FormGroup>
-                <Label>Title</Label>
-                <Input name="title" value={form.title} onChange={handleChange} />
-              </FormGroup>
-
-              <FormGroup>
-                <Label>URL</Label>
-                <Input name="url" value={form.url} onChange={handleChange} />
-              </FormGroup>
-
-              <FormGroup>
-                <Label>Parent Menu</Label>
-                <Input
-                  type="select"
-                  name="parent_id"
-                  value={form.parent_id}
-                  onChange={handleChange}
+                <SortableContext
+                  items={items.map((i) => i.id)}
+                  strategy={verticalListSortingStrategy}
                 >
-                  <option value="">Top Level</option>
-                  {items.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.title}
-                    </option>
-                  ))}
-                </Input>
-              </FormGroup>
+                  {renderItems(items)}
+                </SortableContext>
+              </DndContext>
+            </CardBody>
+          </Card>
+        </Col>
 
-              <Button type="submit" color="primary" className="w-100">
-                {editingItem ? "Update Menu Item" : "Add Menu Item"}
-              </Button>
-          </Form>
-        </CardBody>
-      </Card>
-    </Col>
-    </Row >
+        <Col md={5}>
+          <Card>
+            <CardBody>
+              <h5>{editingItem ? "Edit Menu Item" : "Add Menu Item"}</h5>
+
+              <Form onSubmit={handleSubmit}>
+                <FormGroup>
+                  <Label>Title</Label>
+                  <Input name="title" value={form.title} onChange={handleChange} />
+                </FormGroup>
+
+                <FormGroup>
+                  <Label>URL</Label>
+                  <Input name="url" value={form.url} onChange={handleChange} />
+                </FormGroup>
+
+                <FormGroup>
+                  <Label>Parent Menu</Label>
+                  <Input
+                    type="select"
+                    name="parent_id"
+                    value={form.parent_id}
+                    onChange={handleChange}
+                  >
+                    <option value="">Top Level</option>
+                    {items.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.title}
+                      </option>
+                    ))}
+                  </Input>
+                </FormGroup>
+
+                <Button type="submit" color="primary" className="w-100">
+                  {editingItem ? "Update Menu Item" : "Add Menu Item"}
+                </Button>
+              </Form>
+            </CardBody>
+          </Card>
+        </Col>
+      </Row>
+
+      <ToastContainer />
+    </>
   );
 };
 

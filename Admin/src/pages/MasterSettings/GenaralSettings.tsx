@@ -12,6 +12,8 @@ import {
   Input,
   Container,
 } from "reactstrap";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 /* ================= API ================= */
 const api = new APIClient();
@@ -126,11 +128,11 @@ const Settings: React.FC = () => {
       });
 
       await api.create("/api/admin/settings", payload);
-      alert("Settings updated successfully");
+      toast.success("Settings updated successfully");
       fetchSettings();
     } catch (error) {
       console.error("UPDATE SETTINGS ERROR 👉", error);
-      alert("Failed to update settings");
+      toast.error("Failed to update settings");
     }
   };
 
@@ -263,6 +265,8 @@ const Settings: React.FC = () => {
           </Col>
         </Row>
       </Container>
+      <ToastContainer />
+
     </div>
   );
 };
