@@ -14,7 +14,8 @@ import {
   Row,
   Spinner,
 } from "reactstrap";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 interface Member {
   id: number;
   name: string;
@@ -60,7 +61,7 @@ const EditMember: React.FC = () => {
 
         setPreview(m.photo_url || null);
       })
-      .catch(() => alert("Failed to load member ❌"))
+      .catch(() => toast.error("Failed to load member ❌"))
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -98,12 +99,14 @@ const EditMember: React.FC = () => {
         payload.append("photo", formData.photo);
       }
 
-      await api.create(`/api/members/${id}`, payload);
+      await api.create(`/api/admin/members/${id}`, payload);
 
-      alert("Member updated successfully ✅");
-      navigate("/members/list");
+     toast.success("Member updated successfully ✅");
+      setTimeout(() => {
+  navigate("/members/list");
+}, 1500);
     } catch {
-      alert("Update failed ❌");
+      toast.error("Update failed ❌");
     } finally {
       setSaving(false);
     }
@@ -193,6 +196,7 @@ const EditMember: React.FC = () => {
           </Col>
         </Row>
       </Container>
+      <ToastContainer/>
     </div>
   );
 };

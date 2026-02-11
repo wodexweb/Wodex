@@ -82,7 +82,7 @@ const HeaderSettings: React.FC = () => {
         title_color: formData.title_color,
       };
 
-      await api.create("/api/header", payload);
+      await api.create("/api/admin/header", payload);
       alert("Header settings updated successfully");
     } catch (error: any) {
       console.error("HEADER SETTINGS ERROR 👉", error);

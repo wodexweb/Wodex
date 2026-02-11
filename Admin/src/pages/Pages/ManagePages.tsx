@@ -13,6 +13,8 @@ import {
   Input,
 } from "reactstrap";
 import { APIClient } from "../../helpers/api_helper";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const api = new APIClient();
 
@@ -55,7 +57,7 @@ const ManagePages = () => {
       const res: any = await api.get("/api/admin/pages");
       setPages(res || []);
     } catch {
-      alert("Failed to load pages");
+      toast.error("Failed to load pages");
     } finally {
       setLoading(false);
     }
@@ -123,7 +125,7 @@ const ManagePages = () => {
       setPages((prev) => prev.filter((p) => !selectedIds.includes(p.id)));
       setSelectedIds([]);
     } catch {
-      alert("Bulk delete failed");
+      toast.error("Bulk delete failed");
     } finally {
       setBulkDeleting(false);
     }
@@ -293,6 +295,7 @@ const ManagePages = () => {
           </Col>
         </Row>
       </Container>
+      <ToastContainer/>
     </div>
   );
 };

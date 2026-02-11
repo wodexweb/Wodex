@@ -115,7 +115,7 @@ const ContactSettings: React.FC = () => {
     if (!formData) return;
 
     try {
-      await api.create("/api/contact-settings", formData);
+      await api.create("/api/admin/contact-settings", formData);
       alert("Contact settings updated successfully");
     } catch (error: any) {
       console.error("CONTACT SETTINGS ERROR 👉", error);

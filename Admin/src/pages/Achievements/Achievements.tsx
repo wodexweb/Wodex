@@ -14,6 +14,8 @@ import {
   Badge,
 } from "reactstrap";
 import { APIClient } from "../../helpers/api_helper";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const api = new APIClient();
 
@@ -73,11 +75,11 @@ const Achievements = () => {
           headers: { "Content-Type": "multipart/form-data" },
         });
       }
-      alert("Success!");
+      toast.success("Success!");
       resetForm();
       fetchAchievements();
     } catch (error: any) {
-      alert("Action Failed: Check file size or backend validation.");
+      toast.error("Action Failed: Check file size or backend validation.");
     } finally {
       setLoading(false);
     }
@@ -91,7 +93,7 @@ const Achievements = () => {
       });
       fetchAchievements();
     } catch (error) {
-      alert("Status update failed");
+      toast.error("Status update failed");
     }
   };
 
@@ -254,6 +256,7 @@ const Achievements = () => {
           </Col>
         </Row>
       </Container>
+      <ToastContainer/>
     </div>
   );
 };

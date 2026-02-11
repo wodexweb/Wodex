@@ -13,7 +13,8 @@ import {
   Row,
   Spinner,
 } from "reactstrap";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const api = new APIClient();
 
 /* ================= TYPES ================= */
@@ -78,7 +79,7 @@ const AnnouncementForm: React.FC = () => {
 
       await api.create("/api/admin/announcements", payload);
 
-      alert("Announcement created successfully ✅");
+      toast.success("Announcement created successfully ✅");
 
       /* RESET FORM */
       setFormData({
@@ -95,7 +96,7 @@ const AnnouncementForm: React.FC = () => {
       }
     } catch (err) {
       console.error(err);
-      alert("Failed to create announcement ❌");
+     toast.error("Failed to create announcement ❌");
     } finally {
       setLoading(false);
     }
@@ -205,6 +206,7 @@ const AnnouncementForm: React.FC = () => {
           </Col>
         </Row>
       </Container>
+      <ToastContainer/>
     </div>
   );
 };

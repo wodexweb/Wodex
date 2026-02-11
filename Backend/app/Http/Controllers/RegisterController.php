@@ -27,17 +27,42 @@ public function show($id)
         'data' => $registration
     ]);
 }
-
-public function update(Request $request, $id)
+  public function approve($id)
 {
-    $user = Registration::findOrFail($id);
-
-    $user->status = 'paid'; // safer than mass update
-    $user->save();
+    $registration = Registration::findOrFail($id);
+    $registration->status = 'paid';
+    $registration->save();
 
     return response()->json([
         'success' => true,
         'message' => 'Membership approved'
+    ]);
+}
+public function update(Request $request, $id)
+{
+    $registration = Registration::findOrFail($id);
+
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'surname' => 'required|string|max:255',
+        'email' => 'required|email',
+        'mobile' => 'required|string|max:20',
+        'city' => 'required|string|max:255',
+        'status' => 'required|in:pending,paid',
+    ]);
+
+    $registration->update($request->only([
+        'name',
+        'surname',
+        'email',
+        'mobile',
+        'city',
+        'status',
+    ]));
+
+    return response()->json([
+        'success' => true,
+        'message' => 'User updated successfully'
     ]);
 }
 

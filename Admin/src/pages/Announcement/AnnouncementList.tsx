@@ -12,6 +12,8 @@ import {
   Spinner,
   Input,
 } from "reactstrap";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const api = new APIClient();
 
@@ -31,7 +33,6 @@ const AnnouncementList: React.FC = () => {
 
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-
   const [search, setSearch] = useState("");
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [bulkDeleting, setBulkDeleting] = useState(false);
@@ -51,8 +52,12 @@ const AnnouncementList: React.FC = () => {
 
         setAnnouncements(list);
       })
-      .catch(() => {
-        alert("Failed to load announcements ❌");
+      .catch((error: any) => {
+        toast.error(
+          error?.data?.message ||
+          error?.message ||
+          "Failed to load announcements ❌"
+        );
         setAnnouncements([]);
       })
       .finally(() => setLoading(false));
@@ -63,7 +68,7 @@ const AnnouncementList: React.FC = () => {
   const filteredAnnouncements = useMemo(() => {
     if (!search) return announcements;
     return announcements.filter((a) =>
-      a.title.toLowerCase().includes(search.toLowerCase()),
+      a.title.toLowerCase().includes(search.toLowerCase())
     );
   }, [announcements, search]);
 
@@ -79,53 +84,122 @@ const AnnouncementList: React.FC = () => {
 
   const toggleSelectOne = (id: number) => {
     setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
   };
 
-  /* ================= SINGLE DELETE ================= */
+const handleDelete = (id: number) => {
+  toast(
+    ({ closeToast }) => (
+      <div>
+        <p>Are you sure you want to delete this announcement?</p>
+        <div className="d-flex justify-content-end gap-2 mt-2">
+          <Button
+            size="sm"
+            color="secondary"
+            onClick={() => {
+              toast.dismiss();
+            }}
+          >
+            Cancel
+          </Button>
 
-  const handleDelete = async (id: number) => {
-    if (!window.confirm("Delete this announcement?")) return;
+          <Button
+            size="sm"
+            color="danger"
+            onClick={async () => {
+              try {
+                await api.delete(`/api/admin/announcements/${id}`);
 
-    try {
-      const payload = new FormData();
-      payload.append("_method", "DELETE");
-      await api.create(`/api/announcements/${id}`, payload);
+                setAnnouncements((prev) =>
+                  prev.filter((a) => a.id !== id)
+                );
 
-      setAnnouncements((prev) => prev.filter((a) => a.id !== id));
-      setSelectedIds((prev) => prev.filter((x) => x !== id));
-    } catch {
-      alert("Delete failed ❌");
+                setSelectedIds((prev) =>
+                  prev.filter((x) => x !== id)
+                );
+
+                toast.dismiss();
+                toast.success("Announcement deleted successfully ✅");
+              } catch (error: any) {
+                toast.dismiss();
+                toast.error(
+                  error?.data?.message || "Delete failed ❌"
+                );
+              }
+            }}
+          >
+            Yes, Delete
+          </Button>
+        </div>
+      </div>
+    ),
+    {
+      autoClose: false,
+      closeOnClick: false,
     }
-  };
+  );
+};
+  const handleBulkDelete = () => {
+  toast(
+    ({ closeToast }) => (
+      <div>
+        <p>
+          Delete {selectedIds.length} selected announcements?
+        </p>
 
-  /* ================= BULK DELETE ================= */
+        <div className="d-flex justify-content-end gap-2 mt-2">
+          <Button
+            size="sm"
+            color="secondary"
+            onClick={() => toast.dismiss()}
+          >
+            Cancel
+          </Button>
 
-  const handleBulkDelete = async () => {
-    if (!window.confirm(`Delete ${selectedIds.length} selected announcements?`))
-      return;
+          <Button
+            size="sm"
+            color="danger"
+            onClick={async () => {
+              try {
+                setBulkDeleting(true);
 
-    try {
-      setBulkDeleting(true);
+                await Promise.all(
+                  selectedIds.map((id) =>
+                    api.delete(`/api/admin/announcements/${id}`)
+                  )
+                );
 
-      for (const id of selectedIds) {
-        const payload = new FormData();
-        payload.append("_method", "DELETE");
-        await api.create(`/api/announcements/${id}`, payload);
-      }
+                setAnnouncements((prev) =>
+                  prev.filter((a) => !selectedIds.includes(a.id))
+                );
 
-      setAnnouncements((prev) =>
-        prev.filter((a) => !selectedIds.includes(a.id)),
-      );
-      setSelectedIds([]);
-    } catch {
-      alert("Bulk delete failed ❌");
-    } finally {
-      setBulkDeleting(false);
+                setSelectedIds([]);
+
+                toast.dismiss();
+                toast.success("Bulk delete successful ✅");
+              } catch (error: any) {
+                toast.dismiss();
+                toast.error(
+                  error?.data?.message ||
+                    "Bulk delete failed ❌"
+                );
+              } finally {
+                setBulkDeleting(false);
+              }
+            }}
+          >
+            Yes, Delete All
+          </Button>
+        </div>
+      </div>
+    ),
+    {
+      autoClose: false,
+      closeOnClick: false,
     }
-  };
-
+  );
+};
   /* ================= LOADING ================= */
 
   if (loading) {
@@ -135,6 +209,7 @@ const AnnouncementList: React.FC = () => {
           <Spinner />
           <span className="ms-2">Loading announcements...</span>
         </div>
+        <ToastContainer position="top-right" autoClose={3000} />
       </div>
     );
   }
@@ -148,7 +223,6 @@ const AnnouncementList: React.FC = () => {
           <Col xl={12}>
             <Card className="border-0 shadow-sm">
               <CardBody>
-                {/* HEADER */}
                 <div className="d-flex justify-content-between align-items-center mb-4">
                   <div>
                     <h4 className="mb-0">Announcements</h4>
@@ -191,7 +265,6 @@ const AnnouncementList: React.FC = () => {
                   </div>
                 </div>
 
-                {/* TABLE */}
                 <div className="table-responsive">
                   <Table hover className="mb-0 align-middle">
                     <thead className="table-light">
@@ -207,23 +280,17 @@ const AnnouncementList: React.FC = () => {
                             onChange={toggleSelectAll}
                           />
                         </th>
-                        <th style={{ width: 80 }}>ID</th>
-                        <th style={{ width: 100 }}>Image</th>
+                        <th>ID</th>
                         <th>Title</th>
-                        <th style={{ width: 160 }}>End Date</th>
-                        <th className="text-end" style={{ width: 220 }}>
-                          Actions
-                        </th>
+                        <th>End Date</th>
+                        <th className="text-end">Actions</th>
                       </tr>
                     </thead>
 
                     <tbody>
                       {filteredAnnouncements.length === 0 && (
                         <tr>
-                          <td
-                            colSpan={6}
-                            className="text-center text-muted py-4"
-                          >
+                          <td colSpan={5} className="text-center py-4">
                             No announcements found
                           </td>
                         </tr>
@@ -240,45 +307,12 @@ const AnnouncementList: React.FC = () => {
                           </td>
 
                           <td>#{a.id}</td>
-
-                          <td className="text-center">
-                            {a.photo_url ? (
-                              <img
-                                src={a.photo_url}
-                                alt={a.title}
-                                className="rounded"
-                                style={{
-                                  width: 44,
-                                  height: 44,
-                                  objectFit: "cover",
-                                }}
-                              />
-                            ) : (
-                              <div
-                                className="border rounded text-muted small d-flex align-items-center justify-content-center"
-                                style={{ width: 44, height: 44 }}
-                              >
-                                N/A
-                              </div>
-                            )}
+                          <td>{a.title}</td>
+                          <td>
+                            {new Date(a.end_date).toLocaleDateString()}
                           </td>
 
-                          <td className="fw-medium">{a.title}</td>
-
-                          <td>{new Date(a.end_date).toLocaleDateString()}</td>
-
                           <td className="text-end">
-                            <Button
-                              size="sm"
-                              color="light"
-                              className="me-2"
-                              onClick={() =>
-                                navigate(`/announcements/view/${a.id}`)
-                              }
-                            >
-                              View
-                            </Button>
-
                             <Button
                               size="sm"
                               color="success"
@@ -308,6 +342,9 @@ const AnnouncementList: React.FC = () => {
           </Col>
         </Row>
       </Container>
+
+      {/* Toast Container */}
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };

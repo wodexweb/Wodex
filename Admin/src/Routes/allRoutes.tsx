@@ -35,7 +35,7 @@ import UserProfile from "../pages/Authentication/user-profile";
 
 // 🔥 USERS (Membership Purchases Page)
 import User from "../pages/User/User";
-
+import EditRegistration from "../pages/User/EditRegistration";
 // EVENTS
 import EventList from "../pages/Events/EventList";
 import CreateEvent from "../pages/Events/EventForm";
@@ -98,6 +98,7 @@ const authProtectedRoutes = [
 
   // 🔥 USERS (Membership Purchases)
   { path: "/users", component: <User /> },
+  { path: "/users/edit/:id", component: <EditRegistration /> },
 
   // NOTICES
   { path: "/notices", component: <Notices /> },

@@ -10,6 +10,8 @@ import {
   Spinner,
   Button,
 } from "reactstrap";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const api = new APIClient();
 
@@ -177,6 +179,7 @@ const ViewAnnouncement: React.FC = () => {
           </Col>
         </Row>
       </Container>
+      <ToastContainer/>
     </div>
   );
 };

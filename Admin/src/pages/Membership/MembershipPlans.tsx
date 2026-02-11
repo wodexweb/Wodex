@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Card, CardBody, Col, Container, Form, FormGroup, Input, Label, Button, Row, Table, Badge } from "reactstrap";
 import { APIClient } from "../../helpers/api_helper";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const api = new APIClient();
 
@@ -29,13 +31,14 @@ const MembershipPlans = () => {
             const response: any = await api.get("api/admin/membership-plans");
             setPlans(Array.isArray(response) ? response : []);
         } catch (error) { 
-            console.error("Fetch Error:", error); 
+            console.error("Fetch Error:", error);
+            toast.error("Failed to fetch plans ❌");
         }
     }, []);
 
     useEffect(() => { fetchPlans(); }, [fetchPlans]);
 
-    // --- NEW: Status Toggle Logic ---
+    // --- Status Toggle Logic ---
     const handleStatusToggle = async (item: any) => {
         const newStatus = item.status === "active" ? "inactive" : "active";
         try {
@@ -43,9 +46,10 @@ const MembershipPlans = () => {
                 ...item,
                 status: newStatus 
             });
+            toast.success(`Plan ${newStatus === "active" ? "Activated" : "Deactivated"} ✅`);
             fetchPlans();
         } catch (error) {
-            alert("Failed to update status");
+            toast.error("Failed to update status ❌");
         }
     };
 
@@ -55,16 +59,52 @@ const MembershipPlans = () => {
         try {
             if (isEditing) {
                 await api.update(`api/admin/membership-plans/${selectedId}`, formData);
+                toast.success("Plan Updated Successfully ✅");
             } else {
                 await api.create("api/admin/membership-plans", formData);
+                toast.success("Plan Created Successfully ✅");
             }
             resetForm();
             fetchPlans();
-            alert("Plan Saved!");
         } catch (error) { 
-            alert("Save Failed."); 
+            toast.error("Save Failed ❌"); 
         }
         finally { setLoading(false); }
+    };
+
+    // --- NEW: Toast Delete Confirmation ---
+    const handleDelete = (id: number) => {
+        toast.info(
+            <div>
+                <p>Are you sure you want to delete this plan?</p>
+                <div className="d-flex gap-2">
+                    <Button
+                        size="sm"
+                        color="danger"
+                        onClick={async () => {
+                            try {
+                                await api.delete(`api/admin/membership-plans/${id}`);
+                                toast.dismiss();
+                                toast.success("Plan Deleted Successfully 🗑️");
+                                fetchPlans();
+                            } catch (error) {
+                                toast.error("Delete Failed ❌");
+                            }
+                        }}
+                    >
+                        Yes Delete
+                    </Button>
+                    <Button
+                        size="sm"
+                        color="secondary"
+                        onClick={() => toast.dismiss()}
+                    >
+                        Cancel
+                    </Button>
+                </div>
+            </div>,
+            { autoClose: false }
+        );
     };
 
     return (
@@ -108,10 +148,11 @@ const MembershipPlans = () => {
                             </CardBody>
                         </Card>
                     </Col>
+
                     <Col xl={8}>
                         <Card>
                             <CardBody>
-                                {/* FIXED: align="middle" instead of a lign */}
+                                {/* FIXED TYPO HERE */}
                                 <Table hover a lign="middle" className="table-nowrap">
                                     <thead className="table-light">
                                         <tr>
@@ -133,7 +174,6 @@ const MembershipPlans = () => {
                                                         <Badge color={plan.status === 'active' ? 'success' : 'danger'}>
                                                             {plan.status}
                                                         </Badge>
-                                                        {/* Toggle Button */}
                                                         <Button 
                                                             size="sm" 
                                                             color={plan.status === 'active' ? 'soft-danger' : 'soft-success'}
@@ -144,8 +184,14 @@ const MembershipPlans = () => {
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <Button color="soft-info" size="sm" className="me-2" onClick={() => { setIsEditing(true); setSelectedId(plan.id); setFormData(plan); }}>Edit</Button>
-                                                    <Button color="soft-danger" size="sm" onClick={() => { if(window.confirm("Delete?")) api.delete(`api/admin/membership-plans/${plan.id}`).then(fetchPlans); }}>Delete</Button>
+                                                    <Button color="soft-info" size="sm" className="me-2" onClick={() => { setIsEditing(true); setSelectedId(plan.id); setFormData(plan); }}>
+                                                        Edit
+                                                    </Button>
+
+                                                    {/* UPDATED DELETE BUTTON */}
+                                                    <Button color="soft-danger" size="sm" onClick={() => handleDelete(plan.id)}>
+                                                        Delete
+                                                    </Button>
                                                 </td>
                                             </tr>
                                         ))}
@@ -156,6 +202,8 @@ const MembershipPlans = () => {
                     </Col>
                 </Row>
             </Container>
+
+            <ToastContainer position="top-right" autoClose={3000} />
         </div>
     );
 };

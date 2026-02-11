@@ -13,7 +13,8 @@ import {
   Row,
   Spinner,
 } from "reactstrap";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
@@ -65,7 +66,7 @@ const AddPage: React.FC = () => {
       await api.create("/api/admin/pages", formData);
       navigate("/pages/manage");
     } catch (err) {
-      alert(err || "Failed to create page");
+      toast.error("Failed to create page");
     } finally {
       setLoading(false);
     }
@@ -172,6 +173,7 @@ const AddPage: React.FC = () => {
           </Col>
         </Row>
       </Container>
+      <ToastContainer/>
     </div>
   );
 };

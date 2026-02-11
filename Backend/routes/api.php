@@ -443,7 +443,9 @@ Route::apiResource('registration', RegisterController::class)
 Route::delete('/registration/{id}', [RegisterController::class, 'destroy']);
 
 // Approve/Update a member (This fixes your 405 error)
+Route::put('/registration/{id}/approve', [RegisterController::class, 'approve']);
 Route::put('/registration/{id}', [RegisterController::class, 'update']);
+Route::get('/registration/{id}', [RegistrationController::class, 'show']);
 
 
 /*
@@ -457,7 +459,6 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     | Role Based Auth
     |--------------------------------------------------------------------------
     */
-    Route::get('/admins/{id}',[AdminController::class, 'show']);
     Route::get('/admins', [AdminController::class, 'index']);
     Route::post('/admins', [AdminController::class, 'store']);
     Route::get('/admins/{id}', [AdminController::class, 'show']);

@@ -12,7 +12,8 @@ import {
   Spinner,
   Input,
 } from "reactstrap";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const api = new APIClient();
 
 /* ================= TYPES ================= */
@@ -52,7 +53,7 @@ const MemberList: React.FC = () => {
         setMembers(list);
       })
       .catch(() => {
-        alert("Failed to load members ❌");
+       toast.error("Failed to load members ❌");
         setMembers([]);
       })
       .finally(() => setLoading(false));
@@ -86,47 +87,131 @@ const MemberList: React.FC = () => {
     );
   };
 
-  /* ================= SINGLE DELETE ================= */
+ const handleDelete = (id: number) => {
+  toast(
+    () => (
+      <div>
+        <p>Are you sure you want to delete this member?</p>
 
-  const handleDelete = async (id: number) => {
-    if (!window.confirm("Delete this member?")) return;
+        <div className="d-flex justify-content-end gap-2 mt-2">
+          <Button
+            size="sm"
+            color="secondary"
+            onClick={() => toast.dismiss()}
+          >
+            Cancel
+          </Button>
 
-    try {
-      const payload = new FormData();
-      payload.append("_method", "DELETE");
+          <Button
+            size="sm"
+            color="danger"
+            onClick={async () => {
+              try {
+                const payload = new FormData();
+                payload.append("_method", "DELETE");
 
-      await api.create(`/api/members/${id}`, payload);
+                await api.create(`/api/admin/members/${id}`, payload);
 
-      setMembers((prev) => prev.filter((m) => m.id !== id));
-      setSelectedIds((prev) => prev.filter((x) => x !== id));
-    } catch {
-      alert("Delete failed ❌");
+                setMembers((prev) =>
+                  prev.filter((m) => m.id !== id)
+                );
+
+                setSelectedIds((prev) =>
+                  prev.filter((x) => x !== id)
+                );
+
+                toast.dismiss();
+                toast.success("Member deleted successfully ✅");
+              } catch (error: any) {
+                toast.dismiss();
+                toast.error(
+                  error?.response?.data?.message ||
+                    "Delete failed ❌"
+                );
+              }
+            }}
+          >
+            Yes, Delete
+          </Button>
+        </div>
+      </div>
+    ),
+    {
+      autoClose: false,
+      closeOnClick: false,
     }
-  };
+  );
+};
 
-  /* ================= BULK DELETE ================= */
+ const handleBulkDelete = () => {
+  toast(
+    () => (
+      <div>
+        <p>
+          Delete {selectedIds.length} selected members?
+        </p>
 
-  const handleBulkDelete = async () => {
-    if (!window.confirm(`Delete ${selectedIds.length} selected members?`))
-      return;
+        <div className="d-flex justify-content-end gap-2 mt-2">
+          <Button
+            size="sm"
+            color="secondary"
+            onClick={() => toast.dismiss()}
+          >
+            Cancel
+          </Button>
 
-    try {
-      setBulkDeleting(true);
+          <Button
+            size="sm"
+            color="danger"
+            onClick={async () => {
+              try {
+                setBulkDeleting(true);
 
-      for (const id of selectedIds) {
-        const payload = new FormData();
-        payload.append("_method", "DELETE");
-        await api.create(`/api/members/${id}`, payload);
-      }
+                await Promise.all(
+                  selectedIds.map((id) => {
+                    const payload = new FormData();
+                    payload.append("_method", "DELETE");
+                    return api.create(
+                      `/api/admin/members/${id}`,
+                      payload
+                    );
+                  })
+                );
 
-      setMembers((prev) => prev.filter((m) => !selectedIds.includes(m.id)));
-      setSelectedIds([]);
-    } catch {
-      alert("Bulk delete failed ❌");
-    } finally {
-      setBulkDeleting(false);
+                setMembers((prev) =>
+                  prev.filter(
+                    (m) => !selectedIds.includes(m.id)
+                  )
+                );
+
+                setSelectedIds([]);
+
+                toast.dismiss();
+                toast.success(
+                  "Selected members deleted successfully ✅"
+                );
+              } catch (error: any) {
+                toast.dismiss();
+                toast.error(
+                  error?.response?.data?.message ||
+                    "Bulk delete failed ❌"
+                );
+              } finally {
+                setBulkDeleting(false);
+              }
+            }}
+          >
+            Yes, Delete All
+          </Button>
+        </div>
+      </div>
+    ),
+    {
+      autoClose: false,
+      closeOnClick: false,
     }
-  };
+  );
+};
 
   /* ================= LOADING ================= */
 
@@ -307,6 +392,7 @@ const MemberList: React.FC = () => {
           </Col>
         </Row>
       </Container>
+      <ToastContainer/>
     </div>
   );
 };

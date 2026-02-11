@@ -13,8 +13,14 @@ import {
   PaginationItem,
   PaginationLink,
   Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const api = new APIClient();
 
@@ -43,7 +49,14 @@ const UserMembershipPurchases: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  /* ================= FETCH ================= */
+  // View Modal State
+  const [viewModal, setViewModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<Registration | null>(null);
+  const [viewLoading, setViewLoading] = useState(false);
+
+  const toggleViewModal = () => setViewModal(!viewModal);
+
+  /* ================= FETCH LIST ================= */
 
   const fetchPurchases = useCallback(async () => {
     try {
@@ -51,7 +64,7 @@ const UserMembershipPurchases: React.FC = () => {
       const res: any = await api.get("/api/registration");
       setData(res?.data ?? []);
     } catch (e) {
-      setError("Failed to load membership data ❌");
+      toast.error("Failed to load membership data ❌");
     } finally {
       setLoading(false);
     }
@@ -65,31 +78,89 @@ const UserMembershipPurchases: React.FC = () => {
 
   // ✅ Approve
   const approveMembership = async (id: number) => {
-    if (!window.confirm("Approve this membership?")) return;
+    toast.info(
+      ({ closeToast }) => (
+        <div>
+          <p>Approve this membership?</p>
+          <div className="d-flex gap-2 mt-2">
+            <Button
+              size="sm"
+              color="success"
+              onClick={async () => {
+                try {
+                  await api.put(`/api/registration/${id}/approve`);
+                  toast.success("Membership approved ✅");
+                  fetchPurchases();
+                } catch {
+                  toast.error("Failed to approve ❌");
+                }
+                closeToast();
+              }}
+            >
+              Yes
+            </Button>
 
-    try {
-      await api.put(`/api/registration/${id}`);
-      fetchPurchases();
-    } catch {
-      alert("Failed to approve membership ❌");
-    }
+            <Button size="sm" color="secondary" onClick={closeToast}>
+              Cancel
+            </Button>
+          </div>
+        </div>
+      ),
+      { autoClose: false }
+    );
   };
 
-  // ❌ Delete (fraud)
-  const deleteMember = async (id: number) => {
-    if (!window.confirm("Delete this user? This cannot be undone!")) return;
+  // ❌ Delete with Toast Confirmation
+  const deleteMember = (id: number) => {
+    toast.error(
+      ({ closeToast }) => (
+        <div>
+          <p>Are you sure you want to delete this user?</p>
+          <div className="d-flex gap-2 mt-2">
+            <Button
+              size="sm"
+              color="danger"
+              onClick={async () => {
+                try {
+                  await api.delete(`/api/registration/${id}`);
+                  toast.success("User deleted successfully 🗑️");
+                  fetchPurchases();
+                } catch {
+                  toast.error("Failed to delete member ❌");
+                }
+                closeToast();
+              }}
+            >
+              Yes, Delete
+            </Button>
 
-    try {
-      await api.delete(`/api/registration/${id}`);
-      fetchPurchases();
-    } catch {
-      alert("Failed to delete member ❌");
-    }
+            <Button size="sm" color="secondary" onClick={closeToast}>
+              Cancel
+            </Button>
+          </div>
+        </div>
+      ),
+      { autoClose: false }
+    );
   };
 
   // ✏️ Edit
   const editMember = (id: number) => {
-    navigate(`/admin/registration/edit/${id}`);
+    navigate(`/users/edit/${id}`);
+  };
+
+  // 👁 View
+  const viewMember = async (id: number) => {
+    try {
+      setViewLoading(true);
+      const res: any = await api.get(`/api/registration/${id}`);
+      setSelectedUser(res?.data);
+      setViewModal(true);
+    } catch {
+      toast.error("Failed to fetch user details ❌");
+    } finally {
+      setViewLoading(false);
+    }
   };
 
   /* ================= PAGINATION ================= */
@@ -128,7 +199,6 @@ const UserMembershipPurchases: React.FC = () => {
                           <th>User</th>
                           <th>Contact</th>
                           <th>City</th>
-                          <th>Membership</th>
                           <th>Status</th>
                           <th>Actions</th>
                         </tr>
@@ -153,18 +223,8 @@ const UserMembershipPurchases: React.FC = () => {
                             <td>{item.city}</td>
 
                             <td>
-                              <span className="fw-bold text-primary">
-                                Lifetime
-                              </span>
-                              <Badge color="success" pill className="ms-2">
-                                ∞
-                              </Badge>
-                            </td>
-
-                            <td>
                               <Badge
                                 color={item.status === "paid" ? "success" : "warning"}
-                                pill
                               >
                                 {item.status === "paid" ? "Approved" : "Pending"}
                               </Badge>
@@ -180,6 +240,14 @@ const UserMembershipPurchases: React.FC = () => {
                                   Approve
                                 </Button>
                               )}
+
+                              <Button
+                                color="info"
+                                size="sm"
+                                onClick={() => viewMember(item.id)}
+                              >
+                                View
+                              </Button>
 
                               <Button
                                 color="primary"
@@ -199,52 +267,44 @@ const UserMembershipPurchases: React.FC = () => {
                             </td>
                           </tr>
                         ))}
-
-                        {currentItems.length === 0 && (
-                          <tr>
-                            <td colSpan={7} className="text-center text-muted">
-                              No records found
-                            </td>
-                          </tr>
-                        )}
                       </tbody>
                     </Table>
-
-                    {/* Pagination */}
-                    {totalPages > 1 && (
-                      <Pagination className="justify-content-center">
-                        <PaginationItem disabled={currentPage === 1}>
-                          <PaginationLink
-                            previous
-                            onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
-                          />
-                        </PaginationItem>
-
-                        {Array.from({ length: totalPages }).map((_, i) => (
-                          <PaginationItem key={i} active={currentPage === i + 1}>
-                            <PaginationLink onClick={() => setCurrentPage(i + 1)}>
-                              {i + 1}
-                            </PaginationLink>
-                          </PaginationItem>
-                        ))}
-
-                        <PaginationItem disabled={currentPage === totalPages}>
-                          <PaginationLink
-                            next
-                            onClick={() =>
-                              setCurrentPage(p => Math.min(p + 1, totalPages))
-                            }
-                          />
-                        </PaginationItem>
-                      </Pagination>
-                    )}
                   </>
                 )}
+
+                {/* View Modal */}
+                <Modal isOpen={viewModal} toggle={toggleViewModal}>
+                  <ModalHeader toggle={toggleViewModal}>
+                    User Details
+                  </ModalHeader>
+                  <ModalBody>
+                    {viewLoading ? (
+                      <Spinner />
+                    ) : selectedUser ? (
+                      <>
+                        <p><strong>Name:</strong> {selectedUser.name} {selectedUser.surname}</p>
+                        <p><strong>Email:</strong> {selectedUser.email}</p>
+                        <p><strong>Mobile:</strong> {selectedUser.mobile}</p>
+                        <p><strong>City:</strong> {selectedUser.city}</p>
+                      </>
+                    ) : (
+                      <p>No user data found</p>
+                    )}
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button color="secondary" onClick={toggleViewModal}>
+                      Close
+                    </Button>
+                  </ModalFooter>
+                </Modal>
+
               </CardBody>
             </Card>
           </Col>
         </Row>
       </Container>
+
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };
