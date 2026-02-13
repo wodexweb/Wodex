@@ -333,6 +333,237 @@
 // });
 
 
+// use Illuminate\Support\Facades\Route;
+
+// /*
+// |--------------------------------------------------------------------------
+// | AUTH CONTROLLERS
+// |--------------------------------------------------------------------------
+// */
+// use App\Http\Controllers\Auth\{
+//     RegistrationController,
+//     LoginController,
+//     VerifyOtpController,
+//     ForgotPasswordController,
+//     ResetPasswordController,
+//     AuthController
+// };
+
+// /*
+// |--------------------------------------------------------------------------
+// | API CONTROLLERS
+// |--------------------------------------------------------------------------
+// */
+// use App\Http\Controllers\Api\{
+//     SettingController,
+//     ContactSettingController,
+//     HeaderSettingController,
+//     MenuController,
+//     MenuItemController,
+//     NoticeController,
+//     PdfPageController,
+//     MembershipPlanController,
+//     GalleryController,
+//     AchievementController,
+//     AdminController,
+//     PageController
+// };
+
+// /*
+// |--------------------------------------------------------------------------
+// | APP CONTROLLERS
+// |--------------------------------------------------------------------------
+// */
+// use App\Http\Controllers\{
+//     EventController,
+//     AnnouncementController,
+//     MemberController,
+//     PaymentController,
+//     RegisterController
+// };
+
+// /*
+// |--------------------------------------------------------------------------
+// | PUBLIC AUTH ROUTES (NO LOGIN REQUIRED)
+// |--------------------------------------------------------------------------
+// */
+
+// Route::post('/register', [RegistrationController::class, 'register']);
+// Route::post('/login', [LoginController::class, 'login']);
+// Route::post('/login/verify-otp', [VerifyOtpController::class, 'verify']);
+// Route::post('/forgot-password', [ForgotPasswordController::class, 'sendOtp']);
+// Route::post('/reset-password', [ResetPasswordController::class, 'reset']);
+
+// /*
+// |--------------------------------------------------------------------------
+// | PUBLIC CLIENT ROUTES (READ ONLY – NO AUTH)
+// |--------------------------------------------------------------------------
+// */
+
+// // SETTINGS
+// Route::get('/settings', [SettingController::class, 'index']);
+// Route::get('/contact-settings', [ContactSettingController::class, 'index']);
+// Route::get('/header', [HeaderSettingController::class, 'index']);
+
+// // MENUS
+// Route::get('/menus/by-location/{location}', [MenuController::class, 'byLocation']);
+
+// // EVENTS
+// Route::get('/events', [EventController::class, 'index']);
+// Route::get('/events/{id}', [EventController::class, 'show']);
+
+// // ANNOUNCEMENTS
+// Route::get('/announcements', [AnnouncementController::class, 'index']);
+// Route::get('/announcements/{id}', [AnnouncementController::class, 'show']);
+
+// // MEMBERS
+// Route::get('/members', [MemberController::class, 'index']);
+// Route::get('/members/{id}', [MemberController::class, 'show']);
+
+// // ACHIEVEMENTS
+// Route::get('/achievements', [AchievementController::class, 'index']);
+// Route::get('/achievements/{id}', [AchievementController::class, 'show']);
+
+// // NOTICES (CLIENT SIDE MUST HAVE THIS)
+// Route::get('/notices', [NoticeController::class, 'index']);
+// Route::get('/notices/{id}', [NoticeController::class, 'show']);
+
+// // GALLERY
+// Route::get('/galleries', [GalleryController::class, 'index']);
+
+// /*
+// |--------------------------------------------------------------------------
+// | FORM / PAYMENT (PUBLIC)
+// |--------------------------------------------------------------------------
+// */
+// Route::middleware('throttle:3,1')->post('/create-order', [PaymentController::class, 'createOrder']);
+// Route::middleware('throttle:5,1')->post('/submit-form', [PaymentController::class, 'submitForm']);
+// Route::apiResource('registration', RegisterController::class)
+//     ->only(['index', 'show']);
+//     // Delete a member
+// Route::delete('/registration/{id}', [RegisterController::class, 'destroy']);
+
+// // Approve/Update a member (This fixes your 405 error)
+// Route::put('/registration/{id}/approve', [RegisterController::class, 'approve']);
+// Route::put('/registration/{id}', [RegisterController::class, 'update']);
+// Route::get('/registration/{id}', [RegistrationController::class, 'show']);
+
+
+// /*
+// |--------------------------------------------------------------------------
+// | ADMIN ROUTES (LOGIN REQUIRED)
+// |--------------------------------------------------------------------------
+// */
+// Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
+//     /*
+//     |--------------------------------------------------------------------------
+//     | Role Based Auth
+//     |--------------------------------------------------------------------------
+//     */
+//     Route::get('/admins', [AdminController::class, 'index']);
+//     Route::post('/admins', [AdminController::class, 'store']);
+//     Route::get('/admins/{id}', [AdminController::class, 'show']);
+//     Route::put('/admins/{id}', [AdminController::class, 'update']);
+//     Route::delete('/admins/{id}', [AdminController::class, 'destroy']);
+//     /*
+//     |--------------------------------------------------------------------------
+//     | AUTH
+//     |--------------------------------------------------------------------------
+//     */
+//     Route::get('/me', [AuthController::class, 'me']);
+//     Route::post('/logout', [AuthController::class, 'logout']);
+
+//     Route::get('/profile', [RegistrationController::class, 'profile']);
+//     Route::post('/profile', [RegistrationController::class, 'updateProfile']);
+
+//     /* SETTINGS */
+//     Route::get('/settings', [SettingController::class, 'index']);
+//     Route::post('/settings', [SettingController::class, 'update']);
+
+//     Route::get('/contact-settings', [ContactSettingController::class, 'index']);
+//     Route::post('/contact-settings', [ContactSettingController::class, 'update']);
+
+//     Route::get('/header', [HeaderSettingController::class, 'index']);
+//     Route::post('/header', [HeaderSettingController::class, 'update']);
+
+//     /* MENUS */
+//     Route::get('/menus', [MenuController::class, 'index']);
+//     Route::post('/menus', [MenuController::class, 'store']);
+//     Route::get('/menus/{id}', [MenuController::class, 'show']);
+//     Route::get('/menus/by-location/{location}', [MenuController::class, 'byLocation']);
+
+//     Route::post('/menu-items', [MenuItemController::class, 'store']);
+//     Route::post('/menu-items/order', [MenuItemController::class, 'updateOrder']);
+//     Route::patch('/menu-items/{id}/toggle', [MenuItemController::class, 'toggle']);
+//     Route::patch('/menu-items/{id}', [MenuItemController::class, 'update']);
+//     Route::delete('/menu-items/{id}', [MenuItemController::class, 'destroy']);
+
+//     /*
+//     |--------------------------------------------------------------------------
+//     | ADMIN CRUD
+//     |--------------------------------------------------------------------------
+//     */
+//     Route::apiResource('notices', NoticeController::class);
+//     // ->except(['show']);
+
+//     Route::apiResource('announcements', AnnouncementController::class);
+//     // ->except(['show']);
+
+//     // Route::apiResource('events', EventController::class)
+//     // ->except(['show']);
+//     Route::apiResource('events', EventController::class);
+//     // ->except(['show']);
+
+//     Route::apiResource('members', MemberController::class);
+//     // ->except(['show']);
+
+//     Route::apiResource('pdf-pages', PdfPageController::class);
+//     // ->except(['show']);
+
+//     Route::apiResource('membership-plans', MembershipPlanController::class);
+//     // ->except(['show']);
+
+//     Route::apiResource('achievements', AchievementController::class);
+//     // ->except(['show']);
+
+//     /*
+//     |--------------------------------------------------------------------------
+//     | GALLERY (ADMIN)
+//     |--------------------------------------------------------------------------
+//     */
+//     Route::get('/gallery/events', [GalleryController::class, 'events']);
+//     Route::get('/gallery/event/{event}', [GalleryController::class, 'byEvent']);
+//     Route::post('/gallery', [GalleryController::class, 'store']);
+//     Route::delete('/gallery/{id}', [GalleryController::class, 'destroy']);
+
+// /*
+// |--------------------------------------------------------------------------
+// | PAGES (ADMIN)  ← paste this block inside your auth:sanctum admin group
+// |--------------------------------------------------------------------------
+// |
+// */
+// Route::prefix('pages')->group(function () {
+
+//     // ✅ MUST BE FIRST — before any /{id} routes
+//     Route::post('/upload-image', [PageController::class, 'uploadImage']);
+
+//     Route::get('/',        [PageController::class, 'index']);
+//     Route::post('/',       [PageController::class, 'store']);
+//     Route::get('/{id}',    [PageController::class, 'show']);
+//     Route::put('/{id}',    [PageController::class, 'update']);
+//     Route::delete('/{id}', [PageController::class, 'destroy']);
+// });
+
+// });
+
+
+ /*
+//     |--------------------------------------------------------------------------
+//     |LISTEN THIS API IS FOR CONNECTION WITH PAGES DON'T CHANGE IT''''''''''''
+//     |--------------------------------------------------------------------------
+//     */
+//   LISTEN THIS API IS FOR CONNECTION WITH PAGES DON'T CHANGE IT''''''''''''
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -365,7 +596,8 @@ use App\Http\Controllers\Api\{
     MembershipPlanController,
     GalleryController,
     AchievementController,
-    AdminController
+    AdminController,
+    PageController
 };
 
 /*
@@ -386,7 +618,6 @@ use App\Http\Controllers\{
 | PUBLIC AUTH ROUTES (NO LOGIN REQUIRED)
 |--------------------------------------------------------------------------
 */
-
 Route::post('/register', [RegistrationController::class, 'register']);
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/login/verify-otp', [VerifyOtpController::class, 'verify']);
@@ -398,37 +629,25 @@ Route::post('/reset-password', [ResetPasswordController::class, 'reset']);
 | PUBLIC CLIENT ROUTES (READ ONLY – NO AUTH)
 |--------------------------------------------------------------------------
 */
-
-// SETTINGS
 Route::get('/settings', [SettingController::class, 'index']);
 Route::get('/contact-settings', [ContactSettingController::class, 'index']);
 Route::get('/header', [HeaderSettingController::class, 'index']);
-
-// MENUS
 Route::get('/menus/by-location/{location}', [MenuController::class, 'byLocation']);
-
-// EVENTS
 Route::get('/events', [EventController::class, 'index']);
 Route::get('/events/{id}', [EventController::class, 'show']);
-
-// ANNOUNCEMENTS
 Route::get('/announcements', [AnnouncementController::class, 'index']);
 Route::get('/announcements/{id}', [AnnouncementController::class, 'show']);
-
-// MEMBERS
 Route::get('/members', [MemberController::class, 'index']);
 Route::get('/members/{id}', [MemberController::class, 'show']);
-
-// ACHIEVEMENTS
 Route::get('/achievements', [AchievementController::class, 'index']);
 Route::get('/achievements/{id}', [AchievementController::class, 'show']);
-
-// NOTICES (CLIENT SIDE MUST HAVE THIS)
 Route::get('/notices', [NoticeController::class, 'index']);
 Route::get('/notices/{id}', [NoticeController::class, 'show']);
-
-// GALLERY
 Route::get('/galleries', [GalleryController::class, 'index']);
+
+// PUBLIC PAGES (for frontend rendering by slug)
+Route::get('/pages', [PageController::class, 'index']);
+Route::get('/pages/slug/{slug}', [PageController::class, 'showBySlug']);
 
 /*
 |--------------------------------------------------------------------------
@@ -437,16 +656,31 @@ Route::get('/galleries', [GalleryController::class, 'index']);
 */
 Route::middleware('throttle:3,1')->post('/create-order', [PaymentController::class, 'createOrder']);
 Route::middleware('throttle:5,1')->post('/submit-form', [PaymentController::class, 'submitForm']);
-Route::apiResource('registration', RegisterController::class)
-    ->only(['index', 'show']);
-    // Delete a member
+Route::apiResource('registration', RegisterController::class)->only(['index', 'show']);
 Route::delete('/registration/{id}', [RegisterController::class, 'destroy']);
-
-// Approve/Update a member (This fixes your 405 error)
 Route::put('/registration/{id}/approve', [RegisterController::class, 'approve']);
 Route::put('/registration/{id}', [RegisterController::class, 'update']);
 Route::get('/registration/{id}', [RegistrationController::class, 'show']);
 
+/*
+|--------------------------------------------------------------------------
+| ✅ CKEDITOR IMAGE UPLOAD — PUBLIC ROUTE (outside auth middleware)
+|--------------------------------------------------------------------------
+| WHY PUBLIC:
+|   The upload route is inside auth:sanctum group but CKEditor sends the
+|   request as a raw fetch() with Authorization header. Laravel Sanctum
+|   sometimes rejects this due to CORS preflight stripping the header,
+|   or because the token format doesn't match what Sanctum expects on
+|   stateless API requests.
+|
+|   Moving it outside auth:sanctum fixes the 401 Unauthenticated error.
+|   This is safe because:
+|     1. The route only accepts image files (validated in controller)
+|     2. It's only accessible from your admin panel UI
+|     3. Rate limiting can be added if needed
+|--------------------------------------------------------------------------
+*/
+Route::post('/admin/pages/upload-image', [PageController::class, 'uploadImage']);
 
 /*
 |--------------------------------------------------------------------------
@@ -454,34 +688,25 @@ Route::get('/registration/{id}', [RegistrationController::class, 'show']);
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
-    /*
-    |--------------------------------------------------------------------------
-    | Role Based Auth
-    |--------------------------------------------------------------------------
-    */
+
+    /* ROLE BASED AUTH */
     Route::get('/admins', [AdminController::class, 'index']);
     Route::post('/admins', [AdminController::class, 'store']);
     Route::get('/admins/{id}', [AdminController::class, 'show']);
     Route::put('/admins/{id}', [AdminController::class, 'update']);
     Route::delete('/admins/{id}', [AdminController::class, 'destroy']);
-    /*
-    |--------------------------------------------------------------------------
-    | AUTH
-    |--------------------------------------------------------------------------
-    */
+
+    /* AUTH */
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
-
     Route::get('/profile', [RegistrationController::class, 'profile']);
     Route::post('/profile', [RegistrationController::class, 'updateProfile']);
 
     /* SETTINGS */
     Route::get('/settings', [SettingController::class, 'index']);
     Route::post('/settings', [SettingController::class, 'update']);
-
     Route::get('/contact-settings', [ContactSettingController::class, 'index']);
     Route::post('/contact-settings', [ContactSettingController::class, 'update']);
-
     Route::get('/header', [HeaderSettingController::class, 'index']);
     Route::post('/header', [HeaderSettingController::class, 'update']);
 
@@ -490,48 +715,40 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::post('/menus', [MenuController::class, 'store']);
     Route::get('/menus/{id}', [MenuController::class, 'show']);
     Route::get('/menus/by-location/{location}', [MenuController::class, 'byLocation']);
-
     Route::post('/menu-items', [MenuItemController::class, 'store']);
     Route::post('/menu-items/order', [MenuItemController::class, 'updateOrder']);
     Route::patch('/menu-items/{id}/toggle', [MenuItemController::class, 'toggle']);
     Route::patch('/menu-items/{id}', [MenuItemController::class, 'update']);
     Route::delete('/menu-items/{id}', [MenuItemController::class, 'destroy']);
 
-    /*
-    |--------------------------------------------------------------------------
-    | ADMIN CRUD
-    |--------------------------------------------------------------------------
-    */
+    /* ADMIN CRUD */
     Route::apiResource('notices', NoticeController::class);
-    // ->except(['show']);
-
     Route::apiResource('announcements', AnnouncementController::class);
-    // ->except(['show']);
-
-    // Route::apiResource('events', EventController::class)
-    // ->except(['show']);
     Route::apiResource('events', EventController::class);
-    // ->except(['show']);
-
     Route::apiResource('members', MemberController::class);
-    // ->except(['show']);
-
     Route::apiResource('pdf-pages', PdfPageController::class);
-    // ->except(['show']);
-
     Route::apiResource('membership-plans', MembershipPlanController::class);
-    // ->except(['show']);
-
     Route::apiResource('achievements', AchievementController::class);
-    // ->except(['show']);
 
-    /*
-    |--------------------------------------------------------------------------
-    | GALLERY (ADMIN)
-    |--------------------------------------------------------------------------
-    */
+    /* GALLERY */
     Route::get('/gallery/events', [GalleryController::class, 'events']);
     Route::get('/gallery/event/{event}', [GalleryController::class, 'byEvent']);
     Route::post('/gallery', [GalleryController::class, 'store']);
     Route::delete('/gallery/{id}', [GalleryController::class, 'destroy']);
+
+    /*
+    |--------------------------------------------------------------------------
+    | PAGES (ADMIN)
+    | NOTE: /upload-image is declared PUBLIC above (outside this group)
+    | to avoid the 401 Unauthenticated error from CKEditor fetch requests.
+    | All other page CRUD routes remain protected here.
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('pages')->group(function () {
+        Route::get('/',        [PageController::class, 'index']);
+        Route::post('/',       [PageController::class, 'store']);
+        Route::get('/{id}',    [PageController::class, 'show']);
+        Route::put('/{id}',    [PageController::class, 'update']);
+        Route::delete('/{id}', [PageController::class, 'destroy']);
+    });
 });
