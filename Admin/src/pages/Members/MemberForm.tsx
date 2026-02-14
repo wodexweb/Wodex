@@ -13,7 +13,8 @@ import {
   Row,
   Spinner,
 } from "reactstrap";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const api = new APIClient();
 
 /* ================= PREDEFINED OPTIONS ================= */
@@ -94,7 +95,7 @@ const MemberForm: React.FC = () => {
 
       await api.create("/api/admin/members", payload);
 
-      alert("Member added successfully ✅");
+     toast.success("Member added successfully ✅");
 
       // reset
       setFormData({
@@ -109,7 +110,7 @@ const MemberForm: React.FC = () => {
       if (fileRef.current) fileRef.current.value = "";
     } catch (err) {
       console.error(err);
-      alert("Failed to add member ❌");
+      toast.error("Failed to add member ❌");
     } finally {
       setLoading(false);
     }
@@ -254,6 +255,7 @@ const MemberForm: React.FC = () => {
           </Col>
         </Row>
       </Container>
+      <ToastContainer/>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { APIClient } from "../../helpers/api_helper";
+import { toast } from "react-toastify";
 import {
   Card,
   CardBody,
@@ -53,10 +54,11 @@ const EditAnnouncement = () => {
           end_date: data.end_date?.slice(0, 10),
         });
 
-        // ✅ existing image from backend
         setPreview(data.photo_url || null);
       })
-      .catch(() => alert("Failed to load announcement ❌"))
+      .catch(() => {
+        toast.error("Failed to load announcement ❌");
+      })
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -91,7 +93,7 @@ const EditAnnouncement = () => {
       payload.append("description", formData.description || "");
       payload.append("link", formData.link || "");
       payload.append("end_date", formData.end_date);
-      payload.append("_method", "PUT"); // 🔥 Laravel
+      payload.append("_method", "PUT");
 
       if (imageFile) {
         payload.append("photo", imageFile);
@@ -99,12 +101,33 @@ const EditAnnouncement = () => {
 
       await api.create(`/api/admin/announcements/${id}`, payload);
 
-      alert("Announcement updated successfully ✅");
+      toast.success("Announcement updated successfully ✅");
       navigate("/announcements/list");
     } catch {
-      alert("Update failed ❌");
+      toast.error("Update failed ❌");
     } finally {
       setSaving(false);
+    }
+  };
+
+  /* ================= DELETE ================= */
+
+  const handleDelete = async () => {
+    if (!id) return;
+
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this announcement?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await api.delete(`/api/admin/announcements/${id}`);
+
+      toast.success("Announcement deleted successfully ✅");
+      navigate("/announcements/list");
+    } catch {
+      toast.error("Delete failed ❌");
     }
   };
 
@@ -182,7 +205,6 @@ const EditAnnouncement = () => {
                     />
                   </FormGroup>
 
-                  {/* IMAGE */}
                   <FormGroup className="mb-4">
                     <Label>Image</Label>
 
@@ -205,18 +227,28 @@ const EditAnnouncement = () => {
                     />
                   </FormGroup>
 
-                  <div className="d-flex justify-content-end gap-2">
+                  <div className="d-flex justify-content-between gap-2">
                     <Button
                       type="button"
-                      color="secondary"
-                      onClick={() => navigate(-1)}
+                      color="danger"
+                      onClick={handleDelete}
                     >
-                      Cancel
+                      Delete
                     </Button>
 
-                    <Button color="primary" disabled={saving}>
-                      {saving ? "Saving..." : "Update Announcement"}
-                    </Button>
+                    <div className="d-flex gap-2">
+                      <Button
+                        type="button"
+                        color="secondary"
+                        onClick={() => navigate(-1)}
+                      >
+                        Cancel
+                      </Button>
+
+                      <Button color="primary" disabled={saving}>
+                        {saving ? "Saving..." : "Update Announcement"}
+                      </Button>
+                    </div>
                   </div>
                 </Form>
               </CardBody>

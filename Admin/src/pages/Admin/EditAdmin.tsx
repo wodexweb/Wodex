@@ -15,6 +15,9 @@ import {
 } from "reactstrap";
 import { APIClient } from "../../helpers/api_helper";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const api = new APIClient();
 
 /* ================= TYPES ================= */
@@ -37,6 +40,7 @@ const EditAdmin = () => {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [roleId, setRoleId] = useState("1");
 
   /* ================= LOAD ADMIN ================= */
@@ -44,11 +48,17 @@ const EditAdmin = () => {
   useEffect(() => {
     if (!id) return;
 
+    setLoading(true);
+
     api
       .get(`/api/admin/admins/${id}`)
       .then((res: any) => {
         const data = res?.data ?? res;
-        if (!data) return;
+
+        if (!data || !data.id) {
+          setAdmin(null);
+          return;
+        }
 
         setAdmin(data);
         setName(data.name);
@@ -67,18 +77,26 @@ const EditAdmin = () => {
 
     setSaving(true);
 
+    const payload: any = {
+      name,
+      email,
+      role_id: roleId,
+    };
+
+    if (password.trim()) {
+      payload.password = password;
+    }
+
     api
-      .update(`/api/admins/${id}`, {
-        name,
-        email,
-        role_id: roleId,
-      })
+      .update(`/api/admin/admins/${id}`, payload)
       .then(() => {
-        alert("Admin updated successfully ✅");
-        navigate("/admins");
+        toast.success("Role updated successfully ✅");
+        setTimeout(() => {
+          navigate("/admins");
+        }, 1500);
       })
       .catch(() => {
-        alert("Failed to update admin ❌");
+        toast.error("Failed to update Role ❌");
       })
       .finally(() => setSaving(false));
   };
@@ -106,7 +124,7 @@ const EditAdmin = () => {
     );
   }
 
-  /* ================= FORM UI ================= */
+  /* ================= FORM ================= */
 
   return (
     <div className="page-content">
@@ -115,17 +133,15 @@ const EditAdmin = () => {
           <Col xl={10}>
             <Card className="border-0 shadow-sm">
               <CardBody>
-                {/* HEADER */}
                 <div className="border-bottom pb-3 mb-4">
-                  <h4 className="mb-1 fw-semibold">Edit Admin</h4>
+                  <h4 className="mb-1 fw-semibold">Edit Role</h4>
                   <p className="text-muted mb-0">
-                    Update admin details and role
+                    Update role details
                   </p>
                 </div>
 
                 <Form onSubmit={handleSubmit}>
                   <Row>
-                    {/* NAME */}
                     <Col lg={6}>
                       <FormGroup className="mb-3">
                         <Label className="fw-semibold">Name</Label>
@@ -137,7 +153,6 @@ const EditAdmin = () => {
                       </FormGroup>
                     </Col>
 
-                    {/* EMAIL */}
                     <Col lg={6}>
                       <FormGroup className="mb-3">
                         <Label className="fw-semibold">Email</Label>
@@ -150,7 +165,20 @@ const EditAdmin = () => {
                       </FormGroup>
                     </Col>
 
-                    {/* ROLE */}
+                    <Col lg={6}>
+                      <FormGroup className="mb-3">
+                        <Label className="fw-semibold">
+                          New Password (optional)
+                        </Label>
+                        <Input
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="Leave blank to keep current password"
+                        />
+                      </FormGroup>
+                    </Col>
+
                     <Col lg={4}>
                       <FormGroup className="mb-4">
                         <Label className="fw-semibold">Role</Label>
@@ -166,7 +194,6 @@ const EditAdmin = () => {
                       </FormGroup>
                     </Col>
 
-                    {/* ACTIONS */}
                     <Col xs={12}>
                       <div className="d-flex gap-2">
                         <Button
@@ -179,7 +206,7 @@ const EditAdmin = () => {
                         </Button>
 
                         <Button color="primary" disabled={saving}>
-                          {saving ? "Saving..." : "Update Admin"}
+                          {saving ? "Saving..." : "Update Role"}
                         </Button>
                       </div>
                     </Col>
@@ -190,6 +217,9 @@ const EditAdmin = () => {
           </Col>
         </Row>
       </Container>
+
+      {/* 🔔 ToastContainer (same pattern everywhere) */}
+      <ToastContainer />
     </div>
   );
 };

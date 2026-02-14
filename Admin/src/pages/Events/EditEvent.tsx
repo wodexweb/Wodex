@@ -15,6 +15,9 @@ import {
 } from "reactstrap";
 import { APIClient } from "../../helpers/api_helper";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const api = new APIClient();
 
 /* ================= TYPES ================= */
@@ -100,11 +103,11 @@ const EditEvent = () => {
     api
       .create(`/api/events/${id}`, formData)
       .then(() => {
-        alert("Event updated successfully ✅");
+        toast.success("Event updated successfully ✅");
         navigate("/events/list");
       })
       .catch(() => {
-        alert("Failed to update event ❌");
+        toast.error("Failed to update event ❌");
       })
       .finally(() => setSaving(false));
   };
@@ -277,6 +280,9 @@ const EditEvent = () => {
           </Col>
         </Row>
       </Container>
+
+      {/* 🔔 ToastContainer – SAME pattern as EventList & Register */}
+      <ToastContainer />
     </div>
   );
 };

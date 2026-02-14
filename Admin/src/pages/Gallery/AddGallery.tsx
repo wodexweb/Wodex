@@ -246,7 +246,8 @@ import {
   Form,
 } from "reactstrap";
 import { APIClient } from "../../helpers/api_helper";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const api = new APIClient();
 
 type EventOption = {
@@ -321,12 +322,12 @@ const ManageGallery = () => {
 
     try {
       await api.create("/api/admin/gallery", formData);
-      alert("Uploaded successfully!");
+      toast.success("Uploaded successfully!");
       if (fileRef.current) fileRef.current.value = "";
       setFiles(null);
       fetchGallery();
     } catch (err) {
-      alert("Upload failed");
+      toast.error("Upload failed");
     }
   };
 
@@ -408,6 +409,7 @@ const ManageGallery = () => {
           </Col>
         </Row>
       </Container>
+      <ToastContainer/>
     </div>
   );
 };

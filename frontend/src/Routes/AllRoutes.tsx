@@ -17,6 +17,8 @@ import AchievementPage from "../pages/Achievement/Achievement.tsx";
 /* NOTICES */
 import NoticePage from "../pages/Notices/Notices"; // ADDED THIS
 
+// PAGES
+import DynamicPage from "../pages/DynamicPage/DynamicPage";
 /* EVENTS */
 import AllEvents from "../pages/Events/AllEvents";
 import UpcomingEvents from "../pages/Events/UpcomingEvents";
@@ -68,6 +70,9 @@ const AllRoutes: React.FC = () => {
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/pdf-pages" element={<PdfPages />} />
+
+        {/* CMS Dynamic Pages */}
+        <Route path="/:slug" element={<DynamicPage />} />
 
         {/* FALLBACK */}
         <Route path="*" element={<div className="p-20 text-center">404 - Page Not Found</div>} />

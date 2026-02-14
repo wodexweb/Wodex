@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import {
     Card,
     CardBody,
@@ -12,19 +12,26 @@ import {
     Row,
     Table,
     Badge,
-    UncontrolledDropdown,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
+    Spinner,
 } from "reactstrap";
 import { APIClient } from "../../helpers/api_helper";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+// EXPORT PACKAGES
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const api = new APIClient();
 
 const PdfPages = () => {
     const fileRef = useRef<HTMLInputElement | null>(null);
+
     const [pdfs, setPdfs] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
+    const [fetchLoading, setFetchLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [selectedPdfs, setSelectedPdfs] = useState<number[]>([]);
@@ -38,12 +45,18 @@ const PdfPages = () => {
         status: "active",
     });
 
+    /* ================= FETCH ================= */
+
     const fetchPdfs = useCallback(async () => {
         try {
+            setFetchLoading(true);
             const response: any = await api.get("api/admin/pdf-pages");
-            setPdfs(Array.isArray(response) ? response : []);
-        } catch (error) {
-            console.error("Fetch Error", error);
+            const data = response?.data ?? response;
+            setPdfs(Array.isArray(data) ? data : []);
+        } catch (error: any) {
+            toast.error(error?.response?.data?.message || "Failed to load PDFs ❌");
+        } finally {
+            setFetchLoading(false);
         }
     }, []);
 
@@ -51,13 +64,78 @@ const PdfPages = () => {
         fetchPdfs();
     }, [fetchPdfs]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    /* ================= SEARCH & FILTER ================= */
+
+    const filteredPdfs = useMemo(() => {
+        if (!searchTerm) return pdfs;
+        return pdfs.filter((item) =>
+            item.title.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    }, [pdfs, searchTerm]);
+
+    /* ================= EXPORT LOGIC ================= */
+
+    const exportToExcel = () => {
+        const exportData = filteredPdfs.map((item, index) => ({
+            "No.": index + 1,
+            "Title": item.title,
+            "Description": item.description || "N/A",
+            "Status": item.status.toUpperCase(),
+        }));
+
+        const worksheet = XLSX.utils.json_to_sheet(exportData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Documents");
+
+        const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+        saveAs(new Blob([excelBuffer], { type: "application/octet-stream" }), "Documents_List.xlsx");
+    };
+
+    const exportToPDF = () => {
+        const doc = new jsPDF();
+        const tableColumn = ["No.", "Title", "Status"];
+        const tableRows = filteredPdfs.map((item, index) => [
+            index + 1,
+            item.title,
+            item.status.toUpperCase(),
+        ]);
+
+        autoTable(doc, { head: [tableColumn], body: tableRows });
+        doc.text("Manage Documents Report", 14, 15);
+        doc.save("Documents_Report.pdf");
+    };
+
+    /* ================= CHECKBOX LOGIC ================= */
+
+    const handleSelectAll = (e: any) => {
+        if (e.target.checked && filteredPdfs.length > 0) {
+            setSelectedPdfs(filteredPdfs.map((item) => item.id));
+        } else {
+            setSelectedPdfs([]);
+        }
+    };
+
+    const handleSelectItem = (id: number) => {
+        setSelectedPdfs((prev) =>
+            prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+        );
+    };
+
+    /* ================= FORM HANDLING ================= */
+
+    const handleChange = (e: any) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const resetForm = () => {
-        setFormData({ title: "", description: "", link: "", pdf_for: "", status: "active" });
+        setFormData({
+            title: "",
+            description: "",
+            link: "",
+            pdf_for: "",
+            status: "active",
+        });
         setIsEditing(false);
         setSelectedId(null);
         if (fileRef.current) fileRef.current.value = "";
@@ -66,8 +144,11 @@ const PdfPages = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+
         const payload = new FormData();
-        Object.entries(formData).forEach(([key, value]) => payload.append(key, value));
+        Object.entries(formData).forEach(([key, value]) =>
+            payload.append(key, value)
+        );
 
         if (fileRef.current?.files?.[0]) {
             payload.append("file", fileRef.current.files[0]);
@@ -79,17 +160,18 @@ const PdfPages = () => {
                 await api.create(`api/admin/pdf-pages/${selectedId}`, payload, {
                     headers: { "Content-Type": "multipart/form-data" },
                 });
+                toast.success("PDF updated successfully ✅");
             } else {
                 await api.create("api/admin/pdf-pages", payload, {
                     headers: { "Content-Type": "multipart/form-data" },
                 });
+                toast.success("PDF uploaded successfully ✅");
             }
-            alert(isEditing ? "PDF Updated Successfully!" : "PDF Uploaded Successfully!");
+
             resetForm();
             fetchPdfs();
-        } catch (error) {
-            console.error("Submit error:", error);
-            alert("Save Failed. Please check console for details.");
+        } catch {
+            toast.error("Save failed ❌");
         } finally {
             setLoading(false);
         }
@@ -108,170 +190,156 @@ const PdfPages = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    // --- ACTIVATE / DEACTIVATE LOGIC (FIXED) ---
-    const handleStatusToggle = async (item: any) => {
-        const newStatus = item.status === "active" ? "inactive" : "active";
-        try {
-            // Using update helper directly to avoid multipart boundary issues on simple JSON update
-            await api.update(`api/admin/pdf-pages/${item.id}`, {
-                status: newStatus
-            });
-            fetchPdfs();
-        } catch (error: any) {
-            console.error("Status Update Error:", error.response?.data || error.message);
-            alert("Failed to update status.");
-        }
-    };
+    /* ================= DELETE ACTIONS ================= */
 
-    const handleDelete = async (id: number) => {
-        if (window.confirm("Are you sure you want to delete this PDF?")) {
-            try {
-                await api.delete(`api/admin/pdf-pages/${id}`);
+    const handleDelete = (id: number) => {
+        if (!window.confirm("Delete this PDF?")) return;
+        api.delete(`api/admin/pdf-pages/${id}`)
+            .then(() => {
+                toast.success("Deleted 🗑️");
                 fetchPdfs();
-            } catch (error) {
-                alert("Delete failed");
-            }
-        }
+            })
+            .catch(() => toast.error("Delete failed"));
     };
 
     const handleBulkDelete = async () => {
-        if (window.confirm(`Delete ${selectedPdfs.length} selected PDFs?`)) {
-            try {
-                await Promise.all(selectedPdfs.map((id) => api.delete(`api/admin/pdf-pages/${id}`)));
-                setSelectedPdfs([]);
-                fetchPdfs();
-            } catch (error) {
-                alert("Bulk delete failed");
-            }
+        if (!window.confirm(`Delete ${selectedPdfs.length} selected items?`)) return;
+        try {
+            await Promise.all(selectedPdfs.map(id => api.delete(`api/admin/pdf-pages/${id}`)));
+            toast.success("Bulk delete successful ✅");
+            setSelectedPdfs([]);
+            fetchPdfs();
+        } catch {
+            toast.error("Some deletions failed");
         }
     };
 
-    const filteredPdfs = pdfs.filter(item =>
-        item.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const handleStatusToggle = async (item: any) => {
+        const newStatus = item.status === "active" ? "inactive" : "active";
+        try {
+            await api.update(`api/admin/pdf-pages/${item.id}`, { status: newStatus });
+            toast.success("Status updated ✅");
+            fetchPdfs();
+        } catch {
+            toast.error("Failed to toggle status");
+        }
+    };
 
     return (
         <div className="page-content">
             <Container fluid>
                 <Row>
+                    {/* LEFT SIDE: UPLOAD FORM */}
                     <Col xl={4}>
-                        <Card>
+                        <Card className="border-0 shadow-sm">
                             <CardBody>
-                                <h4 className="card-title mb-4">{isEditing ? "Edit PDF" : "Upload Document"}</h4>
+                                <h4 className="mb-4">{isEditing ? "Edit Document" : "Upload New Document"}</h4>
                                 <Form onSubmit={handleSubmit}>
                                     <FormGroup>
                                         <Label>Title</Label>
-                                        <Input name="title" value={formData.title} onChange={handleChange} required placeholder="Enter title" />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label>Link (External/Google Drive)</Label>
-                                        <Input name="link" value={formData.link} onChange={handleChange} placeholder="https://drive.google.com/..." />
+                                        <Input name="title" value={formData.title} onChange={handleChange} required placeholder="Enter PDF title" />
                                     </FormGroup>
                                     <FormGroup>
                                         <Label>Description</Label>
-                                        <Input type="textarea" name="description" rows={3} value={formData.description} onChange={handleChange} placeholder="Enter description" />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label>PDF For (Category)</Label>
-                                        <Input type="select" name="pdf_for" value={formData.pdf_for} onChange={handleChange}>
-                                            <option value="">Select PDF For</option>
-                                            <option value="student">Student</option>
-                                            <option value="staff">Staff</option>
-                                            <option value="public">General Public</option>
-                                        </Input>
+                                        <Input type="textarea" name="description" value={formData.description} onChange={handleChange} placeholder="Optional description" rows={3} />
                                     </FormGroup>
                                     <FormGroup>
                                         <Label>PDF File</Label>
-                                        <Input type="file" innerRef={fileRef} accept=".pdf" />
+                                        <Input type="file" innerRef={fileRef} accept=".pdf" required={!isEditing} />
+                                        {isEditing && <small className="text-muted">Leave empty to keep current file</small>}
                                     </FormGroup>
-                                    <div className="hstack gap-2 mt-4">
-                                        <Button color="primary" type="submit" className="w-100" disabled={loading}>
+                                    <div className="d-flex gap-2 mt-4">
+                                        <Button color="primary" type="submit" disabled={loading} className="w-100">
                                             {loading ? "Processing..." : isEditing ? "Update PDF" : "Upload PDF"}
                                         </Button>
-                                        {isEditing && <Button color="soft-secondary" onClick={resetForm} className="w-100">Cancel</Button>}
+                                        {isEditing && <Button color="secondary" onClick={resetForm}>Cancel</Button>}
                                     </div>
                                 </Form>
                             </CardBody>
                         </Card>
                     </Col>
 
+                    {/* RIGHT SIDE: TABLE LIST */}
                     <Col xl={8}>
-                        <Card>
+                        <Card className="border-0 shadow-sm">
                             <CardBody>
-                                <div className="d-flex mb-3 align-items-center">
-                                    <h4 className="card-title flex-grow-1">Manage Documents</h4>
-                                    {selectedPdfs.length > 0 && (
-                                        <Button color="danger" className="btn-sm me-2" onClick={handleBulkDelete}>
-                                            Delete Selected ({selectedPdfs.length})
+                                <div className="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+                                    <div className="d-flex align-items-center gap-2">
+                                        <h4 className="mb-0">Manage Documents</h4>
+                                        <Badge color="info" pill>Total: {filteredPdfs.length}</Badge>
+                                    </div>
+                                    <div className="d-flex flex-wrap gap-2">
+                                        {/* ✅ ADDED ICONS TO EXCEL/PDF BUTTONS */}
+                                        <Button color="success" outline size="sm" onClick={exportToExcel}>
+                                            <i className="ri-file-excel-2-line align-bottom me-1"></i> Excel
                                         </Button>
-                                    )}
-                                    <Input type="text" placeholder="Search title..." style={{ width: "200px" }} onChange={(e) => setSearchTerm(e.target.value)} />
+                                        <Button color="danger" outline size="sm" onClick={exportToPDF}>
+                                            <i className="ri-file-pdf-line align-bottom me-1"></i> PDF
+                                        </Button>
+                                        
+                                        {selectedPdfs.length > 0 && (
+                                            <Button color="danger" size="sm" onClick={handleBulkDelete}>
+                                                <i className="ri-delete-bin-line align-bottom me-1"></i> Delete ({selectedPdfs.length})
+                                            </Button>
+                                        )}
+                                        
+                                        <Input
+                                            placeholder="Search title..."
+                                            style={{ width: "200px" }}
+                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                        />
+                                    </div>
                                 </div>
+
                                 <div className="table-responsive">
-                                    <Table hover a lign="middle" className="table-nowrap">
+                                    <Table hover responsive className="align-middle custom-table">
                                         <thead className="table-light">
                                             <tr>
                                                 <th style={{ width: "40px" }}>
-                                                    <Input 
-                                                        type="checkbox" 
-                                                        onChange={(e) => e.target.checked ? setSelectedPdfs(pdfs.map((p) => p.id)) : setSelectedPdfs([])} 
-                                                        checked={selectedPdfs.length === pdfs.length && pdfs.length > 0} 
-                                                    />
+                                                    <Input type="checkbox" onChange={handleSelectAll} checked={selectedPdfs.length === filteredPdfs.length && filteredPdfs.length > 0} />
                                                 </th>
-                                                <th>Title & Category</th>
+                                                <th>Document Details</th>
                                                 <th>Status</th>
-                                                <th>Action</th>
+                                                <th className="text-center">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {filteredPdfs.length > 0 ? (
-                                                filteredPdfs.map((item, idx) => (
-                                                    <tr key={idx}>
+                                            {fetchLoading ? (
+                                                <tr><td colSpan={4} className="text-center py-5"><Spinner color="primary" /></td></tr>
+                                            ) : filteredPdfs.length > 0 ? (
+                                                filteredPdfs.map((item) => (
+                                                    <tr key={item.id}>
                                                         <td>
-                                                            <Input 
-                                                                type="checkbox" 
-                                                                checked={selectedPdfs.includes(item.id)} 
-                                                                onChange={() => setSelectedPdfs((prev) => prev.includes(item.id) ? prev.filter((i) => i !== item.id) : [...prev, item.id])} 
-                                                            />
+                                                            <Input type="checkbox" checked={selectedPdfs.includes(item.id)} onChange={() => handleSelectItem(item.id)} />
                                                         </td>
                                                         <td>
-                                                            <div className="fw-medium">{item.title}</div>
-                                                            <small className="text-primary text-uppercase">{item.pdf_for || "General"}</small>
-                                                        </td>
-                                                        <td>
-                                                            <div className="d-flex align-items-center gap-2">
-                                                                <Badge color={item.status === 'active' ? 'success' : 'danger'}>
-                                                                    {item.status}
-                                                                </Badge>
-                                                                <Button
-                                                                    size="sm"
-                                                                    color={item.status === 'active' ? 'soft-danger' : 'soft-success'}
-                                                                    onClick={() => handleStatusToggle(item)}
-                                                                >
-                                                                    {item.status === 'active' ? 'Deactivate' : 'Activate'}
-                                                                </Button>
+                                                            <div className="d-flex flex-column">
+                                                                <span className="fw-bold text-dark">{item.title}</span>
+                                                                {item.file_url && (
+                                                                    <a href={item.file_url} target="_blank" rel="noreferrer" className="text-primary small">
+                                                                        View File 📄
+                                                                    </a>
+                                                                )}
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <UncontrolledDropdown>
-                                                                <DropdownToggle tag="button" className="btn btn-soft-secondary btn-sm"><i className="ri-more-fill"></i></DropdownToggle>
-                                                                <DropdownMenu end>
-                                                                    <DropdownItem onClick={() => handleEdit(item)}>Edit</DropdownItem>
-                                                                    {item.file_path && (
-                                                                        <DropdownItem href={`${process.env.REACT_APP_API_URL}/storage/${item.file_path}`} target="_blank">View File</DropdownItem>
-                                                                    )}
-                                                                    {item.link && (
-                                                                        <DropdownItem href={item.link} target="_blank">External Link</DropdownItem>
-                                                                    )}
-                                                                    <DropdownItem divider />
-                                                                    <DropdownItem className="text-danger" onClick={() => handleDelete(item.id)}>Delete</DropdownItem>
-                                                                </DropdownMenu>
-                                                            </UncontrolledDropdown>
+                                                            <Badge color={item.status === "active" ? "success" : "danger"} pill className="px-3">
+                                                                {item.status.toUpperCase()}
+                                                            </Badge>
+                                                        </td>
+                                                        <td>
+                                                            <div className="d-flex justify-content-center gap-2">
+                                                                <Button size="sm" color="soft-info" onClick={() => handleStatusToggle(item)}>Toggle</Button>
+                                                                <Button size="sm" color="soft-primary" onClick={() => handleEdit(item)}>Edit</Button>
+                                                                <Button size="sm" color="soft-danger" onClick={() => handleDelete(item.id)}>Delete</Button>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 ))
                                             ) : (
-                                                <tr><td colSpan={4} className="text-center py-4 text-muted">No documents found.</td></tr>
+                                                <tr>
+                                                    <td colSpan={4} className="text-center py-4">No documents found.</td>
+                                                </tr>
                                             )}
                                         </tbody>
                                     </Table>
@@ -281,6 +349,7 @@ const PdfPages = () => {
                     </Col>
                 </Row>
             </Container>
+            <ToastContainer position="top-right" autoClose={3000} />
         </div>
     );
 };

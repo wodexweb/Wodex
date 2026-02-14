@@ -28,7 +28,9 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-/* ================= API ================= */
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const api = new APIClient();
 
 /* ================= TYPES ================= */
@@ -47,6 +49,13 @@ interface Menu {
   id: number;
   name: string;
   location: "header" | "footer";
+}
+
+interface Page {
+  id: number;
+  title: string;
+  slug: string;
+  status: string;
 }
 
 interface Props {
@@ -78,12 +87,7 @@ const SortableItem = ({
   return (
     <div ref={setNodeRef} style={style}>
       <div className="d-flex align-items-center justify-content-between border p-2 mb-2 rounded bg-body text-body">
-        <div
-          {...attributes}
-          {...listeners}
-          className="me-3 opacity-75"
-          style={{ cursor: "grab" }}
-        >
+        <div {...attributes} {...listeners} className="me-3 opacity-75" style={{ cursor: "grab" }}>
           ☰
         </div>
 
@@ -102,21 +106,11 @@ const SortableItem = ({
             {item.is_active ? "Enabled" : "Disabled"}
           </Button>
 
-          <Button
-            size="sm"
-            color="info"
-            outline
-            onClick={() => onEdit(item)}
-          >
+          <Button size="sm" color="info" outline onClick={() => onEdit(item)}>
             Edit
           </Button>
 
-          <Button
-            size="sm"
-            color="danger"
-            outline
-            onClick={() => onDelete(item.id)}
-          >
+          <Button size="sm" color="danger" outline onClick={() => onDelete(item.id)}>
             Delete
           </Button>
         </div>
@@ -130,6 +124,7 @@ const SortableItem = ({
 const MenuBuilder: React.FC<Props> = ({ location }) => {
   const [menu, setMenu] = useState<Menu | null>(null);
   const [items, setItems] = useState<MenuItem[]>([]);
+  const [pages, setPages] = useState<Page[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
 
@@ -137,23 +132,26 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
     title: "",
     url: "",
     parent_id: "",
+    link_type: "url" as "url" | "page",
+    page_slug: "",
   });
 
   const sensors = useSensors(useSensor(PointerSensor));
 
   useEffect(() => {
     fetchMenu();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchPages();
   }, [location]);
+
+  /* ================= FETCH ================= */
 
   const fetchMenu = async () => {
     try {
       setLoading(true);
 
       const menusRes: any = await api.get("/api/admin/menus");
-      const foundMenu = menusRes.data.find(
-        (m: Menu) => m.location === location,
-      );
+      const menusData = menusRes.data || menusRes;
+      const foundMenu = menusData.find((m: Menu) => m.location === location);
 
       if (!foundMenu) {
         setMenu(null);
@@ -164,32 +162,84 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
       setMenu(foundMenu);
 
       const itemsRes: any = await api.get(
-        `/api/admin/menus/by-location/${location}`,
+        `/api/admin/menus/by-location/${location}`
       );
 
-      setItems(itemsRes.data || []);
-    } catch (err) {
-      console.error(err);
-      setMenu(null);
-      setItems([]);
+      setItems(itemsRes.data || itemsRes || []);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to load menu ❌");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
+  const fetchPages = async () => {
+    try {
+      const res: any = await api.get("/api/admin/pages");
+      const rawData = res.data?.data || res.data || res || [];
+
+      const published = rawData.filter(
+        (p: Page) => p.status?.toLowerCase() === "published"
+      );
+
+      setPages(published);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to load pages ❌");
+    }
+  };
+
+  /* ================= FORM ================= */
+
+  const handleChange = (e: ChangeEvent<any>) => {
     const { name, value } = e.target;
+
+    if (name === "link_type") {
+      setForm((prev) => ({
+        ...prev,
+        link_type: value as "url" | "page",
+        url: "",
+        page_slug: "",
+      }));
+      return;
+    }
+
     setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handlePageSelect = (e: ChangeEvent<any>) => {
+    const slug = e.target.value;
+
+    setForm((prev) => ({
+      ...prev,
+      page_slug: slug,
+      url: slug ? `/${slug}` : "",
+    }));
   };
 
   const handleEdit = (item: MenuItem) => {
     setEditingItem(item);
+
+    const matchedPage = pages.find((p) => `/${p.slug}` === item.url);
+
     setForm({
       title: item.title,
       url: item.url,
       parent_id: item.parent_id ? String(item.parent_id) : "",
+      link_type: matchedPage ? "page" : "url",
+      page_slug: matchedPage ? matchedPage.slug : "",
+    });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingItem(null);
+    setForm({
+      title: "",
+      url: "",
+      parent_id: "",
+      link_type: "url",
+      page_slug: "",
     });
   };
 
@@ -198,38 +248,55 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
     if (!menu?.id) return;
 
     try {
+      const payload = {
+        menu_id: menu.id,
+        title: form.title,
+        url: form.url,
+        parent_id: form.parent_id || null,
+      };
+
       if (editingItem) {
-        await api.patch(`/api/admin/menu-items/${editingItem.id}`, {
-          title: form.title,
-          url: form.url,
-          parent_id: form.parent_id || null,
-        });
+        await api.patch(
+          `/api/admin/menu-items/${editingItem.id}`,
+          payload
+        );
+        toast.success("Menu item updated successfully ✅");
       } else {
-        await api.post("/api/admin/menu-items", {
-          menu_id: menu.id,
-          title: form.title,
-          url: form.url,
-          parent_id: form.parent_id || null,
-        });
+        await api.post("/api/admin/menu-items", payload);
+        toast.success("Menu item added successfully ✅");
       }
 
-      setForm({ title: "", url: "", parent_id: "" });
-      setEditingItem(null);
-      fetchMenu();
-    } catch (err) {
-      console.error(err);
+      handleCancelEdit();
+      await fetchMenu();
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to save menu item ❌");
     }
   };
 
+  /* ================= ACTIONS ================= */
+
   const deleteItem = async (id: number) => {
-    if (!window.confirm("Delete this menu item?")) return;
-    await api.delete(`/api/admin/menu-items/${id}`);
-    fetchMenu();
+    if (!window.confirm("Are you sure you want to delete this item?"))
+      return;
+
+    try {
+      await api.delete(`/api/admin/menu-items/${id}`);
+      toast.success("Deleted successfully ✅");
+      fetchMenu();
+    } catch {
+      toast.error("Delete failed ❌");
+    }
   };
 
   const toggleItem = async (id: number) => {
-    await api.patch(`/api/admin/menu-items/${id}/toggle`);
-    fetchMenu();
+    try {
+      await api.patch(`/api/admin/menu-items/${id}/toggle`);
+      toast.success("Status updated ✅");
+      fetchMenu();
+    } catch {
+      toast.error("Failed to update status ❌");
+    }
   };
 
   const handleDragEnd = async (event: any) => {
@@ -242,17 +309,22 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
     const newItems = arrayMove(items, oldIndex, newIndex);
     setItems(newItems);
 
-    await api.post("/api/admin/menu-items/order", {
-      items: newItems.map((item, index) => ({
-        id: item.id,
-        order: index + 1,
-        parent_id: item.parent_id ?? null,
-      })),
-    });
+    try {
+      await api.post("/api/admin/menu-items/order", {
+        items: newItems.map((item, index) => ({
+          id: item.id,
+          order: index + 1,
+        })),
+      });
+
+      toast.success("Menu order updated ✅");
+    } catch {
+      toast.error("Failed to update order ❌");
+    }
   };
 
-  const renderItems = (items: MenuItem[], level = 0) =>
-    items.map((item) => (
+  const renderItems = (itemsToRender: MenuItem[], level = 0) =>
+    itemsToRender.map((item) => (
       <div key={item.id} style={{ marginLeft: level * 20 }}>
         <SortableItem
           item={item}
@@ -260,87 +332,121 @@ const MenuBuilder: React.FC<Props> = ({ location }) => {
           onToggle={toggleItem}
           onEdit={handleEdit}
         />
-        {item.children &&
-          item.children.length > 0 &&
-          renderItems(item.children, level + 1)}
+        {item.children && renderItems(item.children, level + 1)}
       </div>
     ));
 
-  if (loading) {
+  if (loading)
     return (
-      <div className="d-flex justify-content-center py-5">
+      <div className="text-center py-5">
         <Spinner color="primary" />
       </div>
     );
-  }
 
-  if (!menu) {
-    return <p className="text-muted">Menu not found</p>;
-  }
+  if (!menu)
+    return (
+      <p className="text-center text-muted">Menu not found</p>
+    );
 
   return (
-    <Row>
-      <Col md={7}>
-        <Card className="mb-4">
-          <CardBody>
-            <h5 className="mb-3">{menu.name}</h5>
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
-            >
-              <SortableContext
-                items={items.map((i) => i.id)}
-                strategy={verticalListSortingStrategy}
-              >
-                {renderItems(items)}
-              </SortableContext>
-            </DndContext>
-          </CardBody>
-        </Card>
-      </Col>
+    <>
+      <Row>
+        <Col md={5}>
+          <Card className="mb-4">
+            <CardBody>
+              <h5>
+                {editingItem ? "Edit Menu Item" : "Add Menu Item"}
+              </h5>
 
-      <Col md={5}>
-        <Card>
-          <CardBody>
-            <h5>{editingItem ? "Edit Menu Item" : "Add Menu Item"}</h5>
+              <Form onSubmit={handleSubmit}>
+                <FormGroup>
+                  <Label>Title</Label>
+                  <Input
+                    name="title"
+                    value={form.title}
+                    onChange={handleChange}
+                    required
+                  />
+                </FormGroup>
 
-            <Form onSubmit={handleSubmit}>
-              <FormGroup>
-                <Label>Title</Label>
-                <Input name="title" value={form.title} onChange={handleChange} />
-              </FormGroup>
+                <FormGroup>
+                  <Label>Link Type</Label>
+                  <Input
+                    type="select"
+                    name="link_type"
+                    value={form.link_type}
+                    onChange={handleChange}
+                  >
+                    <option value="url">Custom URL</option>
+                    <option value="page">Page</option>
+                  </Input>
+                </FormGroup>
 
-              <FormGroup>
-                <Label>URL</Label>
-                <Input name="url" value={form.url} onChange={handleChange} />
-              </FormGroup>
+                {form.link_type === "url" ? (
+                  <FormGroup>
+                    <Label>URL</Label>
+                    <Input
+                      name="url"
+                      value={form.url}
+                      onChange={handleChange}
+                      required
+                    />
+                  </FormGroup>
+                ) : (
+                  <FormGroup>
+                    <Label>Select Page</Label>
+                    <Input
+                      type="select"
+                      value={form.page_slug}
+                      onChange={handlePageSelect}
+                      required
+                    >
+                      <option value="">-- Select --</option>
+                      {pages.map((page) => (
+                        <option key={page.id} value={page.slug}>
+                          {page.title} (/{page.slug})
+                        </option>
+                      ))}
+                    </Input>
+                  </FormGroup>
+                )}
 
-              <FormGroup>
-                <Label>Parent Menu</Label>
-                <Input
-                  type="select"
-                  name="parent_id"
-                  value={form.parent_id}
-                  onChange={handleChange}
+                <Button
+                  type="submit"
+                  color="primary"
+                  className="w-100"
                 >
-                  <option value="">Top Level</option>
-                  {items.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.title}
-                    </option>
-                  ))}
-                </Input>
-              </FormGroup>
+                  {editingItem ? "Update" : "Add"} Item
+                </Button>
+              </Form>
+            </CardBody>
+          </Card>
+        </Col>
 
-              <Button type="submit" color="primary" className="w-100">
-                {editingItem ? "Update Menu Item" : "Add Menu Item"}
-              </Button>
-            </Form>
-          </CardBody>
-        </Card>
-      </Col>
-    </Row>
+        <Col md={7}>
+          <Card>
+            <CardBody>
+              <h5>{menu.name}</h5>
+
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext
+                  items={items.map((i) => i.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {renderItems(items)}
+                </SortableContext>
+              </DndContext>
+            </CardBody>
+          </Card>
+        </Col>
+      </Row>
+
+      <ToastContainer position="top-right" autoClose={2000} />
+    </>
   );
 };
 

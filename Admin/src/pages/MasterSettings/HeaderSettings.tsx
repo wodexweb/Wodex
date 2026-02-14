@@ -14,6 +14,8 @@ import {
   Spinner,
 } from "reactstrap";
 import { SketchPicker } from "react-color";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 /* ================= API ================= */
 const api = new APIClient();
@@ -82,11 +84,11 @@ const HeaderSettings: React.FC = () => {
         title_color: formData.title_color,
       };
 
-      await api.create("/api/header", payload);
-      alert("Header settings updated successfully");
+      await api.create("/api/admin/header", payload);
+      toast.success("Header settings updated successfully");
     } catch (error: any) {
       console.error("HEADER SETTINGS ERROR 👉", error);
-      alert("Failed to update header settings");
+      toast.error("Failed to update header settings");
     }
   };
 
@@ -213,6 +215,8 @@ const HeaderSettings: React.FC = () => {
           </Row>
         )}
       </Container>
+      <ToastContainer />
+
     </div>
   );
 };
