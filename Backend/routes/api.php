@@ -557,7 +557,7 @@
 // });
 
 
- /*
+/*
 //     |--------------------------------------------------------------------------
 //     |LISTEN THIS API IS FOR CONNECTION WITH PAGES DON'T CHANGE IT''''''''''''
 //     |--------------------------------------------------------------------------
@@ -597,7 +597,8 @@ use App\Http\Controllers\Api\{
     GalleryController,
     AchievementController,
     AdminController,
-    PageController
+    PageController,
+    MediaLibraryController
 };
 
 /*
@@ -618,6 +619,7 @@ use App\Http\Controllers\{
 | PUBLIC AUTH ROUTES (NO LOGIN REQUIRED)
 |--------------------------------------------------------------------------
 */
+
 Route::post('/register', [RegistrationController::class, 'register']);
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/login/verify-otp', [VerifyOtpController::class, 'verify']);
@@ -648,6 +650,14 @@ Route::get('/galleries', [GalleryController::class, 'index']);
 // PUBLIC PAGES (for frontend rendering by slug)
 Route::get('/pages', [PageController::class, 'index']);
 Route::get('/pages/slug/{slug}', [PageController::class, 'showBySlug']);
+
+/*
+|--------------------------------------------------------------------------
+| MEDIA LIBRARY (PUBLIC FRONTEND)
+|--------------------------------------------------------------------------
+*/
+Route::get('/media-library/{slug}', [MediaLibraryController::class, 'byPage']);
+
 
 /*
 |--------------------------------------------------------------------------
@@ -729,6 +739,19 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::apiResource('pdf-pages', PdfPageController::class);
     Route::apiResource('membership-plans', MembershipPlanController::class);
     Route::apiResource('achievements', AchievementController::class);
+
+    /* ADMIN CRUD */
+    Route::apiResource('notices', NoticeController::class);
+    Route::apiResource('announcements', AnnouncementController::class);
+    Route::apiResource('events', EventController::class);
+    Route::apiResource('members', MemberController::class);
+    Route::apiResource('pdf-pages', PdfPageController::class);
+    Route::apiResource('membership-plans', MembershipPlanController::class);
+    Route::apiResource('achievements', AchievementController::class);
+
+    /* MEDIA LIBRARY */
+    Route::apiResource('media-library', MediaLibraryController::class);
+
 
     /* GALLERY */
     Route::get('/gallery/events', [GalleryController::class, 'events']);

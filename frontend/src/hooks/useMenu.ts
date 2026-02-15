@@ -48,7 +48,7 @@ export const useMenu = (location: string) => {
     api
       .get<any>(`/api/menus/by-location/${location}`)
       .then((res) => {
-        console.log("MENU RESPONSE:", res);
+        // console.log("MENU RESPONSE:", res);
 
         // interceptor already returns response.data
         if (Array.isArray(res)) {
@@ -62,7 +62,7 @@ export const useMenu = (location: string) => {
         }
       })
       .catch((err) => {
-        console.error("MENU ERROR:", err);
+        // console.error("MENU ERROR:", err);
         setMenu([]);
       })
       .finally(() => setLoading(false));

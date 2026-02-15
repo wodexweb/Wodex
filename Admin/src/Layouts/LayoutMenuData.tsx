@@ -792,18 +792,18 @@ const Navdata = () => {
       ],
     },
 
-    // {
-    //   id: "media-library",
-    //   label: "Media Library",
-    //   icon: "ri-image-2-line",
-    //   link: "/#",
-    //   stateVariables: activeMenu === "media-library",
-    //   click: (e: any) => {
-    //     e.preventDefault();
-    //     toggleMenu("media-library");
-    //   },
-    //   subItems: [{ label: "Manage Media", click: () => navigate("/media-library") }],
-    // },
+    {
+      id: "media-library",
+      label: "Media Library",
+      icon: "ri-image-2-line",
+      link: "/#",
+      stateVariables: activeMenu === "media-library",
+      click: (e: any) => {
+        e.preventDefault();
+        toggleMenu("media-library");
+      },
+      subItems: [{ label: "Manage Media", click: () => navigate("/media-library") }],
+    },
 
     {
       id: "membership",
@@ -919,7 +919,7 @@ const Navdata = () => {
         { label: "Member List", click: () => navigate("/members/list") },
       ],
     },
-    
+
     {
       id: "User",
       label: "User",
@@ -936,7 +936,7 @@ const Navdata = () => {
     },
   ];
 
-  
+
 
   /* ================= FILTER BY ROLE ================= */
   const allowedMenus = allMenus.filter((menu) =>
