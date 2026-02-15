@@ -31,8 +31,6 @@
 //   return { settings, loading };
 // };
 
-
-
 import { useEffect, useState } from "react";
 import { APIClient } from "../../helpers/api_helper";
 

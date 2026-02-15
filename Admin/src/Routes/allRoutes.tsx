@@ -66,7 +66,7 @@ import AddMenu from "../pages/Menu/AddMenu";
 
 // Pages
 import AddPage from "../pages/Pages/AddPage";
-import ManagePages from "../pages/Pages/ManagePages";   
+import ManagePages from "../pages/Pages/ManagePages";
 import ViewPage from "../pages/Pages/ViewPage";// ✅ ADD THIS
 import EditPage from "../pages/Pages/EditPage";   // ✅ ADD THIS
 
@@ -133,9 +133,9 @@ const authProtectedRoutes = [
   // PAGES
   { path: "/pages/add", component: <AddPage /> },
   { path: "/pages/manage", component: <ManagePages /> },
-    { path: "/pages/view/:id", component: <ViewPage /> },   // ✅ ADD
+  { path: "/pages/view/:id", component: <ViewPage /> },   // ✅ ADD
   { path: "/pages/edit/:id", component: <EditPage /> },   // ✅ ADD
-  
+
 
   // EVENTS
   { path: "/events/list", component: <EventList /> },
